@@ -40,12 +40,22 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionOpen_triggered()
 {
+	static EncryptedFile * s_encFile = nullptr;
     QString filename = QFileDialog::getOpenFileName(this,"Open a File","","Video File (*.*)");
     on_actionStop_triggered();
 
-    player->setMedia(QUrl::fromLocalFile(filename));
+    //player->setMedia(QUrl::fromLocalFile(filename));
+	// for debugging of video infrastructure, will be removed later
 
-    on_actionPlay_triggered();
+	on_actionStop_triggered();
+	if (s_encFile) delete s_encFile;
+	s_encFile = new EncryptedFile(0);
+	s_encFile->open(QFile::ReadOnly);
+	QUrl locUrl = QUrl::fromLocalFile(filename);
+	player->setMedia(locUrl  , s_encFile);
+
+	on_actionPlay_triggered();
+
 }
 
 void MainWindow::on_actionPlay_triggered()
@@ -82,9 +92,10 @@ void MainWindow::on_actionManageEPG_triggered()
         on_actionStop_triggered();
 		if (s_encFile) delete s_encFile;
 		s_encFile = new EncryptedFile(movie_to_play);
-        player->setMedia(QUrl::fromLocalFile(movie_file_name), s_encFile); // insert here QIOdevice inherited decryptor
+		s_encFile->open(QFile::ReadOnly);
+        player->setMedia(QUrl::fromLocalFile(movie_file_name), s_encFile); 
 
-        on_actionPlay_triggered();
+		on_actionPlay_triggered();
 
     }
 }

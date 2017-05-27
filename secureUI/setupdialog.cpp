@@ -45,7 +45,7 @@ void SetupDialog::finalize()
 	QString shost, sport, sfolder;
 
 	sport = serverPortEdit->text();
-	sport = serverIPEdit->text();
+	shost = serverIPEdit->text();
 	sfolder = folderEdit->text();
 
 	if (sport.length() > 0 && shost.length() > 0 && sfolder.length() > 0)

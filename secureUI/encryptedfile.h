@@ -10,25 +10,6 @@ class EncryptedFile : public QIODevice
 public:
 	unsigned int movie_id;
     EncryptedFile(unsigned int movie_id);
-protected:
-	virtual qint64 readData(char*data, qint64 maxSize)
-	{
-		SGXware *pSGX = SGXware::getInstance();
-		qint64 pos = this->pos();
-		qint64 readDataSize = pSGX->readMovieChunk(movie_id, pos, maxSize, (unsigned char*)data);
-		pSGX->inplaceDecrypt(readDataSize, data);
-		QIODevice::seek(pos+readDataSize);
-		return readDataSize;
-	}
-	virtual qint64 readLineData(char *data, qint64 maxlen)
-	{
-		return 0;
-	}
-
-	virtual qint64 writeData(const char *data, qint64 len)
-	{
-		return 0; // no write at alll, reading only
-	}
 	virtual bool open(QIODevice::OpenMode mode)
 	{
 		return false;
@@ -66,11 +47,13 @@ protected:
 	{
 		return size() - pos();
 	};
+
 	virtual qint64 bytesToWrite()
 	{
 		return 0;
 	}
-	virtual bool canReadLine() 
+
+	virtual bool canReadLine()
 	{
 		return false;
 	};
@@ -82,6 +65,26 @@ protected:
 	virtual bool waitForBytesWritten(int msecs)
 	{
 		return false; // no write no cry
+	}
+
+protected:
+	virtual qint64 readData(char*data, qint64 maxSize)
+	{
+		SGXware *pSGX = SGXware::getInstance();
+		qint64 pos = this->pos();
+		qint64 readDataSize = pSGX->readMovieChunk(movie_id, pos, maxSize, (unsigned char*)data);
+		pSGX->inplaceDecrypt(readDataSize, data);
+		QIODevice::seek(pos+readDataSize);
+		return readDataSize;
+	}
+	virtual qint64 readLineData(char *data, qint64 maxlen)
+	{
+		return 0;
+	}
+
+	virtual qint64 writeData(const char *data, qint64 len)
+	{
+		return 0; // no write at alll, reading only
 	}
 
 

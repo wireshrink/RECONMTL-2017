@@ -141,9 +141,6 @@
     <CustomBuild Include="mainwindow.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="setupdialog.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <ClInclude Include="sgxware.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -169,6 +166,9 @@
     </CustomBuild>
     <CustomBuild Include="..\DVSE\DVSE.edl">
       <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="setupdialog.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
