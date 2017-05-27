@@ -9,10 +9,7 @@
 SetupDialog::SetupDialog(void):QDialog()
 {
     char buf[1024];
-    char address[1024];
     char folder[1024];
-    int port;
-    SGXware *pInstance = SGXware::getInstance();
     setupUi(this);
 	// reading the folder from teh qsettings
 	QSettings settings("DVSE", "videogui");
@@ -23,27 +20,11 @@ SetupDialog::SetupDialog(void):QDialog()
 	sfolder = settings.value("folder").toString();
 
 	strcpy(folder, sfolder.toLatin1().data());
-
-
-
-    if (pInstance->getUserProps(address, &port, folder))
-    {
-        itoa(port, buf, 10);
-        this->serverIPEdit->setText(buf);
-        this->serverPortEdit->setText(folder);
-        this->folderEdit->setText(folder);
-		sprintf(buf, "Balance: %d", pInstance->getBalance());
-		this->labelBalance->setText(buf);
-	}
-	else
-	{
-		this->serverIPEdit->setText(shost);
-		this->serverPortEdit->setText(sport);
-		this->folderEdit->setText(sfolder);
-		sprintf(buf, "Balance: %d", 0);
-		this->labelBalance->setText(buf);
-
-	}
+	this->serverIPEdit->setText(shost);
+	this->serverPortEdit->setText(sport);
+	this->folderEdit->setText(sfolder);
+	sprintf(buf, "Balance: %d", 0);
+	this->labelBalance->setText(buf);
 
 }
 

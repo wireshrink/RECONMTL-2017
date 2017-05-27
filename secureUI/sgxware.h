@@ -54,7 +54,7 @@ public:
     static void      destroyInstance();
 
     bool         initUser (char* address, int port, char* folder);
-    bool         getUserProps(char address[1024], int *port, char folder[1024] );
+    //bool         getUserProps(char address[1024], int *port, char folder[1024] );
     bool         initSecureChannel(void);
     unsigned int getBalance();
     bool         tryCoupon(char* coupon);

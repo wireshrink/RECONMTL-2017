@@ -482,7 +482,7 @@ bool			SGXware::initUser(char* address, int port, char* folder)
 	}
 	return retval != 0;
 }
-bool			SGXware::getUserProps(char address[1024], int *port, char folder[1024])
+/*bool			SGXware::getUserProps(char address[1024], int *port, char folder[1024])
 {
 	sgx_status_t ret;
 	int retval;
@@ -494,7 +494,7 @@ bool			SGXware::getUserProps(char address[1024], int *port, char folder[1024])
 		return false;
 	}
 	return retval != 0;
-}
+}*/
 DRM_status_t	SGXware::readMovieChunk(unsigned int movie_id, size_t movie_offset, size_t chunk_size, unsigned char* dest)
 {
 	sgx_status_t ret;
