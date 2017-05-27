@@ -1,0 +1,66 @@
+/*
+enclave inerfaces list:
+
+
+Icall:
+
+1 - authenticate:server url, server port,  username, password
+	Tries to read the authentication blob, if exists - checks its validty by usage of standard sealing facilities with their AES-GCM
+	Blob should contain the user name, public key of the server, and the passwords sha512
+	if the blob doesn't exist or corrupted authentication fails and tries to obtain all the data via ocalls
+2 - update the list of availabe movies 
+	generates RSA key pair, sends public key to the server via ocall, gets response during the same ocall, decrypts, seals the list
+3 - get a page of movie list (num of the page)
+		returns the unsealed page of the list
+4 - load a movie
+		loads a movie via ocalls and seals it on a local disk
+5 - get a movie chunk
+6 - purge a file system from not needed files
+*/
+
+
+enclave {
+
+    trusted {
+        /* define ECALLs here. */
+		public int ecall_init_enclave([in, string] char *storage_folder, 
+									  [in, string] char *address,
+									               int port);
+
+		/*public int ecall_decode_blob([out]char storage_folder[1024],
+									 [out]char address[1024], 
+									 [out]int *port);*/
+		public int ecall_update_epg  ();
+		public int ecall_get_epg_page(int number, size_t strsize, [out, size=strsize] void* page); 
+		public int ecall_load_movie  (size_t movie_id); 
+		public int ecall_get_movie_chunk(size_t movie_id, size_t chunk_offset, size_t chunk_size, [out, size=chunk_size] void* chunk); 
+		/*public int ecall_purge_filesystem();*/
+		public int ecall_get_movie_file_name(size_t movie_id, size_t buf_size, [out, size=buf_size]void* filename );
+
+		public int ecall_try_coupon([in, string] char *coupon); // 
+		public int ecall_get_balance([out] int *balance); // 
+		public int ecall_init_secure_channel([out] unsigned char key[16]);
+		public int ecall_write_log(size_t logsize, [in, size = logsize] char* logstr);
+
+    };
+
+    untrusted {
+        /* define OCALLs here. */
+		
+		void* ocall_file_open ([in,string] char* file_name, [in,string] char* format);
+		
+		int ocall_file_close([user_check]void* handle); //size_t is used foir passing a file pointer
+        
+		int ocall_file_read([user_check]void* handle, size_t offset, size_t datasize, [in, size = datasize]unsigned char *data); 
+        
+		int ocall_file_write([user_check]void *handle, size_t offset, size_t datasize, [out, size = datasize]unsigned char *data);
+
+		size_t ocall_file_size ([in,string] char* file_name);
+
+		int ocall_socket_connect ([in, string]char *url, unsigned int port  );
+        int ocall_socket_send    ([in, out, size=data_size] void* data,size_t data_size );
+		int ocall_socket_receive ([in, out, size=data_size] void* data,size_t data_size );
+		int ocall_socket_shutdown ();
+		int ocall_get_the_current_time([in] unsigned char thetime[16]);
+    };
+};

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>icons/control_pause.png</file>
+        <file>icons/control_play.png</file>
+        <file>icons/control_stop.png</file>
+        <file>icons/folder_page_white.png</file>
+    </qresource>
+</RCC>
