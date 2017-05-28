@@ -12,7 +12,7 @@ public:
     EncryptedFile(unsigned int movie_id);
 	virtual bool open(QIODevice::OpenMode mode)
 	{
-		return false;
+		return QIODevice::open(mode);
 	}
 	virtual void close()
 	{
