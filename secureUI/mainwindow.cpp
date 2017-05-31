@@ -50,6 +50,7 @@ void MainWindow::on_actionOpen_triggered()
 	on_actionStop_triggered();
 	if (s_encFile) delete s_encFile;
 	s_encFile = new EncryptedFile(0);
+	s_encFile->setFileName(filename.toLatin1().data());
 	s_encFile->open(QFile::ReadOnly);
 	QUrl locUrl = QUrl::fromLocalFile(filename);
 	player->setMedia(locUrl  , s_encFile);
