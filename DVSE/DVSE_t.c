@@ -35,25 +35,24 @@ typedef struct ms_ecall_get_epg_page_t {
 	void* ms_page;
 } ms_ecall_get_epg_page_t;
 
-typedef struct ms_ecall_load_movie_t {
+typedef struct ms_ecall_prepare_movie_t {
 	int ms_retval;
 	size_t ms_movie_id;
-} ms_ecall_load_movie_t;
+} ms_ecall_prepare_movie_t;
 
 typedef struct ms_ecall_get_movie_chunk_t {
 	int ms_retval;
-	size_t ms_movie_id;
 	size_t ms_chunk_offset;
 	size_t ms_chunk_size;
 	void* ms_chunk;
 } ms_ecall_get_movie_chunk_t;
 
-typedef struct ms_ecall_get_movie_file_name_t {
+typedef struct ms_ecall_get_movie_file_size_t {
 	int ms_retval;
 	size_t ms_movie_id;
 	size_t ms_buf_size;
-	void* ms_filename;
-} ms_ecall_get_movie_file_name_t;
+	size_t* ms_filename;
+} ms_ecall_get_movie_file_size_t;
 
 typedef struct ms_ecall_try_coupon_t {
 	int ms_retval;
@@ -105,7 +104,7 @@ typedef struct ms_ocall_file_write_t {
 
 typedef struct ms_ocall_file_size_t {
 	size_t ms_retval;
-	char* ms_file_name;
+	void* ms_file_handle;
 } ms_ocall_file_size_t;
 
 typedef struct ms_ocall_socket_connect_t {
@@ -227,14 +226,14 @@ err:
 	return status;
 }
 
-static sgx_status_t SGX_CDECL sgx_ecall_load_movie(void* pms)
+static sgx_status_t SGX_CDECL sgx_ecall_prepare_movie(void* pms)
 {
-	ms_ecall_load_movie_t* ms = SGX_CAST(ms_ecall_load_movie_t*, pms);
+	ms_ecall_prepare_movie_t* ms = SGX_CAST(ms_ecall_prepare_movie_t*, pms);
 	sgx_status_t status = SGX_SUCCESS;
 
-	CHECK_REF_POINTER(pms, sizeof(ms_ecall_load_movie_t));
+	CHECK_REF_POINTER(pms, sizeof(ms_ecall_prepare_movie_t));
 
-	ms->ms_retval = ecall_load_movie(ms->ms_movie_id);
+	ms->ms_retval = ecall_prepare_movie(ms->ms_movie_id);
 
 
 	return status;
@@ -260,7 +259,7 @@ static sgx_status_t SGX_CDECL sgx_ecall_get_movie_chunk(void* pms)
 
 		memset((void*)_in_chunk, 0, _len_chunk);
 	}
-	ms->ms_retval = ecall_get_movie_chunk(ms->ms_movie_id, ms->ms_chunk_offset, _tmp_chunk_size, _in_chunk);
+	ms->ms_retval = ecall_get_movie_chunk(ms->ms_chunk_offset, _tmp_chunk_size, _in_chunk);
 err:
 	if (_in_chunk) {
 		memcpy(_tmp_chunk, _in_chunk, _len_chunk);
@@ -270,27 +269,26 @@ err:
 	return status;
 }
 
-static sgx_status_t SGX_CDECL sgx_ecall_get_movie_file_name(void* pms)
+static sgx_status_t SGX_CDECL sgx_ecall_get_movie_file_size(void* pms)
 {
-	ms_ecall_get_movie_file_name_t* ms = SGX_CAST(ms_ecall_get_movie_file_name_t*, pms);
+	ms_ecall_get_movie_file_size_t* ms = SGX_CAST(ms_ecall_get_movie_file_size_t*, pms);
 	sgx_status_t status = SGX_SUCCESS;
-	void* _tmp_filename = ms->ms_filename;
-	size_t _tmp_buf_size = ms->ms_buf_size;
-	size_t _len_filename = _tmp_buf_size;
-	void* _in_filename = NULL;
+	size_t* _tmp_filename = ms->ms_filename;
+	size_t _len_filename = sizeof(*_tmp_filename);
+	size_t* _in_filename = NULL;
 
-	CHECK_REF_POINTER(pms, sizeof(ms_ecall_get_movie_file_name_t));
+	CHECK_REF_POINTER(pms, sizeof(ms_ecall_get_movie_file_size_t));
 	CHECK_UNIQUE_POINTER(_tmp_filename, _len_filename);
 
 	if (_tmp_filename != NULL) {
-		if ((_in_filename = (void*)malloc(_len_filename)) == NULL) {
+		if ((_in_filename = (size_t*)malloc(_len_filename)) == NULL) {
 			status = SGX_ERROR_OUT_OF_MEMORY;
 			goto err;
 		}
 
 		memset((void*)_in_filename, 0, _len_filename);
 	}
-	ms->ms_retval = ecall_get_movie_file_name(ms->ms_movie_id, _tmp_buf_size, _in_filename);
+	ms->ms_retval = ecall_get_movie_file_size(ms->ms_movie_id, ms->ms_buf_size, _in_filename);
 err:
 	if (_in_filename) {
 		memcpy(_tmp_filename, _in_filename, _len_filename);
@@ -423,9 +421,9 @@ SGX_EXTERNC const struct {
 		{(void*)(uintptr_t)sgx_ecall_init_enclave, 0},
 		{(void*)(uintptr_t)sgx_ecall_update_epg, 0},
 		{(void*)(uintptr_t)sgx_ecall_get_epg_page, 0},
-		{(void*)(uintptr_t)sgx_ecall_load_movie, 0},
+		{(void*)(uintptr_t)sgx_ecall_prepare_movie, 0},
 		{(void*)(uintptr_t)sgx_ecall_get_movie_chunk, 0},
-		{(void*)(uintptr_t)sgx_ecall_get_movie_file_name, 0},
+		{(void*)(uintptr_t)sgx_ecall_get_movie_file_size, 0},
 		{(void*)(uintptr_t)sgx_ecall_try_coupon, 0},
 		{(void*)(uintptr_t)sgx_ecall_get_balance, 0},
 		{(void*)(uintptr_t)sgx_ecall_init_secure_channel, 0},
@@ -613,16 +611,14 @@ sgx_status_t SGX_CDECL ocall_file_write(int* retval, void* handle, size_t offset
 	return status;
 }
 
-sgx_status_t SGX_CDECL ocall_file_size(size_t* retval, char* file_name)
+sgx_status_t SGX_CDECL ocall_file_size(size_t* retval, void* file_handle)
 {
 	sgx_status_t status = SGX_SUCCESS;
-	size_t _len_file_name = file_name ? strlen(file_name) + 1 : 0;
 
 	ms_ocall_file_size_t* ms = NULL;
 	size_t ocalloc_size = sizeof(ms_ocall_file_size_t);
 	void *__tmp = NULL;
 
-	ocalloc_size += (file_name != NULL && sgx_is_within_enclave(file_name, _len_file_name)) ? _len_file_name : 0;
 
 	__tmp = sgx_ocalloc(ocalloc_size);
 	if (__tmp == NULL) {
@@ -632,17 +628,7 @@ sgx_status_t SGX_CDECL ocall_file_size(size_t* retval, char* file_name)
 	ms = (ms_ocall_file_size_t*)__tmp;
 	__tmp = (void *)((size_t)__tmp + sizeof(ms_ocall_file_size_t));
 
-	if (file_name != NULL && sgx_is_within_enclave(file_name, _len_file_name)) {
-		ms->ms_file_name = (char*)__tmp;
-		__tmp = (void *)((size_t)__tmp + _len_file_name);
-		memcpy(ms->ms_file_name, file_name, _len_file_name);
-	} else if (file_name == NULL) {
-		ms->ms_file_name = NULL;
-	} else {
-		sgx_ocfree();
-		return SGX_ERROR_INVALID_PARAMETER;
-	}
-	
+	ms->ms_file_handle = SGX_CAST(void*, file_handle);
 	status = sgx_ocall(4, ms);
 
 	if (retval) *retval = ms->ms_retval;

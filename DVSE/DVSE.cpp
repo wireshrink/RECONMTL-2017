@@ -195,7 +195,7 @@ int ecall_get_epg_page(int number, size_t strsize, void* page)
 	return inf.getEPGPage((unsigned char*)page, number);
 }
 
-int ecall_load_movie(size_t movie_id)
+int ecall_prepare_movie(size_t movie_id)
 {
 	/*char movie_name[1024];
 	char movie_filename[1024];
@@ -214,7 +214,7 @@ int ecall_load_movie(size_t movie_id)
 // chunk offset and size are in normal file offset system, headers of seaked data are not encounted
 // file is written in chukns of 1024
 
-int ecall_get_movie_chunk(size_t movie_id, size_t chunk_offset, size_t chunk_size, void* chunk)
+int ecall_get_movie_chunk(size_t chunk_offset, size_t chunk_size, void* chunk)
 {
 	/*char movie_name[1024];
 	char movie_filename[1024];
@@ -288,12 +288,12 @@ int ecall_get_movie_chunk(size_t movie_id, size_t chunk_offset, size_t chunk_siz
 }
 
 
-int ecall_get_movie_file_name(size_t movie_id, size_t buf_size, /*[out, size = buf_size]*/void* filename)
+int ecall_get_movie_file_size(size_t movie_id, size_t buf_size, /*[out, size = buf_size]*/size_t* sz)
 {
-	if (base_folder[0] == '\0')
+	/*if (base_folder[0] == '\0')
 		return 0;
-	snprintf((char*)filename, buf_size, "%smovie.%16llx", base_folder, movie_id);
-	return 1;
+	snprintf((char*)filename, buf_size, "%smovie.%16llx", base_folder, movie_id); */
+	return 0;
 }
 
 int ecall_try_coupon(char* coupon)

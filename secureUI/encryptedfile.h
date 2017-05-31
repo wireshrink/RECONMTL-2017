@@ -14,7 +14,9 @@ public:
     EncryptedFile(unsigned int movie_id);
 	virtual bool open(QIODevice::OpenMode mode)
 	{
-		return QIODevice::open(mode);
+		bool res = SGXware::getInstance()->prepareMovie(this->movie_id);
+			
+		return res && QIODevice::open(mode);
 	}
 	virtual void close()
 	{
@@ -26,13 +28,9 @@ public:
 		}
 		return QIODevice::close();
 	}
-	virtual qint64 pos() const
-	{
-		return QIODevice::pos();
-	}
+	
 	virtual qint64 size() const
 	{
-		//quint64 pos = pos();
 	
 		return m_fsize;
 	}
@@ -41,10 +39,6 @@ public:
 		bool bq = QIODevice::seek(pos);
 		bool res =  bq && fseek(m_testFile, pos, SEEK_SET) == 0;
 		return res;
-	}
-	virtual bool atEnd() const
-	{
-		return QIODevice::atEnd();
 	}
 
 	virtual bool isSequential() const
@@ -59,24 +53,9 @@ public:
 	{
 		qint64 const bA = QIODevice::bytesAvailable();
 		return bA;
-		//qint64 sz = size(), ps = pos();
-		//return sz + bA -ps;
 	};
 
 
-	virtual bool waitForReadyRead(int msecs) 
-	{
-		// always ready
-		return QIODevice::waitForReadyRead(msecs);
-	}
-	virtual bool waitForBytesWritten(int msecs)
-	{
-		return QIODevice::waitForBytesWritten(msecs); // no write no cry
-	}
-	virtual qint64 bytesToWrite() const
-	{
-		return QIODevice::bytesToWrite();
-	}
 protected:
 	virtual qint64 readData(char*data, qint64 maxSize)
 	{

@@ -62,7 +62,7 @@ public:
     bool         firstMovie(movie_t *pFirstMovie);
     bool         nextMovie(movie_t *pNextMovie);
 
-    bool         downloadMovie(unsigned int movie_id);
+    bool         prepareMovie(unsigned int movie_id);
     bool         refreshEPG(void);
     DRM_status_t readMovieChunk(unsigned int movie_id, size_t movie_offset, size_t chunk_size, unsigned char* dest);
     bool         writeAppLog (unsigned char* data, size_t length);

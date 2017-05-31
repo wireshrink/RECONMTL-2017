@@ -47,7 +47,7 @@ void EPGDialog::itemDoubleClicked(int row, int column)
     SGXware *pSGX = SGXware::getInstance();
     QString idstr = tableWidget->item(0, column)->text();
     unsigned int id = idstr.toInt();
-    pSGX->downloadMovie((unsigned int)id);
+    pSGX->prepareMovie((unsigned int)id);
     selected_movie = id;
     this->accept();
 }

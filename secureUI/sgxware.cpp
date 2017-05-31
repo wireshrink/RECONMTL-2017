@@ -421,10 +421,10 @@ bool			SGXware::createMovie(movie_t *pNextMovie)
 	res = res && readUntil(buf, '\n'); pNextMovie->movie_status = str2status(buf);
 	return res;
 }
-bool			SGXware::downloadMovie(unsigned int movie_id)
+bool			SGXware::prepareMovie(unsigned int movie_id)
 {
 	int retval;
-	sgx_status_t ret = ecall_load_movie(global_eid, &retval, movie_id);
+	sgx_status_t ret = ecall_prepare_movie(global_eid, &retval, movie_id);
 	if (ret != SGX_SUCCESS)
 	{
 		print_error_message(ret);
@@ -465,10 +465,10 @@ bool			SGXware::getFileName(unsigned int id, size_t movie_name_size, char *movie
 		print_error_message(ret);
 		return nullptr;
 	}
-	ret = ecall_get_movie_file_name(global_eid, &retval, id, movie_name_size, movie_name);
+	//ret = ecall_get_movie_file_name(global_eid, &retval, id, movie_name_size, movie_name);
 	// epg is stored as comma separated values, so let's read it
-	
-	return nullptr;
+	snprintf(movie_name, movie_name_size, "%s\\movie.%16x", "folder", id);
+	return true;
 }
 bool			SGXware::initUser(char* address, int port, char* folder)
 {
@@ -500,7 +500,7 @@ DRM_status_t	SGXware::readMovieChunk(unsigned int movie_id, size_t movie_offset,
 	sgx_status_t ret;
 	int retval;
 
-	ret = ecall_get_movie_chunk(global_eid, &retval, movie_id, movie_offset, chunk_size, dest);
+	ret = ecall_get_movie_chunk(global_eid, &retval, movie_offset, chunk_size, dest);
 	if (ret != SGX_SUCCESS)
 	{
 		print_error_message(ret);

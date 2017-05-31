@@ -19,25 +19,24 @@ typedef struct ms_ecall_get_epg_page_t {
 	void* ms_page;
 } ms_ecall_get_epg_page_t;
 
-typedef struct ms_ecall_load_movie_t {
+typedef struct ms_ecall_prepare_movie_t {
 	int ms_retval;
 	size_t ms_movie_id;
-} ms_ecall_load_movie_t;
+} ms_ecall_prepare_movie_t;
 
 typedef struct ms_ecall_get_movie_chunk_t {
 	int ms_retval;
-	size_t ms_movie_id;
 	size_t ms_chunk_offset;
 	size_t ms_chunk_size;
 	void* ms_chunk;
 } ms_ecall_get_movie_chunk_t;
 
-typedef struct ms_ecall_get_movie_file_name_t {
+typedef struct ms_ecall_get_movie_file_size_t {
 	int ms_retval;
 	size_t ms_movie_id;
 	size_t ms_buf_size;
-	void* ms_filename;
-} ms_ecall_get_movie_file_name_t;
+	size_t* ms_filename;
+} ms_ecall_get_movie_file_size_t;
 
 typedef struct ms_ecall_try_coupon_t {
 	int ms_retval;
@@ -89,7 +88,7 @@ typedef struct ms_ocall_file_write_t {
 
 typedef struct ms_ocall_file_size_t {
 	size_t ms_retval;
-	char* ms_file_name;
+	void* ms_file_handle;
 } ms_ocall_file_size_t;
 
 typedef struct ms_ocall_socket_connect_t {
@@ -154,7 +153,7 @@ static sgx_status_t SGX_CDECL DVSE_ocall_file_write(void* pms)
 static sgx_status_t SGX_CDECL DVSE_ocall_file_size(void* pms)
 {
 	ms_ocall_file_size_t* ms = SGX_CAST(ms_ocall_file_size_t*, pms);
-	ms->ms_retval = ocall_file_size(ms->ms_file_name);
+	ms->ms_retval = ocall_file_size(ms->ms_file_handle);
 
 	return SGX_SUCCESS;
 }
@@ -251,21 +250,20 @@ sgx_status_t ecall_get_epg_page(sgx_enclave_id_t eid, int* retval, int number, s
 	return status;
 }
 
-sgx_status_t ecall_load_movie(sgx_enclave_id_t eid, int* retval, size_t movie_id)
+sgx_status_t ecall_prepare_movie(sgx_enclave_id_t eid, int* retval, size_t movie_id)
 {
 	sgx_status_t status;
-	ms_ecall_load_movie_t ms;
+	ms_ecall_prepare_movie_t ms;
 	ms.ms_movie_id = movie_id;
 	status = sgx_ecall(eid, 3, &ocall_table_DVSE, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
 
-sgx_status_t ecall_get_movie_chunk(sgx_enclave_id_t eid, int* retval, size_t movie_id, size_t chunk_offset, size_t chunk_size, void* chunk)
+sgx_status_t ecall_get_movie_chunk(sgx_enclave_id_t eid, int* retval, size_t chunk_offset, size_t chunk_size, void* chunk)
 {
 	sgx_status_t status;
 	ms_ecall_get_movie_chunk_t ms;
-	ms.ms_movie_id = movie_id;
 	ms.ms_chunk_offset = chunk_offset;
 	ms.ms_chunk_size = chunk_size;
 	ms.ms_chunk = chunk;
@@ -274,10 +272,10 @@ sgx_status_t ecall_get_movie_chunk(sgx_enclave_id_t eid, int* retval, size_t mov
 	return status;
 }
 
-sgx_status_t ecall_get_movie_file_name(sgx_enclave_id_t eid, int* retval, size_t movie_id, size_t buf_size, void* filename)
+sgx_status_t ecall_get_movie_file_size(sgx_enclave_id_t eid, int* retval, size_t movie_id, size_t buf_size, size_t* filename)
 {
 	sgx_status_t status;
-	ms_ecall_get_movie_file_name_t ms;
+	ms_ecall_get_movie_file_size_t ms;
 	ms.ms_movie_id = movie_id;
 	ms.ms_buf_size = buf_size;
 	ms.ms_filename = filename;

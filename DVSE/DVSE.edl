@@ -23,24 +23,18 @@ enclave {
 
     trusted {
         /* define ECALLs here. */
-		public int ecall_init_enclave([in, string] char *storage_folder, 
-									  [in, string] char *address,
-									               int port);
+		public int ecall_init_enclave([in, string] char *storage_folder, [in, string]char * address, int port); // inits storage folder with default data if nothing exists
 
-		/*public int ecall_decode_blob([out]char storage_folder[1024],
-									 [out]char address[1024], 
-									 [out]int *port);*/
-		public int ecall_update_epg  ();
-		public int ecall_get_epg_page(int number, size_t strsize, [out, size=strsize] void* page); 
-		public int ecall_load_movie  (size_t movie_id); 
-		public int ecall_get_movie_chunk(size_t movie_id, size_t chunk_offset, size_t chunk_size, [out, size=chunk_size] void* chunk); 
-		/*public int ecall_purge_filesystem();*/
-		public int ecall_get_movie_file_name(size_t movie_id, size_t buf_size, [out, size=buf_size]void* filename );
+		public int ecall_update_epg  ();								  // download the EPG
+		public int ecall_get_epg_page(int number, size_t strsize, [out, size=strsize] void* page); // gets a page of EPG 
+		public int ecall_prepare_movie  (size_t movie_id);  // prepares the movie for playing if allowed, updates balance
+		public int ecall_get_movie_chunk(size_t chunk_offset, size_t chunk_size, [out, size=chunk_size] void* chunk); // gets a chunk of the movie encrypted with secure channel key 
+		public int ecall_get_movie_file_size(size_t movie_id, size_t buf_size, [out]size_t* filename ); // gets a size of decrypted movie
 
-		public int ecall_try_coupon([in, string] char *coupon); // 
-		public int ecall_get_balance([out] int *balance); // 
-		public int ecall_init_secure_channel([out] unsigned char key[16]);
-		public int ecall_write_log(size_t logsize, [in, size = logsize] char* logstr);
+		public int ecall_try_coupon([in, string] char *coupon); // tryes a coupon and updates a balance
+		public int ecall_get_balance([out] int *balance); //  gets a balance to show
+		public int ecall_init_secure_channel([out] unsigned char key[16]); //initializes secure channel
+		public int ecall_write_log(size_t logsize, [in, size = logsize] char* logstr); // writes sealed log
 
     };
 
@@ -55,7 +49,7 @@ enclave {
         
 		int ocall_file_write([user_check]void *handle, size_t offset, size_t datasize, [out, size = datasize]unsigned char *data);
 
-		size_t ocall_file_size ([in,string] char* file_name);
+		size_t ocall_file_size ([user_check] void* file_handle);
 
 		int ocall_socket_connect ([in, string]char *url, unsigned int port  );
         int ocall_socket_send    ([in, out, size=data_size] void* data,size_t data_size );
