@@ -44,7 +44,7 @@ int ocall_get_the_current_time(unsigned char time[16])
 {
 	return 0;
 }
-size_t ocall_file_size(char* filename)
+size_t ocall_file_size(void* handle)
 {
 	return 0;
 }
