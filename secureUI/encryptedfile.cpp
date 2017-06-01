@@ -9,7 +9,7 @@ EncryptedFile::EncryptedFile(unsigned int movieId):QIODevice()
 }
 
 
-// only for test of qiodevice
+// only for test of qiodevice, will be removed later
 bool EncryptedFile::setFileName(char*fname)
 {
 	strcpy(m_testfname, fname);

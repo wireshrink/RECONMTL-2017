@@ -65,7 +65,6 @@ int ocall_socket_shutdown()
 }
 int ocall_get_the_current_time(unsigned char time_holder[16])
 {
-	time_t ctime;
 	static_assert(sizeof (time_t) < 16, "NEED mode buffer for time repr"); 
 	time((time_t*)time_holder);
 	return 0;
@@ -75,6 +74,6 @@ size_t ocall_file_size(void* handle)
 	size_t pos = ftell((FILE*)handle);
 	fseek((FILE*)handle, 0, SEEK_END);
 	size_t sz = ftell((FILE*)handle);
-	fseek((FILE*)handle, pos, SEEK_SET);
+	fseek((FILE*)handle, pos, SEEK_SET); // getting back to thne position
 	return sz;
 }
