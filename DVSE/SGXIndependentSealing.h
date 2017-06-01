@@ -1,5 +1,9 @@
 #pragma once
 
+
+// incapsulating independent sealing 
+// the goal - replace rdrand with another RNG, using rdrand as seed
+// additional goal - generate additional IV for AES-GCM (instead of 0 as in AES-GCM implementation on Linux).
 class SGXIndependentSealing
 {
 	static bool generate_secure_random_iv(unsigned char iv[16]);
