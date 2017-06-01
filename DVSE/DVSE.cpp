@@ -10,10 +10,11 @@
 #include "utils.h"
 #include "SGXEcallEnclaveInterface.h"
 
-unsigned char	g_secure_channel_key[16];
-char			base_folder[1024] = {'\0'};
-SGXPlayerState	playerState;
-SGXVideoPlayerState state;
+//unsigned char	g_secure_channel_key[16];
+//char			base_folder[1024] = {'\0'};
+//SGXPlayerState	playerState;
+//SGXVideoPlayerState state;
+
 SGXEcallEnclaveInterface inf;
 
 int ecall_init_enclave(/*[in, string]*/ char *storage_folder,
@@ -130,22 +131,6 @@ int ecall_init_enclave(/*[in, string]*/ char *storage_folder,
 	return inf.init_enclave(storage_folder) && inf.setConnAddr(address, port);
 
 }
-/*
-int ecall_decode_blob([out]char storage_folder[1024],
-	[out]char address[1024],
-	[out]int *port)
-{
-	if (!playerState.isValid())
-	{
-		return 0;
-	}
-	strncpy(storage_folder, playerState.getFolder(), 1024);
-	strncpy(address, playerState.getHostAddress(), 1024);
-	*port = playerState.getPort();
-	return 1;
-	
-}
-*/
 
 int ecall_update_epg()
 {
@@ -211,8 +196,7 @@ int ecall_prepare_movie(size_t movie_id)
 	return inf.prepare_movie(movie_id);
 }
 
-// chunk offset and size are in normal file offset system, headers of seaked data are not encounted
-// file is written in chukns of 1024
+
 
 int ecall_get_movie_chunk(size_t chunk_offset, size_t chunk_size, void* chunk)
 {
@@ -288,14 +272,6 @@ int ecall_get_movie_chunk(size_t chunk_offset, size_t chunk_size, void* chunk)
 }
 
 
-int ecall_get_movie_file_size(size_t movie_id, size_t buf_size, /*[out, size = buf_size]*/size_t* sz)
-{
-	/*if (base_folder[0] == '\0')
-		return 0;
-	snprintf((char*)filename, buf_size, "%smovie.%16llx", base_folder, movie_id); */
-	return 0;
-}
-
 int ecall_try_coupon(char* coupon)
 {
 	// 
@@ -310,7 +286,7 @@ int ecall_try_coupon(char* coupon)
 
 int ecall_get_balance( int *balance)
 {
-	*balance = state.getBalance();
+	*balance = inf.getBalance();
 	return 1;
 }
 
@@ -325,45 +301,13 @@ int ecall_init_secure_channel(unsigned char key[16])
 	*/
 	return inf.initSecureChannel(key);
 }
+
 int ecall_write_log(size_t logsize, char *logstr)
 {
-	/*void *f = nullptr;
-	int retval;
-	size_t outsize;
-	unsigned char *out = nullptr;
-	char logfile[1024];
-	if (base_folder[0] == '\0')
-	{
-		return 0;
-	}
-	strncpy(logfile, base_folder, 1024);
-	strncat(logfile, "applog.txt", 1024);
-	sgx_status_t ret = ocall_file_open(&f, logfile, "awb");
-	if (ret != SGX_SUCCESS)
-	{
-		return 0;
-	}
-	if (f == nullptr)
-	{
-		return 0;
-	}
-	if (!SGXIndependentSealing::seal_data((unsigned char*)logstr, logsize, &out, &outsize))
-	{
-		return 0;
-	}
-	ret = ocall_file_write(&retval, f, (size_t)-1,outsize, out );
-	if (ret != SGX_SUCCESS)
-	{
-		return 0;
-	}
-	if (!SGXIndependentSealing::destroy_allocated_data(out))
-		return 0;
-	
-	return 1;
-	*/
 	return inf.write_log((unsigned char*)logstr, logsize);
 }
 int ecall_get_movie_file_size(size_t movie_id, size_t * size)
 {
-	return 0;
+	*size = inf.get_movie_size(movie_id);
+	return (*size != -1L);
 }

@@ -2,7 +2,11 @@
 #ifndef SGXECALLENCLAVEINTERFACE_H
 #define SGXECALLENCLAVEINTERFACE_H
 
-
+#include <string.h>
+#include <stdio.h>
+#include "DVSE_t.h"
+#include "SGXIndependentSealing.h"
+#include "sgx_trts.h"
 
 
 /**
@@ -51,7 +55,37 @@ public:
    */
   bool write_log (unsigned char* data, size_t datasize)
   {
+	  void *f = nullptr;
+	  int retval;
+	  size_t outsize;
+	  unsigned char *out = nullptr;
+	  char logfile[1024];
+	  if (base_folder[0] == '\0')
+	  {
+		return false;
+	  }
+	  strncpy(logfile, base_folder, 1024);
+	  strncat(logfile, "applog.txt", 1024);
+	  sgx_status_t ret = ocall_file_open(&f, logfile, "awb");
+	  if (ret != SGX_SUCCESS)
+	  {
+		return false;
+	  }
+	  if (f == nullptr)
+	  {
+		return false;
+	  }
+	  if (!SGXIndependentSealing::seal_data((unsigned char*)data, datasize, &out, &outsize))
+	  {
 	  return false;
+	  }
+	  ret = ocall_file_write(&retval, f ,outsize, out );
+	  if (ret != SGX_SUCCESS)
+	  {
+		return false;
+	  }
+	  if (!SGXIndependentSealing::destroy_allocated_data(out)) return false;
+	  return true;
   }
 
 
@@ -134,26 +168,6 @@ public:
 
 
   /**
-   * @return bool
-   * @param  pos handle seek ops
-   */
-  bool set_movie_pos (size_t pos)
-  {
-	  return false;
-  }
-
-
-  /**
-   * gets unencrypted position in move
-   * @return size_t
-   */
-  size_t get_movie_pos ()
-  {
-	  return false;
-  }
-
-
-  /**
    * releases all the currently playing movie resources
    * @return bool
    */
@@ -169,6 +183,36 @@ public:
    */
   size_t get_movie_size (size_t movie_id)
   {
+	  void *f = nullptr;
+	  int retval;
+	  size_t outsize;
+	  unsigned char *out = nullptr;
+	  char movie_file_name[1024];
+	  if (base_folder[0] == '\0')
+	  {
+		  return -1L;
+	  }
+	  snprintf(movie_file_name, 1024, "%s\\movie.%zx", this->base_folder, movie_id);
+	  sgx_status_t ret = ocall_file_open(&f, movie_file_name, "rb");
+	  if (ret != SGX_SUCCESS)
+	  {
+		  return -1L;
+	  }
+	  ret = ocall_file_size(&outsize, f);
+	  if (ret != SGX_SUCCESS)
+	  {
+		  return -1L;
+	  }
+	  ret = ocall_file_close(&retval, f);
+	  if (ret != SGX_SUCCESS)
+	  {
+		  return -1L;
+	  }
+
+	  outsize = ((outsize / SGXIndependentSealing::SEALED_DATA_CHUNK_SIZE) * SGXIndependentSealing::UNSEALED_DATA_CHUNK_SIZE) +
+		  ((outsize % SGXIndependentSealing::SEALED_DATA_CHUNK_SIZE) - SGXIndependentSealing::SEALING_HEADER_SIZE);
+	  return outsize;
+
   }
 
 
@@ -245,6 +289,7 @@ public:
   //  
 
 private:
+	char base_folder[1024];
 
 public:
 

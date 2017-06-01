@@ -455,7 +455,7 @@ bool			SGXware::writeAppLog (unsigned char* data, size_t length)
 	}
     return retval != 0;
 }
-bool			SGXware::getFileName(unsigned int id, size_t movie_name_size, char *movie_name)
+bool			SGXware::getFileName(size_t id, size_t movie_name_size, char *movie_name)
 {
 	int retval;
 	
@@ -467,7 +467,7 @@ bool			SGXware::getFileName(unsigned int id, size_t movie_name_size, char *movie
 	}
 	//ret = ecall_get_movie_file_name(global_eid, &retval, id, movie_name_size, movie_name);
 	// epg is stored as comma separated values, so let's read it
-	snprintf(movie_name, movie_name_size, "%s\\movie.%16x", this->base_folder, id);
+	snprintf(movie_name, movie_name_size, "%s\\movie.%zx", this->base_folder, id);
 	return true;
 }
 bool			SGXware::initUser(char* address, int port, char* folder)

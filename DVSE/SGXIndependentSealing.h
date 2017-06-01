@@ -1,4 +1,5 @@
 #pragma once
+
 class SGXIndependentSealing
 {
 	static bool generate_secure_random_iv(unsigned char iv[16]);
@@ -11,5 +12,16 @@ public:
 	static bool   unseal_data(unsigned char* in, size_t in_size, unsigned char**out, size_t *poutsize); // memomry allocated inside
 	static bool   destroy_allocated_data(unsigned char* data);
 
+	typedef struct __ind_sealing_header
+	{
+	}ind_sealing_header_t;
+
+	typedef enum __chunk_size_consts
+	{
+		SEALING_HEADER_SIZE = sizeof(ind_sealing_header_t),
+		UNSEALED_DATA_CHUNK_SIZE = 1024,
+		SEALED_DATA_CHUNK_SIZE = UNSEALED_DATA_CHUNK_SIZE + SEALING_HEADER_SIZE,
+
+	} chunk_size_consts_t;
 };
 
