@@ -15,7 +15,7 @@ public:
 	virtual bool open(QIODevice::OpenMode mode)
 	{
 		bool res = SGXware::getInstance()->prepareMovie(this->movie_id);
-			
+		res = res && SGXware::getInstance()->getFileSize(this->movie_id, &this->m_fsize);
 		return res && QIODevice::open(mode);
 	}
 	virtual void close()
@@ -37,8 +37,8 @@ public:
 	virtual bool seek(qint64 pos)
 	{
 		bool bq = QIODevice::seek(pos);
-		bool res =  bq && fseek(m_testFile, pos, SEEK_SET) == 0;
-		return res;
+		//bool res =  bq && fseek(m_testFile, pos, SEEK_SET) == 0;
+		return bq; // nothing to do here, only read counts
 	}
 
 	virtual bool isSequential() const
@@ -59,16 +59,11 @@ public:
 protected:
 	virtual qint64 readData(char*data, qint64 maxSize)
 	{
-		/*SGXware *pSGX = SGXware::getInstance();
+		SGXware *pSGX = SGXware::getInstance();
 		qint64 pos = this->pos();
 		qint64 readDataSize = pSGX->readMovieChunk(movie_id, pos, maxSize, (unsigned char*)data);
 		pSGX->inplaceDecrypt(readDataSize, data);
-		QIODevice::seek(pos+readDataSize);
-		return readDataSize;*/
-		qint64 r = fread(data, 1, maxSize, this->m_testFile);//QIODevice::readData(data, maxSize);
-		if (maxSize > 0)
-			return r;
-		return r;
+		return readDataSize;
 	}
 
 	virtual qint64 writeData(const char *data, qint64 len)

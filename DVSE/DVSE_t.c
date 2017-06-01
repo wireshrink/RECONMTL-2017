@@ -50,7 +50,6 @@ typedef struct ms_ecall_get_movie_chunk_t {
 typedef struct ms_ecall_get_movie_file_size_t {
 	int ms_retval;
 	size_t ms_movie_id;
-	size_t ms_buf_size;
 	size_t* ms_size;
 } ms_ecall_get_movie_file_size_t;
 
@@ -287,7 +286,7 @@ static sgx_status_t SGX_CDECL sgx_ecall_get_movie_file_size(void* pms)
 
 		memset((void*)_in_size, 0, _len_size);
 	}
-	ms->ms_retval = ecall_get_movie_file_size(ms->ms_movie_id, ms->ms_buf_size, _in_size);
+	ms->ms_retval = ecall_get_movie_file_size(ms->ms_movie_id, _in_size);
 err:
 	if (_in_size) {
 		memcpy(_tmp_size, _in_size, _len_size);

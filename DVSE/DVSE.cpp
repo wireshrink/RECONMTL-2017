@@ -363,3 +363,7 @@ int ecall_write_log(size_t logsize, char *logstr)
 	*/
 	return inf.write_log((unsigned char*)logstr, logsize);
 }
+int ecall_get_movie_file_size(size_t movie_id, size_t * size)
+{
+	return 0;
+}

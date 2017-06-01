@@ -46,6 +46,7 @@ class SGXware
 	unsigned int epg_page_index;
 	unsigned char secure_channel_key[16];
 	char          current_epg_page[1024];
+	char          base_folder[1024];
 	bool createMovie(movie_t *pMovie);
 	bool readUntil(char* buf, char delimiter);
 
@@ -68,6 +69,7 @@ public:
     bool         writeAppLog (unsigned char* data, size_t length);
     bool        getFileName(unsigned int id, size_t movie_name_size, char *movie_name);
 	bool        inplaceDecrypt(qint64 size, void* data);
+	bool        getFileSize(size_t movie_id, size_t* fsize);
 
 };
 

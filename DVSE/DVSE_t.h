@@ -19,7 +19,7 @@ int ecall_update_epg();
 int ecall_get_epg_page(int number, size_t strsize, void* page);
 int ecall_prepare_movie(size_t movie_id);
 int ecall_get_movie_chunk(size_t chunk_offset, size_t chunk_size, void* chunk);
-int ecall_get_movie_file_size(size_t movie_id, size_t buf_size, size_t* size);
+int ecall_get_movie_file_size(size_t movie_id, size_t* size);
 int ecall_try_coupon(char* coupon);
 int ecall_get_balance(int* balance);
 int ecall_init_secure_channel(unsigned char key[16]);

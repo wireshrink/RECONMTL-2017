@@ -34,7 +34,6 @@ typedef struct ms_ecall_get_movie_chunk_t {
 typedef struct ms_ecall_get_movie_file_size_t {
 	int ms_retval;
 	size_t ms_movie_id;
-	size_t ms_buf_size;
 	size_t* ms_size;
 } ms_ecall_get_movie_file_size_t;
 
@@ -271,12 +270,11 @@ sgx_status_t ecall_get_movie_chunk(sgx_enclave_id_t eid, int* retval, size_t chu
 	return status;
 }
 
-sgx_status_t ecall_get_movie_file_size(sgx_enclave_id_t eid, int* retval, size_t movie_id, size_t buf_size, size_t* size)
+sgx_status_t ecall_get_movie_file_size(sgx_enclave_id_t eid, int* retval, size_t movie_id, size_t* size)
 {
 	sgx_status_t status;
 	ms_ecall_get_movie_file_size_t ms;
 	ms.ms_movie_id = movie_id;
-	ms.ms_buf_size = buf_size;
 	ms.ms_size = size;
 	status = sgx_ecall(eid, 5, &ocall_table_DVSE, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
