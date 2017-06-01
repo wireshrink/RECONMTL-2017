@@ -779,10 +779,10 @@ sgx_status_t SGX_CDECL ocall_socket_shutdown(int* retval)
 	return status;
 }
 
-sgx_status_t SGX_CDECL ocall_get_the_current_time(int* retval, unsigned char thetime[64])
+sgx_status_t SGX_CDECL ocall_get_the_current_time(int* retval, unsigned char thetime[16])
 {
 	sgx_status_t status = SGX_SUCCESS;
-	size_t _len_thetime = 64 * sizeof(*thetime);
+	size_t _len_thetime = 16 * sizeof(*thetime);
 
 	ms_ocall_get_the_current_time_t* ms = NULL;
 	size_t ocalloc_size = sizeof(ms_ocall_get_the_current_time_t);

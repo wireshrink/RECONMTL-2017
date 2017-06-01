@@ -23,7 +23,7 @@ int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_socket_connect, (char* url, unsigned int
 int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_socket_send, (void* data, size_t data_size));
 int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_socket_receive, (void* data, size_t data_size));
 int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_socket_shutdown, ());
-int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_get_the_current_time, (unsigned char thetime[64]));
+int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_get_the_current_time, (unsigned char thetime[16]));
 
 sgx_status_t ecall_init_enclave(sgx_enclave_id_t eid, int* retval, char* storage_folder, char* address, int port);
 sgx_status_t ecall_update_epg(sgx_enclave_id_t eid, int* retval);

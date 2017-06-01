@@ -34,7 +34,7 @@ sgx_status_t SGX_CDECL ocall_socket_connect(int* retval, char* url, unsigned int
 sgx_status_t SGX_CDECL ocall_socket_send(int* retval, void* data, size_t data_size);
 sgx_status_t SGX_CDECL ocall_socket_receive(int* retval, void* data, size_t data_size);
 sgx_status_t SGX_CDECL ocall_socket_shutdown(int* retval);
-sgx_status_t SGX_CDECL ocall_get_the_current_time(int* retval, unsigned char thetime[64]);
+sgx_status_t SGX_CDECL ocall_get_the_current_time(int* retval, unsigned char thetime[16]);
 
 #ifdef __cplusplus
 }

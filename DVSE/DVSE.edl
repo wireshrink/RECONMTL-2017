@@ -55,6 +55,6 @@ enclave {
         int ocall_socket_send    ([in, out, size=data_size] void* data,size_t data_size );
 		int ocall_socket_receive ([in, out, size=data_size] void* data,size_t data_size );
 		int ocall_socket_shutdown ();
-		int ocall_get_the_current_time([in] unsigned char thetime[64]);
+		int ocall_get_the_current_time([in] unsigned char thetime[16]);
     };
 };
