@@ -51,7 +51,7 @@ typedef struct ms_ecall_get_movie_file_size_t {
 	int ms_retval;
 	size_t ms_movie_id;
 	size_t ms_buf_size;
-	size_t* ms_filename;
+	size_t* ms_size;
 } ms_ecall_get_movie_file_size_t;
 
 typedef struct ms_ecall_try_coupon_t {
@@ -97,7 +97,6 @@ typedef struct ms_ocall_file_read_t {
 typedef struct ms_ocall_file_write_t {
 	int ms_retval;
 	void* ms_handle;
-	size_t ms_offset;
 	size_t ms_datasize;
 	unsigned char* ms_data;
 } ms_ocall_file_write_t;
@@ -273,26 +272,26 @@ static sgx_status_t SGX_CDECL sgx_ecall_get_movie_file_size(void* pms)
 {
 	ms_ecall_get_movie_file_size_t* ms = SGX_CAST(ms_ecall_get_movie_file_size_t*, pms);
 	sgx_status_t status = SGX_SUCCESS;
-	size_t* _tmp_filename = ms->ms_filename;
-	size_t _len_filename = sizeof(*_tmp_filename);
-	size_t* _in_filename = NULL;
+	size_t* _tmp_size = ms->ms_size;
+	size_t _len_size = sizeof(*_tmp_size);
+	size_t* _in_size = NULL;
 
 	CHECK_REF_POINTER(pms, sizeof(ms_ecall_get_movie_file_size_t));
-	CHECK_UNIQUE_POINTER(_tmp_filename, _len_filename);
+	CHECK_UNIQUE_POINTER(_tmp_size, _len_size);
 
-	if (_tmp_filename != NULL) {
-		if ((_in_filename = (size_t*)malloc(_len_filename)) == NULL) {
+	if (_tmp_size != NULL) {
+		if ((_in_size = (size_t*)malloc(_len_size)) == NULL) {
 			status = SGX_ERROR_OUT_OF_MEMORY;
 			goto err;
 		}
 
-		memset((void*)_in_filename, 0, _len_filename);
+		memset((void*)_in_size, 0, _len_size);
 	}
-	ms->ms_retval = ecall_get_movie_file_size(ms->ms_movie_id, ms->ms_buf_size, _in_filename);
+	ms->ms_retval = ecall_get_movie_file_size(ms->ms_movie_id, ms->ms_buf_size, _in_size);
 err:
-	if (_in_filename) {
-		memcpy(_tmp_filename, _in_filename, _len_filename);
-		free(_in_filename);
+	if (_in_size) {
+		memcpy(_tmp_size, _in_size, _len_size);
+		free(_in_size);
 	}
 
 	return status;
@@ -569,7 +568,7 @@ sgx_status_t SGX_CDECL ocall_file_read(int* retval, void* handle, size_t offset,
 	return status;
 }
 
-sgx_status_t SGX_CDECL ocall_file_write(int* retval, void* handle, size_t offset, size_t datasize, unsigned char* data)
+sgx_status_t SGX_CDECL ocall_file_write(int* retval, void* handle, size_t datasize, unsigned char* data)
 {
 	sgx_status_t status = SGX_SUCCESS;
 	size_t _len_data = datasize;
@@ -589,7 +588,6 @@ sgx_status_t SGX_CDECL ocall_file_write(int* retval, void* handle, size_t offset
 	__tmp = (void *)((size_t)__tmp + sizeof(ms_ocall_file_write_t));
 
 	ms->ms_handle = SGX_CAST(void*, handle);
-	ms->ms_offset = offset;
 	ms->ms_datasize = datasize;
 	if (data != NULL && sgx_is_within_enclave(data, _len_data)) {
 		ms->ms_data = (unsigned char*)__tmp;
@@ -781,10 +779,10 @@ sgx_status_t SGX_CDECL ocall_socket_shutdown(int* retval)
 	return status;
 }
 
-sgx_status_t SGX_CDECL ocall_get_the_current_time(int* retval, unsigned char thetime[16])
+sgx_status_t SGX_CDECL ocall_get_the_current_time(int* retval, unsigned char thetime[64])
 {
 	sgx_status_t status = SGX_SUCCESS;
-	size_t _len_thetime = 16 * sizeof(*thetime);
+	size_t _len_thetime = 64 * sizeof(*thetime);
 
 	ms_ocall_get_the_current_time_t* ms = NULL;
 	size_t ocalloc_size = sizeof(ms_ocall_get_the_current_time_t);

@@ -19,7 +19,7 @@ int ecall_update_epg();
 int ecall_get_epg_page(int number, size_t strsize, void* page);
 int ecall_prepare_movie(size_t movie_id);
 int ecall_get_movie_chunk(size_t chunk_offset, size_t chunk_size, void* chunk);
-int ecall_get_movie_file_size(size_t movie_id, size_t buf_size, size_t* filename);
+int ecall_get_movie_file_size(size_t movie_id, size_t buf_size, size_t* size);
 int ecall_try_coupon(char* coupon);
 int ecall_get_balance(int* balance);
 int ecall_init_secure_channel(unsigned char key[16]);
@@ -28,13 +28,13 @@ int ecall_write_log(size_t logsize, char* logstr);
 sgx_status_t SGX_CDECL ocall_file_open(void** retval, char* file_name, char* format);
 sgx_status_t SGX_CDECL ocall_file_close(int* retval, void* handle);
 sgx_status_t SGX_CDECL ocall_file_read(int* retval, void* handle, size_t offset, size_t datasize, unsigned char* data);
-sgx_status_t SGX_CDECL ocall_file_write(int* retval, void* handle, size_t offset, size_t datasize, unsigned char* data);
+sgx_status_t SGX_CDECL ocall_file_write(int* retval, void* handle, size_t datasize, unsigned char* data);
 sgx_status_t SGX_CDECL ocall_file_size(size_t* retval, void* file_handle);
 sgx_status_t SGX_CDECL ocall_socket_connect(int* retval, char* url, unsigned int port);
 sgx_status_t SGX_CDECL ocall_socket_send(int* retval, void* data, size_t data_size);
 sgx_status_t SGX_CDECL ocall_socket_receive(int* retval, void* data, size_t data_size);
 sgx_status_t SGX_CDECL ocall_socket_shutdown(int* retval);
-sgx_status_t SGX_CDECL ocall_get_the_current_time(int* retval, unsigned char thetime[16]);
+sgx_status_t SGX_CDECL ocall_get_the_current_time(int* retval, unsigned char thetime[64]);
 
 #ifdef __cplusplus
 }

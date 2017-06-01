@@ -23,13 +23,13 @@ enclave {
 
     trusted {
         /* define ECALLs here. */
-		public int ecall_init_enclave([in, string] char *storage_folder, [in, string]char * address, int port); // inits storage folder with default data if nothing exists
+		public int ecall_init_enclave([in, string] char *storage_folder, [in, string]char * address, int port); // inits storage folder with default data if nothing exists, stores server data inside
 
 		public int ecall_update_epg  ();								  // download the EPG
 		public int ecall_get_epg_page(int number, size_t strsize, [out, size=strsize] void* page); // gets a page of EPG 
 		public int ecall_prepare_movie  (size_t movie_id);  // prepares the movie for playing if allowed, updates balance
-		public int ecall_get_movie_chunk(size_t chunk_offset, size_t chunk_size, [out, size=chunk_size] void* chunk); // gets a chunk of the movie encrypted with secure channel key 
-		public int ecall_get_movie_file_size(size_t movie_id, size_t buf_size, [out]size_t* filename ); // gets a size of decrypted movie
+		public int ecall_get_movie_chunk(size_t chunk_offset, size_t chunk_size, [out, size=chunk_size] void* chunk); // gets a chunk of the previously prepared movie encrypted with secure channel key 
+		public int ecall_get_movie_file_size(size_t movie_id, size_t buf_size, [out]size_t* size ); // gets a size of decrypted movie
 
 		public int ecall_try_coupon([in, string] char *coupon); // tryes a coupon and updates a balance
 		public int ecall_get_balance([out] int *balance); //  gets a balance to show
@@ -47,7 +47,7 @@ enclave {
         
 		int ocall_file_read([user_check]void* handle, size_t offset, size_t datasize, [in, size = datasize]unsigned char *data); 
         
-		int ocall_file_write([user_check]void *handle, size_t offset, size_t datasize, [out, size = datasize]unsigned char *data);
+		int ocall_file_write([user_check]void *handle, size_t datasize, [out, size = datasize]unsigned char *data);
 
 		size_t ocall_file_size ([user_check] void* file_handle);
 
@@ -55,6 +55,6 @@ enclave {
         int ocall_socket_send    ([in, out, size=data_size] void* data,size_t data_size );
 		int ocall_socket_receive ([in, out, size=data_size] void* data,size_t data_size );
 		int ocall_socket_shutdown ();
-		int ocall_get_the_current_time([in] unsigned char thetime[16]);
+		int ocall_get_the_current_time([in] unsigned char thetime[64]);
     };
 };
