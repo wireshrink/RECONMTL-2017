@@ -397,10 +397,17 @@ size_t SGXIndependentSealing::calc_sealed_data_size(size_t data_size)
 
 	size_t ret = (data_size / UNSEALED_DATA_CHUNK_SIZE) * SEALED_DATA_CHUNK_SIZE;
 	if ((data_size %UNSEALED_DATA_CHUNK_SIZE) != 0)
-		ret += SEALED_DATA_CHUNK_SIZE + data_size % UNSEALED_DATA_CHUNK_SIZE;
+		ret += SEALING_HEADER_SIZE + data_size % UNSEALED_DATA_CHUNK_SIZE;
 	return ret;
 }
+size_t SGXIndependentSealing::calc_unsealed_data_size(size_t data_size)
+{
 
+	size_t ret = (data_size / SEALED_DATA_CHUNK_SIZE) * UNSEALED_DATA_CHUNK_SIZE;
+	if ((data_size % SEALED_DATA_CHUNK_SIZE) != 0)
+		ret += data_size % SEALED_DATA_CHUNK_SIZE - SEALING_HEADER_SIZE;
+	return ret;
+}
 bool SGXIndependentSealing::seal_data(unsigned char * in, size_t in_size, unsigned char ** out, size_t * poutsize)
 {
 	*out = (unsigned char*) malloc(calc_sealed_data_size(in_size));
@@ -409,14 +416,31 @@ bool SGXIndependentSealing::seal_data(unsigned char * in, size_t in_size, unsign
 
 	*poutsize = calc_sealed_data_size(in_size);
 
+	if (independent_seal_data(0, nullptr, in_size, in, *poutsize, reinterpret_cast<independent_sealed_data_t*>(*out)) != SGX_SUCCESS)
+	{
+		free(*out);
+		return false;
+	}
 
-
-	return false;
+	return true;
 }
 
 bool SGXIndependentSealing::unseal_data(unsigned char * in, size_t in_size, unsigned char ** out, size_t * poutsize)
 {
-	return false;
+	*out = (unsigned char*)malloc(calc_unsealed_data_size(in_size));
+
+	if ((*out) == nullptr) return false; // no memory available
+
+	*poutsize = calc_unsealed_data_size(in_size);
+	uint32_t tmp_size = (uint32_t)*poutsize;
+
+	if (independent_unseal_data(reinterpret_cast<independent_sealed_data_t*>(in), nullptr, nullptr, *out, &tmp_size) != SGX_SUCCESS)
+	{
+		free(*out);
+		return false;
+	}
+	*poutsize = tmp_size;
+	return true;
 }
 
 bool SGXIndependentSealing::destroy_allocated_data(unsigned char * data)

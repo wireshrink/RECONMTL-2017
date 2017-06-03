@@ -1,3 +1,8 @@
+
+// incapsulating "independent of rdrand" sealing 
+// the goal - replace all usages of rdrand inside of sealing APIs of SDK with another RNG, using rdrand as seed. 
+// additional goal - generate additional entropy in IV for AES-GCM (instead of 0 as in AES-GCM implementation on Linux).
+
 #pragma once
 #include "sgx_tseal.h"
 #include "sgx_utils.h"
@@ -46,9 +51,6 @@ typedef struct _independent_sealed_data_t
 
 
 
-// incapsulating independent sealing 
-// the goal - replace rdrand with another RNG, using rdrand as seed
-// additional goal - generate additional entropy in IV for AES-GCM (instead of 0 as in AES-GCM implementation on Linux).
 class SGXIndependentSealing
 {
 public:
@@ -58,6 +60,7 @@ public:
 	~SGXIndependentSealing();
 	
 	static size_t calc_sealed_data_size(size_t data_size);
+	static size_t calc_unsealed_data_size(size_t data_size);
 	static bool   seal_data(unsigned char* in, size_t in_size, unsigned char**out, size_t *poutsize); // memomry allocated inside
 	static bool   unseal_data(unsigned char* in, size_t in_size, unsigned char**out, size_t *poutsize); // memomry allocated inside
 	static bool   destroy_allocated_data(unsigned char* data);
