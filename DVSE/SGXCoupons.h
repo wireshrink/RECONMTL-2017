@@ -27,79 +27,17 @@ public:
    */
   virtual ~SGXCoupons ();
 
-  // Static Public attributes
-  //  
-
-  // Public attributes
-  //  
-
-
-  // Public attribute accessor methods
-  //  
-
-
-  // Public attribute accessor methods
-  //  
-
-
-
   /**
    * @return bool
-   * @param  coupon_32_
+   * @param  coupon
    */
-  bool applyCoupon (char coupon_32_)
+  bool applyCoupon(char *coupon);
+
+  typedef enum __coup_consts_t
   {
-  }
+	  COUPON_SIZE=32
 
-protected:
-
-  // Static Protected attributes
-  //  
-
-  // Protected attributes
-  //  
-
-public:
-
-
-  // Protected attribute accessor methods
-  //  
-
-protected:
-
-public:
-
-
-  // Protected attribute accessor methods
-  //  
-
-protected:
-
-
-private:
-
-  // Static Private attributes
-  //  
-
-  // Private attributes
-  //  
-
-public:
-
-
-  // Private attribute accessor methods
-  //  
-
-private:
-
-public:
-
-
-  // Private attribute accessor methods
-  //  
-
-private:
-
+  }coup_consts_t;
 
 
 };

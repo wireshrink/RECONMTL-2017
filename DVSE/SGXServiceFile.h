@@ -37,100 +37,19 @@ public:
    * @return bool
    * @param  filename filename inside of current filesystem
    */
-  bool prepare (char* filename)
-  {
-	  strncpy(full_file_name, filename, 1024);
-	  return true;
-  }
+  bool prepare(char* filename);
 
 
   /**
    * @return bool
    */
-  bool read_and_decrypt ()
-  {
-	  void * f = nullptr;
-	  int retval;
-	  sgx_status_t ret = ocall_file_open(&f, full_file_name, "rb");
-	  if (ret != SGX_SUCCESS)
-	  {
-		  return false;
-	  }
-	  if (decrypted_content != nullptr)
-	  {
-		  free(decrypted_content);
-		  decrypted_content = nullptr;
-	  }
-
-	  size_t fsize = -1L;
-
-	  ret = ocall_file_size(&fsize, f);
-	  if (ret != SGX_SUCCESS)
-	  {
-		  return false;
-	  }
-	  current_data_size = fsize;
-	  unsigned char * encrypted_file_content =(unsigned char*) malloc(fsize);
-
-	  ret = ocall_file_read(&retval, f, 0, fsize, encrypted_file_content);
-	  if (ret != SGX_SUCCESS || retval != (int)fsize)
-	  {
-		  current_data_size = -1L;
-		  ocall_file_close(&retval, f);
-		  free(encrypted_file_content);
-		  return false;
-	  }
-
-	  if (!SGXIndependentSealing::unseal_data(encrypted_file_content, fsize, &decrypted_content, &this->current_data_size))
-	  {
-		  current_data_size = -1L;
-		  ocall_file_close(&retval, f);
-		  free(encrypted_file_content);
-		  return false;
-	  }
-	  free(encrypted_file_content);
-	  ret = ocall_file_close(&retval, f);
-	  return true;
-  }
+  bool read_and_decrypt();
 
 
   /**
    * @return bool
    */
-  bool encrypt_and_save ()
-  {
-	  void * f = nullptr;
-	  int retval;
-	  sgx_status_t ret = ocall_file_open(&f, full_file_name, "wb");
-	  if (ret != SGX_SUCCESS)
-	  {
-		  return false;
-	  }
-
-	  size_t encrypted_size;
-	  unsigned char * encrypted_file_content;
-
-	  if (!SGXIndependentSealing::seal_data(this->decrypted_content, this->current_data_size, &encrypted_file_content, &encrypted_size))
-	  {
-		  return false;
-	  }
-
-
-	  ret = ocall_file_write(&retval, f, encrypted_size, encrypted_file_content);
-
-	  if (ret != SGX_SUCCESS || retval != (int)encrypted_size)
-	  {
-		  current_data_size = -1L;
-		  ocall_file_close(&retval, f);
-		  free(encrypted_file_content);
-		  return false;
-	  }
-
-	 
-	  free(encrypted_file_content);
-	  ret = ocall_file_close(&retval, f);
-	  return true;
-  }
+  bool encrypt_and_save();
 
 
   
@@ -140,21 +59,9 @@ public:
    * @param  data_length
    * @param  data
    */
-  bool set_decrypted_content (size_t data_length, unsigned char* data)
-  {
-	  unsigned char *ldec_cont = nullptr;
-	  ldec_cont =(unsigned char*) malloc(data_length);
-	  if (!ldec_cont)
-	  {
-		  return false;
-	  }
-	  if (decrypted_content)
-	  {
-		  free(decrypted_content);
-	  }
-	  memcpy(decrypted_content, data, data_length);
-	  return true;
-  }
+  bool set_decrypted_content(size_t data_length, unsigned char* data);
+
+  size_t get_data_size() { return current_data_size; }
 
 protected:
 
@@ -222,6 +129,8 @@ public:
   const char* getFull_file_name ()   {
     return full_file_name;
   }
+
+  const unsigned char* getContent() { return decrypted_content; }
 
  
 private:

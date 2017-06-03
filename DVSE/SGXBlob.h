@@ -70,6 +70,11 @@ public:
   {
   }
 
+
+  bool create_default_blob()
+  {
+	  return false;
+  }
 protected:
 
   // Static Protected attributes
