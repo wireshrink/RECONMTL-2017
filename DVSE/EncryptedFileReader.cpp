@@ -23,7 +23,6 @@ EncryptedFileReader::~EncryptedFileReader()
 bool EncryptedFileReader::open(char * filename, char * format)
 {
 	sgx_status_t ret;
-	int res;
 
 	ret = ocall_file_open(&this->f, filename, format);
 	if (ret != SGX_SUCCESS)
@@ -34,7 +33,6 @@ bool EncryptedFileReader::open(char * filename, char * format)
 	{
 		return false;
 	}
-	size_t size;
 	ret = ocall_file_size(&this->filesize, filename);
 	if (ret != SGX_SUCCESS)
 	{
@@ -59,7 +57,7 @@ bool EncryptedFileReader::read_decrypted_data(size_t pos, unsigned char * buffer
 	{
 		return false;
 	}
-	size_t enc_size_to_read;
+	
 	return false;
 }
 

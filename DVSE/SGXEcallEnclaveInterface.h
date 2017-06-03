@@ -77,14 +77,11 @@ public:
 
 
   /**
-   * // downloads the movie
+   * downloads the movie
    * @return bool
    * @param  movie_id
    */
-  bool prepare_movie (size_t movie_id)
-  {
-	  return false;
-  }
+  bool prepare_movie(size_t movie_id);
 
 
   /**
@@ -93,10 +90,7 @@ public:
    * @return bool
    * @param  movie_id
    */
-  bool start_movie_play (size_t movie_id)
-  {
-	  return false;
-  }
+  bool start_movie_play(size_t movie_id);
 
 
   /**
@@ -107,19 +101,14 @@ public:
    * @param  max_size max size of a chunk
    * @param  data Buffer to place a chunk
    */
-  int read_movie_chunk (size_t offset, size_t max_size, unsigned char* data)
-  {
-	  return false;
-  }
+  int read_movie_chunk(size_t offset, size_t max_size, unsigned char* data);
 
 
   /**
    * releases all the currently playing movie resources
    * @return bool
    */
-  bool release_movie ()
-  {
-  }
+  bool release_movie();
 
 
   /**
@@ -136,10 +125,7 @@ public:
    * @param  data_1024_
    * @param  pageNum
    */
-  bool getEPGPage (unsigned char *data, int pageNum) 
-  {
-	  return false;
-  }
+  bool getEPGPage(unsigned char *data, int pageNum);
 
 
   /**
@@ -147,10 +133,7 @@ public:
    * @param  name
    * @param  port
    */
-  bool setConnAddr (char* name, int port)
-  {
-	  return false;
-  }
+  bool setConnAddr(char* name, int port);
 
 
 
@@ -158,10 +141,7 @@ public:
    * @return bool
    * @param  key_16_
    */
-  bool initSecureChannel (unsigned char key[16])
-  {
-	  return false;
-  }
+  bool initSecureChannel(unsigned char key[16]);
 
 private:
 	char base_folder[1024];

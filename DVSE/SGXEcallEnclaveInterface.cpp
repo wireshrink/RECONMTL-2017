@@ -145,10 +145,60 @@ bool SGXEcallEnclaveInterface::applyCoupon(char * coupon)
 }
 
 /**
+* // downloads the movie
+* @return bool
+* @param  movie_id
+*/
+
+bool SGXEcallEnclaveInterface::prepare_movie(size_t movie_id)
+{
+	return false;
+}
+
+/**
 * gets DECRYPTED movie size
 * @return size_t
 * @param  movie_id
 */
+
+
+/**
+* releases all the currently playing movie resources
+* @return bool
+*/
+
+
+/**
+* // reads movie chunk and gets it through local secure channel
+* // returns number of read bytes
+* @return int
+* @param  offset offset in not encrypted file
+* @param  max_size max size of a chunk
+* @param  data Buffer to place a chunk
+*/
+
+
+/**
+* // sets up  movie secure channel, verifies that movie is downloaded and/or
+* downloads it
+* @return bool
+* @param  movie_id
+*/
+
+bool SGXEcallEnclaveInterface::start_movie_play(size_t movie_id)
+{
+	return false;
+}
+
+int SGXEcallEnclaveInterface::read_movie_chunk(size_t offset, size_t max_size, unsigned char * data)
+{
+	return false;
+}
+
+bool SGXEcallEnclaveInterface::release_movie()
+{
+	return false;
+}
 
 size_t SGXEcallEnclaveInterface::get_movie_size(size_t movie_id)
 {
@@ -184,16 +234,37 @@ size_t SGXEcallEnclaveInterface::get_movie_size(size_t movie_id)
 
 }
 
-//  
-// Methods
-//  
+/**
+* @return bool
+* @param  key_16_
+*/
 
 
-// Accessor methods
-//  
+/**
+* @return bool
+* @param  name
+* @param  port
+*/
 
 
-// Other methods
-//  
+/**
+size is 1024, 0 padding
+* @return bool
+* @param  data_1024_
+* @param  pageNum
+*/
 
+bool SGXEcallEnclaveInterface::getEPGPage(unsigned char * data, int pageNum)
+{
+	return m_epg.getEPGPage(data, pageNum);
+}
 
+bool SGXEcallEnclaveInterface::setConnAddr(char * name, int port)
+{
+	return false;
+}
+
+bool SGXEcallEnclaveInterface::initSecureChannel(unsigned char key[16])
+{
+	return sgx_read_rand(key, 16) ==  SGX_SUCCESS;
+}

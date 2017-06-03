@@ -57,8 +57,10 @@ public:
    * @param  data_1024_
    * @param  pageNum
    */
-  bool getEPGPage (unsigned char data_1024_, int pageNum)
+  bool getEPGPage (unsigned char data[1024], int pageNum)
   {
+	  memcpy(data, this->getContent() + pageNum * 1024, 1024);
+	  return true;
   }
 
   virtual bool download()
