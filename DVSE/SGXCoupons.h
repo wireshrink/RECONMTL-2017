@@ -39,7 +39,10 @@ public:
 
   }coup_consts_t;
 
-
+  virtual bool download()
+  {
+	  return false;
+  }
 };
 
 #endif // SGXCOUPONS_H

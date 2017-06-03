@@ -51,7 +51,7 @@ public:
    */
   bool encrypt_and_save();
 
-
+  virtual bool download() = 0;
   
 
   /**

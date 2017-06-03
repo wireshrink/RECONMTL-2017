@@ -61,6 +61,10 @@ public:
   {
   }
 
+  virtual bool download()
+  {
+	  return false;
+  }
 protected:
 
   // Static Protected attributes

@@ -28,21 +28,7 @@ public:
    */
   virtual ~SGXBlob ();
 
-  // Static Public attributes
-  //  
-
-  // Public attributes
-  //  
-
-
-  // Public attribute accessor methods
-  //  
-
-
-  // Public attribute accessor methods
-  //  
-
-
+  
 
   /**
    * @return bool
@@ -50,6 +36,7 @@ public:
    */
   bool isMoviePlayAllowed (size_t movie_id)
   {
+	  return false;
   }
 
 
@@ -59,6 +46,7 @@ public:
    */
   bool purchaseMovie (size_t movie_id)
   {
+	  return false;
   }
 
 
@@ -66,8 +54,13 @@ public:
    * @return bool
    * @param  coupon_32_
    */
-  bool isCouponAlreadyUsed (char coupon_32_)
+  bool isCouponAlreadyUsed (char *coupon)
   {
+	  return true;
+  }
+  bool setCouponAlreadyUsed(char *coupon)
+  {
+	  return true;
   }
 
 
@@ -75,6 +68,13 @@ public:
   {
 	  return false;
   }
+
+  virtual bool download()
+  {
+	  return false;
+  }
+
+
 protected:
 
   // Static Protected attributes

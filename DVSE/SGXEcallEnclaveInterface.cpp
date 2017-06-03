@@ -101,7 +101,7 @@ SGXEcallEnclaveInterface::~SGXEcallEnclaveInterface () { }
 bool SGXEcallEnclaveInterface::init_enclave(char * full_folder_name)
 {
 	size_t l = strlen(full_folder_name);
-	char blobname[1024];
+	
 	if (l >= 1023)
 	{
 		return false;
@@ -120,7 +120,7 @@ bool SGXEcallEnclaveInterface::init_enclave(char * full_folder_name)
 * @return int
 */
 
-inline int SGXEcallEnclaveInterface::getBalance()
+int SGXEcallEnclaveInterface::getBalance()
 {
 	return m_blob.getBalance();
 }
@@ -130,9 +130,18 @@ inline int SGXEcallEnclaveInterface::getBalance()
 * @param  coupon
 */
 
-inline bool SGXEcallEnclaveInterface::applyCoupon(char * coupon)
+bool SGXEcallEnclaveInterface::applyCoupon(char * coupon)
 {
-	return m_coupons.applyCoupon(coupon);
+	if (m_coupons.applyCoupon(coupon) &&
+		!m_blob.isCouponAlreadyUsed(coupon))
+	{
+		bool res = true;
+		res = res && m_blob.setCouponAlreadyUsed(coupon);
+		m_blob.setBalance(m_blob.getBalance() + 10);
+		res = res && m_blob.encrypt_and_save();
+		return res;
+	}
+	return false;
 }
 
 /**
