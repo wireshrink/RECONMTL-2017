@@ -31,22 +31,7 @@ public:
    */
   virtual ~SGXServiceFile ();
 
-  // Static Public attributes
-  //  
-
-  // Public attributes
-  //  
-
-
-  // Public attribute accessor methods
-  //  
-
-
-  // Public attribute accessor methods
-  //  
-
-
-
+  
   /**
    * // copies a filename inside
    * @return bool
@@ -114,18 +99,41 @@ public:
    */
   bool encrypt_and_save ()
   {
-	  return false;
+	  void * f = nullptr;
+	  int retval;
+	  sgx_status_t ret = ocall_file_open(&f, full_file_name, "wb");
+	  if (ret != SGX_SUCCESS)
+	  {
+		  return false;
+	  }
+
+	  size_t encrypted_size;
+	  unsigned char * encrypted_file_content;
+
+	  if (!SGXIndependentSealing::seal_data(this->decrypted_content, this->current_data_size, &encrypted_file_content, &encrypted_size))
+	  {
+		  return false;
+	  }
+
+
+	  ret = ocall_file_write(&retval, f, encrypted_size, encrypted_file_content);
+
+	  if (ret != SGX_SUCCESS || retval != (int)encrypted_size)
+	  {
+		  current_data_size = -1L;
+		  ocall_file_close(&retval, f);
+		  free(encrypted_file_content);
+		  return false;
+	  }
+
+	 
+	  free(encrypted_file_content);
+	  ret = ocall_file_close(&retval, f);
+	  return true;
   }
 
 
-  /**
-   * @return bool
-   */
-  bool close ()
-  {
-	  return false;
-  }
-
+  
 
   /**
    * @return bool
@@ -134,7 +142,18 @@ public:
    */
   bool set_decrypted_content (size_t data_length, unsigned char* data)
   {
-	  return false;
+	  unsigned char *ldec_cont = nullptr;
+	  ldec_cont =(unsigned char*) malloc(data_length);
+	  if (!ldec_cont)
+	  {
+		  return false;
+	  }
+	  if (decrypted_content)
+	  {
+		  free(decrypted_content);
+	  }
+	  memcpy(decrypted_content, data, data_length);
+	  return true;
   }
 
 protected:
@@ -200,7 +219,7 @@ public:
    * Get the value of full_file_name_1024_
    * @return the value of full_file_name_1024_
    */
-  const char* getFull_file_name_1024_ ()   {
+  const char* getFull_file_name ()   {
     return full_file_name;
   }
 
