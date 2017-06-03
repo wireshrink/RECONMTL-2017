@@ -23,5 +23,6 @@ SGXServiceFile::~SGXServiceFile () { }
 
 void SGXServiceFile::initAttributes () {
   decrypted_content = nullptr;
+  current_data_size = -1L;
 }
 
