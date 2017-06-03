@@ -1,21 +1,5 @@
 /*
 enclave inerfaces list:
-
-
-Icall:
-
-1 - authenticate:server url, server port,  username, password
-	Tries to read the authentication blob, if exists - checks its validty by usage of standard sealing facilities with their AES-GCM
-	Blob should contain the user name, public key of the server, and the passwords sha512
-	if the blob doesn't exist or corrupted authentication fails and tries to obtain all the data via ocalls
-2 - update the list of availabe movies 
-	generates RSA key pair, sends public key to the server via ocall, gets response during the same ocall, decrypts, seals the list
-3 - get a page of movie list (num of the page)
-		returns the unsealed page of the list
-4 - load a movie
-		loads a movie via ocalls and seals it on a local disk
-5 - get a movie chunk
-6 - purge a file system from not needed files
 */
 
 

@@ -377,10 +377,36 @@ extern "C" sgx_status_t independent_unseal_data(const independent_sealed_data_t 
 	return err;
 }
 
+// simplest RNG, xorshift128+
+#pragma warning (disable:4244)
+#pragma warning (disable:4267)
+uint64_t s[2] = {0x0L, 0x0L};
 
+uint64_t xorshift128plus(void) {
+	uint64_t x = s[0];
+	uint64_t const y = s[1];
+	s[0] = y;
+	x ^= x << 23; // a
+	s[1] = x ^ y ^ (x >> 17) ^ (y >> 26); // b, c
+	return s[1] + y;
+}
 bool SGXIndependentSealing::generate_random_data(unsigned char* data, size_t size)
 {
-	return false;
+	static bool bSeedInitialized = false;
+	int i;
+
+	if (!bSeedInitialized)
+	{
+		// using the result of potentally untrustworthy rdrand instruction for seed only
+		if (sgx_read_rand(reinterpret_cast<unsigned char*>(s), 16) != SGX_SUCCESS)
+			return false;
+		bSeedInitialized = true;
+	}
+	for (i = 0; i < size; i += sizeof(uint64_t))
+	{
+		*(reinterpret_cast<uint8_t*>(&data[i])) = xorshift128plus();
+	}
+	return true;
 }
 
 SGXIndependentSealing::SGXIndependentSealing()
