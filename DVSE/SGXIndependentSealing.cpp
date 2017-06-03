@@ -1,12 +1,40 @@
 #include "SGXIndependentSealing.h"
-#include "sgx_tseal.h"
-#include "sgx_utils.h"
-#include "sgx_trts.h"
-#include "sgx_attributes.h"
-#include <stdlib.h>
-#include <string.h>
 
 /*These functions copied fron AES-GCM sealing implementation */
+
+
+void create_sgx_key_request(sgx_key_request_t *new_sgx_key_req, const independent_key_request_t *p_ind_key_request)
+{
+	memset_s(new_sgx_key_req,sizeof(sgx_key_request_t), 0, sizeof(sgx_key_request_t));
+	memcpy(new_sgx_key_req, p_ind_key_request, sizeof(independent_key_request_t)); // assuming that only last reserved bytes are removed
+}
+
+uint32_t independent_calc_sealed_data_size(const uint32_t add_mac_txt_size, const uint32_t txt_encrypt_size)
+{
+	if (add_mac_txt_size > UINT32_MAX - txt_encrypt_size)
+		return UINT32_MAX;
+	uint32_t payload_size = add_mac_txt_size + txt_encrypt_size; //Calculate the payload size
+
+	if (payload_size > UINT32_MAX - sizeof(independent_sealed_data_t))
+		return UINT32_MAX;
+	return (uint32_t)(sizeof(independent_sealed_data_t) + payload_size);
+}
+
+uint32_t independent_get_add_mac_txt_len(const independent_sealed_data_t* p_sealed_data)
+{
+	if (p_sealed_data == NULL)
+		return UINT32_MAX;
+
+	uint32_t data_size = p_sealed_data->aes_data.payload_size - p_sealed_data->plain_text_offset;
+	if (data_size > p_sealed_data->aes_data.payload_size)
+		return UINT32_MAX;
+	return data_size;
+}
+
+uint32_t independent_get_encrypt_txt_len(const independent_sealed_data_t* p_sealed_data)
+{
+	return ((p_sealed_data == NULL) ? UINT32_MAX : p_sealed_data->plain_text_offset);
+}
 
 
 /* Set the bits which have no security implications to 0 for sealed data migration */
@@ -39,7 +67,7 @@
 sgx_status_t independent_seal_data_iv(const uint32_t additional_MACtext_length,
 	const uint8_t *p_additional_MACtext, const uint32_t text2encrypt_length,
 	const uint8_t *p_text2encrypt, const uint8_t *p_payload_iv,
-	const sgx_key_request_t* p_key_request, sgx_sealed_data_t *p_sealed_data)
+	const independent_key_request_t* p_key_request, independent_sealed_data_t *p_sealed_data)
 {
 	sgx_status_t err = SGX_ERROR_UNEXPECTED;
 
@@ -48,8 +76,10 @@ sgx_status_t independent_seal_data_iv(const uint32_t additional_MACtext_length,
 	// Generate the seal key
 	// The random p_key_request->key_id guarantees the generated seal key is random
 	sgx_key_128bit_t seal_key;
+	sgx_key_request_t kreq;
 	memset(&seal_key, 0, sizeof(sgx_key_128bit_t));
-	err = sgx_get_key(p_key_request, &seal_key);
+	create_sgx_key_request(&kreq, p_key_request);
+	err = sgx_get_key(&kreq, &seal_key);
 	if (err != SGX_SUCCESS)
 	{
 		// Clear temp state
@@ -80,6 +110,7 @@ sgx_status_t independent_seal_data_iv(const uint32_t additional_MACtext_length,
 		p_sealed_data->aes_data.payload_size = additional_MACtext_length + text2encrypt_length;
 	}
 	// Clear temp state
+	memset_s(&kreq, sizeof(kreq), 0, sizeof(kreq));
 	memset_s(&seal_key, sizeof(sgx_key_128bit_t), 0, sizeof(sgx_key_128bit_t));
 	return err;
 }
@@ -95,14 +126,16 @@ sgx_status_t independent_seal_data_iv(const uint32_t additional_MACtext_length,
 //
 // Return Value:
 //      sgx_status_t - SGX Error code
-sgx_status_t independent_unseal_data_helper(const sgx_sealed_data_t *p_sealed_data, uint8_t *p_additional_MACtext,
+sgx_status_t independent_unseal_data_helper(const independent_sealed_data_t *p_sealed_data, uint8_t *p_additional_MACtext,
 	uint32_t additional_MACtext_length, uint8_t *p_decrypted_text, uint32_t decrypted_text_length)
 {
 	sgx_status_t err = SGX_ERROR_UNEXPECTED;
 	sgx_key_128bit_t seal_key;
+	sgx_key_request_t kreq;
 	memset(&seal_key, 0, sizeof(sgx_key_128bit_t));
 	uint8_t payload_iv[SGX_SEAL_IV_SIZE];
-	memset(&payload_iv, 0, SGX_SEAL_IV_SIZE);
+	memset(&payload_iv[0], 0, SGX_SEAL_IV_SIZE);
+	memcpy(&payload_iv[0], p_sealed_data->aes_data.iv, SGX_SEAL_IV_SIZE);
 
 	if (decrypted_text_length > 0)
 		memset(p_decrypted_text, 0, decrypted_text_length);
@@ -111,7 +144,8 @@ sgx_status_t independent_unseal_data_helper(const sgx_sealed_data_t *p_sealed_da
 		memset(p_additional_MACtext, 0, additional_MACtext_length);
 
 	// Get the seal key
-	err = sgx_get_key(&p_sealed_data->key_request, &seal_key);
+	create_sgx_key_request(&kreq, &p_sealed_data->key_request);
+	err = sgx_get_key(&kreq, &seal_key);
 	if (err != SGX_SUCCESS)
 	{
 		// Clear temp state
@@ -139,6 +173,7 @@ sgx_status_t independent_unseal_data_helper(const sgx_sealed_data_t *p_sealed_da
 		memcpy(p_additional_MACtext, &(p_sealed_data->aes_data.payload[decrypted_text_length]), additional_MACtext_length);
 	}
 	// Clear temp state
+	memset_s(&kreq, sizeof(kreq), 0, sizeof(kreq));
 	memset_s(&seal_key, sizeof(sgx_key_128bit_t), 0, sizeof(sgx_key_128bit_t));
 	return SGX_SUCCESS;
 }
@@ -149,17 +184,22 @@ extern "C" sgx_status_t independent_seal_data_ex(const uint16_t key_policy,
 	const uint32_t additional_MACtext_length,
 	const uint8_t *p_additional_MACtext, const uint32_t text2encrypt_length,
 	const uint8_t *p_text2encrypt, const uint32_t sealed_data_size,
-	sgx_sealed_data_t *p_sealed_data)
+	independent_sealed_data_t *p_sealed_data)
 {
 	sgx_status_t err = SGX_ERROR_UNEXPECTED;
 	sgx_report_t report;
 	sgx_key_id_t keyID;
-	sgx_key_request_t tmp_key_request;
+	independent_key_request_t tmp_key_request;
 	uint8_t payload_iv[SGX_SEAL_IV_SIZE];
 	memset(&payload_iv, 0, sizeof(payload_iv));
+	if (SGXIndependentSealing::generate_random_data(payload_iv, SGX_SEAL_IV_SIZE))
+	{
+		return SGX_ERROR_UNEXPECTED;
+	}
+	memcpy(p_sealed_data->aes_data.iv, payload_iv, SGX_SEAL_IV_SIZE);
 
 
-	uint32_t sealedDataSize = sgx_calc_sealed_data_size(additional_MACtext_length, text2encrypt_length);
+	uint32_t sealedDataSize = independent_calc_sealed_data_size(additional_MACtext_length, text2encrypt_length);
 	// Check for overflow
 	if (sealedDataSize == UINT32_MAX)
 	{
@@ -216,8 +256,8 @@ extern "C" sgx_status_t independent_seal_data_ex(const uint16_t key_policy,
 	}
 
 	// Get a random number to populate the key_id of the key_request
-	err = sgx_read_rand(reinterpret_cast<uint8_t *>(&keyID), sizeof(sgx_key_id_t));
-	if (err != SGX_SUCCESS)
+	bool berr = SGXIndependentSealing::generate_random_data(reinterpret_cast<unsigned char *>(&keyID), sizeof(sgx_key_id_t));
+	if (!berr)
 	{
 		goto clear_return;
 	}
@@ -250,7 +290,7 @@ clear_return:
 extern "C" sgx_status_t independent_seal_data(const uint32_t additional_MACtext_length,
 	const uint8_t *p_additional_MACtext, const uint32_t text2encrypt_length,
 	const uint8_t *p_text2encrypt, const uint32_t sealed_data_size,
-	sgx_sealed_data_t *p_sealed_data)
+	independent_sealed_data_t *p_sealed_data)
 {
 	sgx_status_t err = SGX_ERROR_UNEXPECTED;
 	sgx_attributes_t attribute_mask;
@@ -261,27 +301,27 @@ extern "C" sgx_status_t independent_seal_data(const uint32_t additional_MACtext_
 		p_additional_MACtext, text2encrypt_length, p_text2encrypt, sealed_data_size, p_sealed_data);
 	return err;
 }
-extern "C" sgx_status_t independent_unseal_data(const sgx_sealed_data_t *p_sealed_data, uint8_t *p_additional_MACtext,
+extern "C" sgx_status_t independent_unseal_data(const independent_sealed_data_t *p_sealed_data, uint8_t *p_additional_MACtext,
 	uint32_t *p_additional_MACtext_length, uint8_t *p_decrypted_text, uint32_t *p_decrypted_text_length)
 {
 	sgx_status_t err = SGX_ERROR_UNEXPECTED;
-	// Ensure the the sgx_sealed_data_t members are all inside enclave before using them.
-	if ((p_sealed_data == NULL) || (!sgx_is_within_enclave(p_sealed_data, sizeof(sgx_sealed_data_t))))
+	// Ensure the the independent_sealed_data_t members are all inside enclave before using them.
+	if ((p_sealed_data == NULL) || (!sgx_is_within_enclave(p_sealed_data, sizeof(independent_sealed_data_t))))
 	{
 		return SGX_ERROR_INVALID_PARAMETER;
 	}
 
-	uint32_t encrypt_text_length = sgx_get_encrypt_txt_len(p_sealed_data);
+	uint32_t encrypt_text_length = independent_get_encrypt_txt_len(p_sealed_data);
 	if (encrypt_text_length == UINT32_MAX)
 	{
 		return SGX_ERROR_MAC_MISMATCH; // Return error indicating the blob is corrupted
 	}
-	uint32_t add_text_length = sgx_get_add_mac_txt_len(p_sealed_data);
+	uint32_t add_text_length = independent_get_add_mac_txt_len(p_sealed_data);
 	if (add_text_length == UINT32_MAX)
 	{
 		return SGX_ERROR_MAC_MISMATCH; // Return error indicating the blob is corrupted
 	}
-	uint32_t sealedDataSize = sgx_calc_sealed_data_size(add_text_length, encrypt_text_length);
+	uint32_t sealedDataSize = independent_calc_sealed_data_size(add_text_length, encrypt_text_length);
 	if (sealedDataSize == UINT32_MAX)
 	{
 		return SGX_ERROR_MAC_MISMATCH; // Return error indicating the blob is corrupted
@@ -338,8 +378,7 @@ extern "C" sgx_status_t independent_unseal_data(const sgx_sealed_data_t *p_seale
 }
 
 
-
-bool SGXIndependentSealing::generate_secure_random_iv(unsigned char iv[16])
+bool SGXIndependentSealing::generate_random_data(unsigned char* data, size_t size)
 {
 	return false;
 }
