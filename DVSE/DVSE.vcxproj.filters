@@ -27,15 +27,6 @@
     <ClCompile Include="SGXIndependentSealing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SGXPlayerState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EncryptedFileReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SGXBlob.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -43,9 +34,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SGXEcallEnclaveInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SGXEncryptionservice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SGXEpg.cpp">
@@ -60,16 +48,10 @@
     <ClCompile Include="SGXLargeFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SGXLocalSecureChannel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SGXNetworkCryptor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SGXNetworkReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SGXOcallEnclaveInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SGXServiceFile.cpp">
@@ -86,15 +68,6 @@
     <ClInclude Include="SGXIndependentSealing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SGXPlayerState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EncryptedFileReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SGXBlob.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -102,9 +75,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SGXEcallEnclaveInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SGXEncryptionservice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SGXEpg.h">
@@ -119,16 +89,10 @@
     <ClInclude Include="SGXLargeFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SGXLocalSecureChannel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SGXNetworkCryptor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SGXNetworkReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SGXOcallEnclaveInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SGXServiceFile.h">

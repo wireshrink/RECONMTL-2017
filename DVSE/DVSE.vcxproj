@@ -323,45 +323,33 @@
   <ItemGroup>
     <ClCompile Include="DVSE.cpp" />
     <ClCompile Include="DVSE_t.c" />
-    <ClCompile Include="EncryptedFileReader.cpp" />
     <ClCompile Include="SGXBlob.cpp" />
     <ClCompile Include="SGXCoupons.cpp" />
     <ClCompile Include="SGXEcallEnclaveInterface.cpp" />
-    <ClCompile Include="SGXEncryptionservice.cpp" />
     <ClCompile Include="SGXEpg.cpp" />
     <ClCompile Include="SGXFileReader.cpp" />
     <ClCompile Include="SGXFileWriter.cpp" />
     <ClCompile Include="SGXIndependentSealing.cpp" />
     <ClCompile Include="SGXLargeFile.cpp" />
-    <ClCompile Include="SGXLocalSecureChannel.cpp" />
     <ClCompile Include="SGXNetworkCryptor.cpp" />
     <ClCompile Include="SGXNetworkReader.cpp" />
-    <ClCompile Include="SGXOcallEnclaveInterface.cpp" />
-    <ClCompile Include="SGXPlayerState.cpp" />
     <ClCompile Include="SGXServiceFile.cpp" />
     <ClCompile Include="SGXVideoPlayerState.cpp" />
-    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DVSE_t.h" />
-    <ClInclude Include="EncryptedFileReader.h" />
     <ClInclude Include="SGXBlob.h" />
     <ClInclude Include="SGXCoupons.h" />
     <ClInclude Include="SGXEcallEnclaveInterface.h" />
-    <ClInclude Include="SGXEncryptionservice.h" />
     <ClInclude Include="SGXEpg.h" />
     <ClInclude Include="SGXFileReader.h" />
     <ClInclude Include="SGXFileWriter.h" />
     <ClInclude Include="SGXIndependentSealing.h" />
     <ClInclude Include="SGXLargeFile.h" />
-    <ClInclude Include="SGXLocalSecureChannel.h" />
     <ClInclude Include="SGXNetworkCryptor.h" />
     <ClInclude Include="SGXNetworkReader.h" />
-    <ClInclude Include="SGXOcallEnclaveInterface.h" />
-    <ClInclude Include="SGXPlayerState.h" />
     <ClInclude Include="SGXServiceFile.h" />
     <ClInclude Include="SGXVideoPlayerState.h" />
-    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="DVSE.edl">

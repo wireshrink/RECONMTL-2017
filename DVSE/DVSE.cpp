@@ -5,9 +5,7 @@
 #include <sgx_tseal.h>
 #include <string.h>
 #include <stdio.h>
-#include "SGXPlayerState.h"
 #include "SGXVideoPlayerState.h"
-#include "utils.h"
 #include "SGXEcallEnclaveInterface.h"
 
 
