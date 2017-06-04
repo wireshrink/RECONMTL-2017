@@ -237,6 +237,24 @@ bool SGXEcallEnclaveInterface::initSecureChannel(unsigned char key[16])
 
 bool SGXEcallEnclaveInterface::downloadMovie(size_t movie_id)
 {
+	size_t read_size = 0, write_size = 0;
+	unsigned char buffer[1024];
+	if (!m_largeFileNetReader.openMovie(movie_id))
+		return false;
+	if (!m_largeFileWriter.openMovie(movie_id))
+		return false;
+	do
+	{
+		read_size = m_largeFileNetReader.read(buffer, 1024);
+		if (read_size == -1L)
+			return false;
+		if (read_size > 0)
+		{
+			write_size = m_largeFileWriter.write(buffer, read_size);
+			if (write_size == -1L) return false;
+		}
 
-	return false;
+	} while (read_size != 0);
+
+	return true;
 }
