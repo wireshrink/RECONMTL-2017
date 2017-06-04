@@ -11,7 +11,9 @@
 #include "SGXBlob.h"
 #include "SGXEpg.h"
 #include "SGXCoupons.h"
-
+#include "SGXNetworkReader.h"
+#include "SGXFileWriter.h"
+#include "SGXFileReader.h"
 /**
   * class SGXEcallEnclaveInterface
   * 
@@ -113,7 +115,7 @@ public:
 
   /**
    * gets DECRYPTED movie size
-   * @return size_t
+   * @return size_tW
    * @param  movie_id
    */
   size_t get_movie_size(size_t movie_id);
@@ -145,11 +147,25 @@ public:
 
 private:
 	char base_folder[1024];
+
+
+	unsigned char sec_channel_key[16];
+
+	int m_connport;
+	char m_conaddr[1024];
 	SGXBlob m_blob;
 	SGXEpg  m_epg;
 	SGXCoupons m_coupons;
 
+	//void* playing_movie_handle;
 
+	SGXFileReader		m_largeFileReader;
+	SGXFileWriter		m_largeFileWriter;
+	SGXNetworkReader	m_largeFileNetReader;
+
+
+	bool downloadMovie(size_t movie_id);
+	 
 };
 
 #endif // SGXECALLENCLAVEINTERFACE_H

@@ -13,81 +13,49 @@ class SGXFileWriter : public SGXLargeFile
 {
 public:
 
-  // Constructors/Destructors
-  //  
-
-
-  /**
-   * Empty Constructor
-   */
+  
   SGXFileWriter ();
 
-  /**
-   * Empty Destructor
-   */
   virtual ~SGXFileWriter ();
 
-  // Static Public attributes
-  //  
+  virtual bool openMovie(size_t movie_id);
 
-  // Public attributes
-  //  
-
-
-  // Public attribute accessor methods
-  //  
+  /**
+  * @return bool
+  * @param  pos
+  */
+  virtual bool seek(size_t pos);
 
 
-  // Public attribute accessor methods
-  //  
+  /**
+  * @return bool
+  * @param  filename_1024_
+  */
+  virtual bool open(char filename[1024]);
+
+
+  /**
+  * @return size_t
+  * @param  buffer
+  * @param  buffer_size
+  */
+  virtual size_t read(unsigned char* buffer, size_t buffer_size);
+
+
+  /**
+  * @return size_t
+  * @param  buffer
+  * @param  buffer_size
+  */
+  virtual size_t write(unsigned char* buffer, size_t buffer_size);
+  /**
+  * @return bool
+  */
+  virtual bool close();
 
 
 protected:
 
-  // Static Protected attributes
-  //  
-
-  // Protected attributes
-  //  
-
-public:
-
-
-  // Protected attribute accessor methods
-  //  
-
-protected:
-
-public:
-
-
-  // Protected attribute accessor methods
-  //  
-
-protected:
-
-
-private:
-
-  // Static Private attributes
-  //  
-
-  // Private attributes
-  //  
-
-public:
-
-
-  // Private attribute accessor methods
-  //  
-
-private:
-
-public:
-
-
-  // Private attribute accessor methods
-  //  
 
 private:
 

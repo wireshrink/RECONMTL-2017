@@ -13,13 +13,7 @@ class SGXLargeFile
 {
 public:
 
-  // Constructors/Destructors
-  //  
-
-
-  /**
-   * Empty Constructor
-   */
+  
   SGXLargeFile ();
 
   /**
@@ -27,22 +21,7 @@ public:
    */
   virtual ~SGXLargeFile ();
 
-  // Static Public attributes
-  //  
-
-  // Public attributes
-  //  
-
-
-  // Public attribute accessor methods
-  //  
-
-
-  // Public attribute accessor methods
-  //  
-
-
-
+  
   /**
    * @return bool
    * @param  pos
@@ -71,7 +50,12 @@ public:
    * @param  buffer_size
    */
   virtual size_t write(unsigned char* buffer, size_t buffer_size) = 0;
- 
+  /**
+  * @return bool
+  */
+  virtual bool close() = 0;
+
+  virtual bool openMovie(size_t movie_id) = 0;
 protected:
 
   // Static Protected attributes
@@ -107,6 +91,7 @@ private:
 
   unsigned char buffer[1024*10];
   void* handle;
+  bool m_binitialized;
 public:
 
 
@@ -138,10 +123,17 @@ public:
   void* getHandle ()   {
     return handle;
   }
+
+  bool initialized()
+  {
+	  return m_binitialized;
+  }
+  static bool createMovieFileName(size_t movie_id, char* base_folder, char* buf, size_t buf_size);
 private:
 
 
   void initAttributes () ;
+
 
 };
 

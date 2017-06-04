@@ -1,9 +1,11 @@
 #include "SGXEcallEnclaveInterface.h"
+#include "SGXNetworkReader.h"
 
 // Constructors/Destructors
 //  
 
 SGXEcallEnclaveInterface::SGXEcallEnclaveInterface () {
+	
 }
 
 SGXEcallEnclaveInterface::~SGXEcallEnclaveInterface () { }
@@ -116,19 +118,10 @@ bool SGXEcallEnclaveInterface::init_enclave(char * full_folder_name)
 	return refresh_and_save_service_files();
 }
 
-/**
-* @return int
-*/
-
 int SGXEcallEnclaveInterface::getBalance()
 {
 	return m_blob.getBalance();
 }
-
-/**
-* @return bool
-* @param  coupon
-*/
 
 bool SGXEcallEnclaveInterface::applyCoupon(char * coupon)
 {
@@ -144,60 +137,50 @@ bool SGXEcallEnclaveInterface::applyCoupon(char * coupon)
 	return false;
 }
 
-/**
-* // downloads the movie
-* @return bool
-* @param  movie_id
-*/
 
 bool SGXEcallEnclaveInterface::prepare_movie(size_t movie_id)
 {
+	if (m_blob.isMoviePlayAllowed(movie_id))
+	{
+		if (get_movie_size(movie_id) == -1L)
+		{
+			// initiate movie download
+			if (!downloadMovie(movie_id))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 	return false;
 }
 
-/**
-* gets DECRYPTED movie size
-* @return size_t
-* @param  movie_id
-*/
-
-
-/**
-* releases all the currently playing movie resources
-* @return bool
-*/
-
-
-/**
-* // reads movie chunk and gets it through local secure channel
-* // returns number of read bytes
-* @return int
-* @param  offset offset in not encrypted file
-* @param  max_size max size of a chunk
-* @param  data Buffer to place a chunk
-*/
-
-
-/**
-* // sets up  movie secure channel, verifies that movie is downloaded and/or
-* downloads it
-* @return bool
-* @param  movie_id
-*/
 
 bool SGXEcallEnclaveInterface::start_movie_play(size_t movie_id)
 {
-	return false;
+	if (m_largeFileReader.initialized())
+	{
+		if (!release_movie())
+			return false;
+	}
+	if (!m_largeFileReader.openMovie(movie_id))
+	{
+		return false;
+	}
+	return true;
 }
 
 int SGXEcallEnclaveInterface::read_movie_chunk(size_t offset, size_t max_size, unsigned char * data)
 {
-	return false;
+	if (!m_largeFileReader.seek(offset))
+		return 0;
+	size_t res = m_largeFileReader.read(data, max_size);
+	return (int)res;
 }
 
 bool SGXEcallEnclaveInterface::release_movie()
 {
-	return false;
+	return m_largeFileReader.close();
 }
 
 size_t SGXEcallEnclaveInterface::get_movie_size(size_t movie_id)
@@ -228,31 +211,10 @@ size_t SGXEcallEnclaveInterface::get_movie_size(size_t movie_id)
 		return -1L;
 	}
 
-	outsize = ((outsize / SGXIndependentSealing::SEALED_DATA_CHUNK_SIZE) * SGXIndependentSealing::UNSEALED_DATA_CHUNK_SIZE) +
-		((outsize % SGXIndependentSealing::SEALED_DATA_CHUNK_SIZE) - SGXIndependentSealing::SEALING_HEADER_SIZE);
+	outsize = SGXIndependentSealing::calc_unsealed_data_size(outsize);
 	return outsize;
 
 }
-
-/**
-* @return bool
-* @param  key_16_
-*/
-
-
-/**
-* @return bool
-* @param  name
-* @param  port
-*/
-
-
-/**
-size is 1024, 0 padding
-* @return bool
-* @param  data_1024_
-* @param  pageNum
-*/
 
 bool SGXEcallEnclaveInterface::getEPGPage(unsigned char * data, int pageNum)
 {
@@ -261,10 +223,20 @@ bool SGXEcallEnclaveInterface::getEPGPage(unsigned char * data, int pageNum)
 
 bool SGXEcallEnclaveInterface::setConnAddr(char * name, int port)
 {
-	return false;
+	m_connport = port;
+	strncpy(m_conaddr, name, 1024);
+	return true;
 }
 
 bool SGXEcallEnclaveInterface::initSecureChannel(unsigned char key[16])
 {
-	return sgx_read_rand(key, 16) ==  SGX_SUCCESS;
+	bool ret = sgx_read_rand(key, 16) ==  SGX_SUCCESS;
+	memcpy(sec_channel_key, key, 16);
+	return ret;
+}
+
+bool SGXEcallEnclaveInterface::downloadMovie(size_t movie_id)
+{
+
+	return false;
 }
