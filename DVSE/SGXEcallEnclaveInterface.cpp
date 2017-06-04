@@ -10,12 +10,6 @@ SGXEcallEnclaveInterface::SGXEcallEnclaveInterface () {
 
 SGXEcallEnclaveInterface::~SGXEcallEnclaveInterface () { }
 
-/**
-* // writes a file into log
-* @param  data
-* @param  datasize
-*/
-
  bool SGXEcallEnclaveInterface::write_log(unsigned char * data, size_t datasize)
 {
 	void *f = nullptr;
@@ -50,17 +44,13 @@ SGXEcallEnclaveInterface::~SGXEcallEnclaveInterface () { }
 	if (!SGXIndependentSealing::destroy_allocated_data(out)) return false;
 	return true;
 }
- // assuming slash issue is alreadu solved during init_enclave
+ // assuming slash issue is already solved during init_enclave
  bool SGXEcallEnclaveInterface::createFilename(char* fname, char * basefolder, const char* name)
  {
 	 strncpy(fname, basefolder, 1024);
 	 strncat(fname, name, 1024);
 	 return true;
  }
-/**
-* refreshes and saves epg and coupon files
-* @return bool
-*/
 
  bool SGXEcallEnclaveInterface::refresh_and_save_service_files()
 {
@@ -93,12 +83,6 @@ SGXEcallEnclaveInterface::~SGXEcallEnclaveInterface () { }
 
 	return res;
 }
-
-/**
-*  initializes enclave data base folder and calls service file refreshing 
-* @return bool
-* @param  full_folder_name_1024_
-*/
 
 bool SGXEcallEnclaveInterface::init_enclave(char * full_folder_name)
 {
@@ -163,7 +147,7 @@ bool SGXEcallEnclaveInterface::start_movie_play(size_t movie_id)
 		if (!release_movie())
 			return false;
 	}
-	if (!m_largeFileReader.openMovie(movie_id))
+	if (!m_largeFileReader.openMovie(this->base_folder, movie_id))
 	{
 		return false;
 	}
@@ -239,9 +223,9 @@ bool SGXEcallEnclaveInterface::downloadMovie(size_t movie_id)
 {
 	size_t read_size = 0, write_size = 0;
 	unsigned char buffer[1024];
-	if (!m_largeFileNetReader.openMovie(movie_id))
+	if (!m_largeFileNetReader.openMovie(this->base_folder, movie_id))
 		return false;
-	if (!m_largeFileWriter.openMovie(movie_id))
+	if (!m_largeFileWriter.openMovie(this->base_folder, movie_id))
 		return false;
 	do
 	{

@@ -17,7 +17,7 @@ public:
 
   virtual ~SGXNetworkReader ();
 
-  virtual bool openMovie(size_t movie_id);
+  virtual bool openMovie(char* base_folder, size_t movie_id);
 
   /**
   * @return bool

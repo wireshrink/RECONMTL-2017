@@ -18,7 +18,7 @@ public:
 
   virtual ~SGXFileReader ();
 
-  virtual bool openMovie(size_t movie_id);
+  virtual bool openMovie(char * folder, size_t movie_id);
  
   /**
   * @return bool
@@ -59,7 +59,7 @@ protected:
 
 
 private:
-
+	size_t m_pos; // the pos is in clear text
 
 
 };

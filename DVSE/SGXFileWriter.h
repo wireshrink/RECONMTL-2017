@@ -18,7 +18,7 @@ public:
 
   virtual ~SGXFileWriter ();
 
-  virtual bool openMovie(size_t movie_id);
+  virtual bool openMovie(char* base_folder, size_t movie_id);
 
   /**
   * @return bool

@@ -55,7 +55,12 @@ public:
   */
   virtual bool close() = 0;
 
-  virtual bool openMovie(size_t movie_id) = 0;
+  virtual bool openMovie(char* folder, size_t movie_id) = 0;
+
+  bool initialized()
+  {
+	  return m_binitialized;
+  }
 protected:
 
   // Static Protected attributes
@@ -79,35 +84,11 @@ public:
   //  
 
 protected:
+	unsigned char buffer[1024 * 10];
+	void* handle;
+	bool m_binitialized;
 
 
-private:
-
-  // Static Private attributes
-  //  
-
-  // Private attributes
-  //  
-
-  unsigned char buffer[1024*10];
-  void* handle;
-  bool m_binitialized;
-public:
-
-
-  // Private attribute accessor methods
-  //  
-
-private:
-
-public:
-
-
-  // Private attribute accessor methods
-  //  
-
-
-  
   /**
    * Set the value of handle
    * @param new_var the new value of handle
@@ -124,10 +105,7 @@ public:
     return handle;
   }
 
-  bool initialized()
-  {
-	  return m_binitialized;
-  }
+  
   static bool createMovieFileName(size_t movie_id, char* base_folder, char* buf, size_t buf_size);
 private:
 
