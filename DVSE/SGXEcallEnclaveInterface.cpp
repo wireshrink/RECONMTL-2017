@@ -151,7 +151,7 @@ bool SGXEcallEnclaveInterface::start_movie_play(size_t movie_id)
 	{
 		return false;
 	}
-	return true;
+	return m_largeFileReader.initialized();
 }
 
 int SGXEcallEnclaveInterface::read_movie_chunk(size_t offset, size_t max_size, unsigned char * data)
