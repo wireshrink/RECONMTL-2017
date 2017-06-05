@@ -123,8 +123,8 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(QTDIR)\lib\qtmain.lib;shell32.lib;$(QTDIR)\lib\Qt5MultimediaWidgets.lib;$(QTDIR)\lib\Qt5Multimedia.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5Network.lib;$(QTDIR)\lib\Qt5Core.lib;Qt5Gui.lib;Qt5Multimedia.lib;Qt5Network.lib;Qt5MultimediaWidgets.lib;Qt5Core.lib;Qt5Quick.lib;Qt5QuickWidgets.lib;sgx_urts.lib;sgx_uae_service.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Release;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(QTDIR)\lib\qtmain.lib;shell32.lib;$(QTDIR)\lib\Qt5MultimediaWidgets.lib;$(QTDIR)\lib\Qt5Multimedia.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5Network.lib;$(QTDIR)\lib\Qt5Core.lib;Qt5Gui.lib;Qt5Multimedia.lib;Qt5Network.lib;Qt5MultimediaWidgets.lib;Qt5Core.lib;Qt5Quick.lib;Qt5QuickWidgets.lib;sgx_urts.lib;sgx_uae_service.lib;sgx_ussl.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Release;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;;$(SolutionDir)\..\SgxOpenSSL\lib\SGX\x64\Release;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -165,8 +165,8 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(QTDIR)\lib\qtmain.lib;shell32.lib;$(QTDIR)\lib\Qt5MultimediaWidgets.lib;$(QTDIR)\lib\Qt5Multimedia.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5Network.lib;$(QTDIR)\lib\Qt5Core.lib;Qt5Gui.lib;Qt5Multimedia.lib;Qt5Network.lib;Qt5MultimediaWidgets.lib;Qt5Core.lib;Qt5Quick.lib;Qt5QuickWidgets.lib;sgx_urts.lib;sgx_uae_service.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Release;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(QTDIR)\lib\qtmain.lib;shell32.lib;$(QTDIR)\lib\Qt5MultimediaWidgets.lib;$(QTDIR)\lib\Qt5Multimedia.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5Network.lib;$(QTDIR)\lib\Qt5Core.lib;Qt5Gui.lib;Qt5Multimedia.lib;Qt5Network.lib;Qt5MultimediaWidgets.lib;Qt5Core.lib;Qt5Quick.lib;Qt5QuickWidgets.lib;sgx_urts.lib;sgx_uae_service.lib;sgx_ussl.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Release;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;;$(SolutionDir)\..\SgxOpenSSL\lib\SGX\x64\Release;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -207,8 +207,8 @@
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(QTDIR)\lib\qtmaind.lib;shell32.lib;$(QTDIR)\lib\Qt5MultimediaWidgetsd.lib;$(QTDIR)\lib\Qt5Multimediad.lib;$(QTDIR)\lib\Qt5Widgetsd.lib;$(QTDIR)\lib\Qt5Guid.lib;$(QTDIR)\lib\Qt5Networkd.lib;$(QTDIR)\lib\Qt5Cored.lib;Qt5Guid.lib;Qt5Multimediad.lib;Qt5Networkd.lib;Qt5MultimediaWidgetsd.lib;Qt5Cored.lib;Qt5Quickd.lib;Qt5QuickWidgetsd.lib;sgx_urts.lib;sgx_uae_service.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Debug;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(QTDIR)\lib\qtmaind.lib;shell32.lib;$(QTDIR)\lib\Qt5MultimediaWidgetsd.lib;$(QTDIR)\lib\Qt5Multimediad.lib;$(QTDIR)\lib\Qt5Widgetsd.lib;$(QTDIR)\lib\Qt5Guid.lib;$(QTDIR)\lib\Qt5Networkd.lib;$(QTDIR)\lib\Qt5Cored.lib;Qt5Guid.lib;Qt5Multimediad.lib;Qt5Networkd.lib;Qt5MultimediaWidgetsd.lib;Qt5Cored.lib;Qt5Quickd.lib;Qt5QuickWidgetsd.lib;sgx_urts.lib;sgx_uae_service.lib;sgx_ussl.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Debug;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;$(QTDIR)\lib;;$(SolutionDir)\..\SgxOpenSSL\lib\SGX\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -248,8 +248,8 @@
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(QTDIR)\lib\qtmaind.lib;shell32.lib;$(QTDIR)\lib\Qt5MultimediaWidgetsd.lib;$(QTDIR)\lib\Qt5Multimediad.lib;$(QTDIR)\lib\Qt5Widgetsd.lib;$(QTDIR)\lib\Qt5Guid.lib;$(QTDIR)\lib\Qt5Networkd.lib;$(QTDIR)\lib\Qt5Cored.lib;Qt5Guid.lib;Qt5Multimediad.lib;Qt5Networkd.lib;Qt5MultimediaWidgetsd.lib;Qt5Cored.lib;Qt5Quickd.lib;Qt5QuickWidgetsd.lib;sgx_urts_sim.lib;sgx_uae_service_sim.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Debug;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(QTDIR)\lib\qtmaind.lib;shell32.lib;$(QTDIR)\lib\Qt5MultimediaWidgetsd.lib;$(QTDIR)\lib\Qt5Multimediad.lib;$(QTDIR)\lib\Qt5Widgetsd.lib;$(QTDIR)\lib\Qt5Guid.lib;$(QTDIR)\lib\Qt5Networkd.lib;$(QTDIR)\lib\Qt5Cored.lib;Qt5Guid.lib;Qt5Multimediad.lib;Qt5Networkd.lib;Qt5MultimediaWidgetsd.lib;Qt5Cored.lib;Qt5Quickd.lib;Qt5QuickWidgetsd.lib;sgx_urts_sim.lib;sgx_uae_service_sim.lib;sgx_ussl.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Debug;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;;$(SolutionDir)\..\SgxOpenSSL\lib\SGX\x64\Debug;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -508,16 +508,16 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\DVSE\DVSE.edl">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Prerelease|x64'">"$(SGXSDKInstallPath)\bin\win32\Release\sgx_edger8r.exe" --untrusted ".\..\DVSE\DVSE.edl" --search-path ".\..\DVSE%3b$(SGXSDKInstallPath)\include"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Prerelease|x64'">"$(SGXSDKInstallPath)\bin\win32\Release\sgx_edger8r.exe" --untrusted ".\..\DVSE\DVSE.edl" --search-path ".\..\DVSE%3b$(SGXSDKInstallPath)\include;$(SolutionDir)\..\SgxOpenSSL\include"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Prerelease|x64'">Creating untrusted proxy/bridge routines</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Prerelease|x64'">$(ProjectDir)%(Filename)_u.h;$(ProjectDir)%(Filename)_u.c;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Simulation|x64'">"$(SGXSDKInstallPath)\bin\win32\Release\sgx_edger8r.exe" --untrusted ".\..\DVSE\DVSE.edl" --search-path ".\..\DVSE%3b$(SGXSDKInstallPath)\include"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Simulation|x64'">"$(SGXSDKInstallPath)\bin\win32\Release\sgx_edger8r.exe" --untrusted ".\..\DVSE\DVSE.edl" --search-path ".\..\DVSE%3b$(SGXSDKInstallPath)\include;$(SolutionDir)\..\SgxOpenSSL\include"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Simulation|x64'">Creating untrusted proxy/bridge routines</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Simulation|x64'">$(ProjectDir)%(Filename)_u.h;$(ProjectDir)%(Filename)_u.c;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(SGXSDKInstallPath)\bin\win32\Release\sgx_edger8r.exe" --untrusted ".\..\DVSE\DVSE.edl" --search-path ".\..\DVSE%3b$(SGXSDKInstallPath)\include"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(SGXSDKInstallPath)\bin\win32\Release\sgx_edger8r.exe" --untrusted ".\..\DVSE\DVSE.edl" --search-path ".\..\DVSE%3b$(SGXSDKInstallPath)\include;$(SolutionDir)\..\SgxOpenSSL\include"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating untrusted proxy/bridge routines</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename)_u.h;$(ProjectDir)%(Filename)_u.c;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(SGXSDKInstallPath)\bin\win32\Release\sgx_edger8r.exe" --untrusted ".\..\DVSE\DVSE.edl" --search-path ".\..\DVSE%3b$(SGXSDKInstallPath)\include"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(SGXSDKInstallPath)\bin\win32\Release\sgx_edger8r.exe" --untrusted ".\..\DVSE\DVSE.edl" --search-path ".\..\DVSE%3b$(SGXSDKInstallPath)\include;$(SolutionDir)\..\SgxOpenSSL\include"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating untrusted proxy/bridge routines</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename)_u.h;$(ProjectDir)%(Filename)_u.c;%(Outputs)</Outputs>
     </CustomBuild>
