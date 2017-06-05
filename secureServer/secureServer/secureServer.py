@@ -31,17 +31,17 @@ def main(args):
     bindsocket.listen(5)
 
 
-while True:
-    newsocket, fromaddr = bindsocket.accept()
-    connstream = ssl.wrap_socket(newsocket,
-                                 server_side=True,
-                                 certfile="server.crt",
-                                 keyfile="server.key")
-    try:
-        deal_with_client(connstream)
-    finally:
-        connstream.shutdown(socket.SHUT_RDWR)
-        connstream.close()    
+    while True:
+        newsocket, fromaddr = bindsocket.accept()
+        connstream = ssl.wrap_socket(newsocket,
+                                     server_side=True,
+                                     certfile="server.crt",
+                                     keyfile="server.key")
+        try:
+            deal_with_client(connstream)
+        finally:
+            connstream.shutdown(socket.SHUT_RDWR)
+            connstream.close()    
 
 
 if __name__ == "__main__":

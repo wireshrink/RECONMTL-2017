@@ -5,6 +5,8 @@ enclave inerfaces list:
 
 enclave {
 
+	from "sgx_tssl.edl" import *;
+
     trusted {
         /* define ECALLs here. */
 		public int ecall_init_enclave([in, string] char *storage_folder, [in, string]char * address, int port); // inits storage folder with default data if nothing exists, stores server data inside
