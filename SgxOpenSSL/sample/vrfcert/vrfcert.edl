@@ -1,0 +1,15 @@
+enclave {
+    //from "../topenssl/crypto/openssltime.edl" import *;
+    //from "sgx_tstdc.edl" import *;
+	from "sgx_tssl.edl" import *;
+
+    trusted {
+        /* define ECALLs here. */
+        public int verify_cert_in_perm([in, size=cert_in_size] const uint8_t *cert, uint32_t cert_in_size);
+    };
+
+    untrusted {
+        /* define OCALLs here. */
+
+    };
+};

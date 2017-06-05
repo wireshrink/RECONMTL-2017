@@ -1,0 +1,23 @@
+enclave {
+
+	from "sgx_tstdc.edl" import *;
+
+    trusted {
+		// this header must be included, read the comment inside for details
+		include "sgxssl_texception.h"
+		
+    };
+
+    untrusted {
+
+	// time - aggregate to 1 ocall
+		void u_sgxssl_ftime64([out, size=timeb64Len] void * timeptr, uint32_t timeb64Len);
+
+	// ws2_32 - will be left in release
+		int u_sgxssl_closesocket([user_check] void* s, [out] int* wsaError);
+		int u_sgxssl_recv([user_check] void* s, [out, size=len] void* buf, int len, int flag, [out] int* wsaError);
+		int u_sgxssl_send([user_check] void* s, [in, size=len] const char* buf, int len, int flags, [out] int* wsaError);
+		int u_sgxssl_shutdown([user_check] void* s, int how, [out] int* wsaError);
+
+    };
+};
