@@ -2,7 +2,7 @@
 #ifndef SGXEPG_H
 #define SGXEPG_H
 #include "SGXServiceFile.h"
-
+#include <time.h>
 
 
 /**
@@ -14,41 +14,17 @@ class SGXEpg : public SGXServiceFile
 {
 public:
 
-  // Constructors/Destructors
-  //  
-
-
-  /**
-   * Empty Constructor
-   */
+ 
   SGXEpg ();
 
-  /**
-   * Empty Destructor
-   */
   virtual ~SGXEpg ();
-
-  // Static Public attributes
-  //  
-
-  // Public attributes
-  //  
-
-
-  // Public attribute accessor methods
-  //  
-
-
-  // Public attribute accessor methods
-  //  
-
-
 
   /**
    * @param  movie_id
    */
-  void getMovieLastTime (size_t movie_id)
+  time_t getMovieLastTime (size_t movie_id)
   {
+	  return 0;
   }
 
 
@@ -65,58 +41,8 @@ public:
 
   virtual bool download()
   {
-	  return false;
+	  return downloadById("epg");
   }
-protected:
-
-  // Static Protected attributes
-  //  
-
-  // Protected attributes
-  //  
-
-public:
-
-
-  // Protected attribute accessor methods
-  //  
-
-protected:
-
-public:
-
-
-  // Protected attribute accessor methods
-  //  
-
-protected:
-
-
-private:
-
-  // Static Private attributes
-  //  
-
-  // Private attributes
-  //  
-
-public:
-
-
-  // Private attribute accessor methods
-  //  
-
-private:
-
-public:
-
-
-  // Private attribute accessor methods
-  //  
-
-private:
-
-
 
 };
 

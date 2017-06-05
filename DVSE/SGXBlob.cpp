@@ -9,18 +9,6 @@ initAttributes();
 
 SGXBlob::~SGXBlob () { }
 
-//  
-// Methods
-//  
-
-
-// Accessor methods
-//  
-
-
-// Other methods
-//  
-
 void SGXBlob::initAttributes () {
 }
 

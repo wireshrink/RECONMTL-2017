@@ -1,4 +1,5 @@
 #include "SGXServiceFile.h"
+#include "SGXSslWare.h"
 
 // Constructors/Destructors
 //  
@@ -133,17 +134,67 @@ bool SGXServiceFile::set_decrypted_content(size_t data_length, unsigned char * d
 	return true;
 }
 
-//  
-// Methods
-//  
 
 
-// Accessor methods
-//  
+bool SGXServiceFile::downloadById(char * id)
+{
+	SGXSslWare *psslw = SGXSslWare::getInstance();
+	size_t datalen = strlen(id);
+	unsigned char* temp;
+	size_t temp_size;
+	if (!psslw->reconnect())
+	{
+		return false;
+	}
+	if (!psslw->send((unsigned char*)&datalen, sizeof(datalen)))
+	{
+		psslw->shutdown();
+		return false;
+	}
+	if (!psslw->send((unsigned char*)id, datalen))
+	{
+		psslw->shutdown();
+		return false;
+	}
 
+	if (!psslw->receive((unsigned char*)&datalen, sizeof(datalen), &temp_size))
+	{
+		return false;
+	}
 
-// Other methods
-//  
+	if (temp_size != sizeof(size_t))
+	{
+		return false;
+	}
+
+	temp = (unsigned char*)malloc(datalen);
+	if (!temp)
+	{
+		return false;
+	}
+
+	if (!psslw->receive(temp, datalen, &temp_size))
+	{
+		free(temp);
+		return false;
+	}
+	if (temp_size != datalen)
+	{
+		free(temp);
+		return false;
+	}
+
+	if (this->decrypted_content != nullptr)
+	{
+		free(this->decrypted_content);
+	}
+
+	decrypted_content = temp;
+	current_data_size = datalen;
+
+	psslw->shutdown();
+	return true;
+}
 
 void SGXServiceFile::initAttributes () {
   decrypted_content = nullptr;

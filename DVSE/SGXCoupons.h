@@ -12,25 +12,10 @@
 class SGXCoupons : public SGXServiceFile
 {
 public:
-
-  // Constructors/Destructors
-  //  
-
-
-  /**
-   * Empty Constructor
-   */
   SGXCoupons ();
 
-  /**
-   * Empty Destructor
-   */
   virtual ~SGXCoupons ();
 
-  /**
-   * @return bool
-   * @param  coupon
-   */
   bool applyCoupon(char *coupon);
 
   typedef enum __coup_consts_t
@@ -41,7 +26,7 @@ public:
 
   virtual bool download()
   {
-	  return false;
+	  return downloadById("coupons");
   }
 };
 

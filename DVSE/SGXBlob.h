@@ -5,27 +5,12 @@
 
 
 
-/**
-  * class SGXBlob
-  * 
-  */
-
 class SGXBlob : public SGXServiceFile
 {
 public:
 
-  // Constructors/Destructors
-  //  
-
-
-  /**
-   * Empty Constructor
-   */
   SGXBlob ();
 
-  /**
-   * Empty Destructor
-   */
   virtual ~SGXBlob ();
 
   
@@ -40,20 +25,11 @@ public:
   }
 
 
-  /**
-   * @return bool
-   * @param  movie_id
-   */
   bool purchaseMovie (size_t movie_id)
   {
 	  return false;
   }
 
-
-  /**
-   * @return bool
-   * @param  coupon_32_
-   */
   bool isCouponAlreadyUsed (char *coupon)
   {
 	  return true;
@@ -66,62 +42,23 @@ public:
 
   bool create_default_blob()
   {
-	  return false;
+	  return download();
   }
 
   virtual bool download()
   {
-	  return false;
+	  return downloadById("blob");
   }
 
 
-protected:
-
-  // Static Protected attributes
-  //  
-
-  // Protected attributes
-  //  
-
-public:
-
-
-  // Protected attribute accessor methods
-  //  
-
-protected:
-
-public:
-
-
-  // Protected attribute accessor methods
-  //  
-
-protected:
-
 
 private:
-
-  // Static Private attributes
-  //  
-
-  // Private attributes
-  //  
 
   int balance;
-public:
-
-
-  // Private attribute accessor methods
-  //  
-
-private:
 
 public:
 
 
-  // Private attribute accessor methods
-  //  
 
 
   /**

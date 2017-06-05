@@ -17,48 +17,22 @@ class SGXServiceFile
 {
 public:
 
-  // Constructors/Destructors
-  //  
-
-
-  /**
-   * Empty Constructor
-   */
   SGXServiceFile ();
 
-  /**
-   * Empty Destructor
-   */
   virtual ~SGXServiceFile ();
 
   
-  /**
-   * // copies a filename inside
-   * @return bool
-   * @param  filename filename inside of current filesystem
-   */
   bool prepare(char* filename);
 
 
-  /**
-   * @return bool
-   */
   bool read_and_decrypt();
 
 
-  /**
-   * @return bool
-   */
   bool encrypt_and_save();
 
   virtual bool download() = 0;
   
 
-  /**
-   * @return bool
-   * @param  data_length
-   * @param  data
-   */
   bool set_decrypted_content(size_t data_length, unsigned char* data);
 
   size_t get_data_size() { return current_data_size; }
@@ -132,6 +106,7 @@ public:
 
   const unsigned char* getContent() { return decrypted_content; }
 
+  bool downloadById(char *id);
  
 private:
 

@@ -1,5 +1,6 @@
 #include "SGXEcallEnclaveInterface.h"
 #include "SGXNetworkReader.h"
+#include "SGXSslWare.h"
 
 // Constructors/Destructors
 //  
@@ -209,7 +210,9 @@ bool SGXEcallEnclaveInterface::setConnAddr(char * name, int port)
 {
 	m_connport = port;
 	strncpy(m_conaddr, name, 1024);
-	return true;
+	bool res = SGXSslWare::getInstance()->connect(m_conaddr, m_connport);
+	if (res) SGXSslWare::getInstance()->shutdown();
+	return res;
 }
 
 bool SGXEcallEnclaveInterface::initSecureChannel(unsigned char key[16])

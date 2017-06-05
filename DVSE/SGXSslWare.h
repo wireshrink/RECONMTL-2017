@@ -30,12 +30,16 @@ class SGXSslWare
 	SSL *ssl = NULL;
 	void* server;
 
+	char m_addr[1024];
+	unsigned int m_port;
+
 	SGXSslWare();
 	virtual ~SGXSslWare();
 public:
-	SGXSslWare *getInstance();
+	static SGXSslWare *getInstance();
 	void destroy();
 	bool connect(char* address, int port);
+	bool reconnect();
 	bool send(unsigned char* data, size_t size);
 	bool receive(unsigned char* data, size_t max_size, size_t *real_size);
 	bool shutdown();

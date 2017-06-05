@@ -121,9 +121,17 @@ bool SGXSslWare::connect(char * address, int port)
 		return false;
 	}
 	if (cert) { X509_free(cert); }
+
+	strncpy(m_addr, address, 1024);
+	m_port = port;
 	return true;
 
 
+}
+
+bool SGXSslWare::reconnect()
+{
+	return connect(m_addr, m_port);
 }
 
 bool SGXSslWare::send(unsigned char * data, size_t size)
