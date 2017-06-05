@@ -48,13 +48,13 @@
     <ClCompile Include="SGXLargeFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SGXNetworkCryptor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SGXNetworkReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SGXServiceFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SGXSslWare.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,13 +86,13 @@
     <ClInclude Include="SGXLargeFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SGXNetworkCryptor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SGXNetworkReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SGXServiceFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SGXSslWare.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

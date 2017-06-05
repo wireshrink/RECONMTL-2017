@@ -335,9 +335,9 @@
     <ClCompile Include="SGXFileWriter.cpp" />
     <ClCompile Include="SGXIndependentSealing.cpp" />
     <ClCompile Include="SGXLargeFile.cpp" />
-    <ClCompile Include="SGXNetworkCryptor.cpp" />
     <ClCompile Include="SGXNetworkReader.cpp" />
     <ClCompile Include="SGXServiceFile.cpp" />
+    <ClCompile Include="SGXSslWare.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DVSE_t.h" />
@@ -349,9 +349,9 @@
     <ClInclude Include="SGXFileWriter.h" />
     <ClInclude Include="SGXIndependentSealing.h" />
     <ClInclude Include="SGXLargeFile.h" />
-    <ClInclude Include="SGXNetworkCryptor.h" />
     <ClInclude Include="SGXNetworkReader.h" />
     <ClInclude Include="SGXServiceFile.h" />
+    <ClInclude Include="SGXSslWare.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="DVSE.edl">

@@ -90,25 +90,13 @@ typedef struct ms_ocall_file_size_t {
 } ms_ocall_file_size_t;
 
 typedef struct ms_ocall_socket_connect_t {
-	int ms_retval;
+	void* ms_retval;
 	char* ms_url;
 	unsigned int ms_port;
 } ms_ocall_socket_connect_t;
 
-typedef struct ms_ocall_socket_send_t {
-	int ms_retval;
-	void* ms_data;
-	size_t ms_data_size;
-} ms_ocall_socket_send_t;
-
-typedef struct ms_ocall_socket_receive_t {
-	int ms_retval;
-	void* ms_data;
-	size_t ms_data_size;
-} ms_ocall_socket_receive_t;
-
 typedef struct ms_ocall_socket_shutdown_t {
-	int ms_retval;
+	void* ms_socket;
 } ms_ocall_socket_shutdown_t;
 
 typedef struct ms_ocall_get_the_current_time_t {
@@ -228,26 +216,10 @@ static sgx_status_t SGX_CDECL DVSE_ocall_socket_connect(void* pms)
 	return SGX_SUCCESS;
 }
 
-static sgx_status_t SGX_CDECL DVSE_ocall_socket_send(void* pms)
-{
-	ms_ocall_socket_send_t* ms = SGX_CAST(ms_ocall_socket_send_t*, pms);
-	ms->ms_retval = ocall_socket_send(ms->ms_data, ms->ms_data_size);
-
-	return SGX_SUCCESS;
-}
-
-static sgx_status_t SGX_CDECL DVSE_ocall_socket_receive(void* pms)
-{
-	ms_ocall_socket_receive_t* ms = SGX_CAST(ms_ocall_socket_receive_t*, pms);
-	ms->ms_retval = ocall_socket_receive(ms->ms_data, ms->ms_data_size);
-
-	return SGX_SUCCESS;
-}
-
 static sgx_status_t SGX_CDECL DVSE_ocall_socket_shutdown(void* pms)
 {
 	ms_ocall_socket_shutdown_t* ms = SGX_CAST(ms_ocall_socket_shutdown_t*, pms);
-	ms->ms_retval = ocall_socket_shutdown();
+	ocall_socket_shutdown(ms->ms_socket);
 
 	return SGX_SUCCESS;
 }
@@ -342,9 +314,9 @@ static sgx_status_t SGX_CDECL DVSE_sgx_thread_set_multiple_untrusted_events_ocal
 
 static const struct {
 	size_t nr_ocall;
-	void * func_addr[20];
+	void * func_addr[18];
 } ocall_table_DVSE = {
-	20,
+	18,
 	{
 		(void*)(uintptr_t)DVSE_ocall_file_open,
 		(void*)(uintptr_t)DVSE_ocall_file_close,
@@ -352,8 +324,6 @@ static const struct {
 		(void*)(uintptr_t)DVSE_ocall_file_write,
 		(void*)(uintptr_t)DVSE_ocall_file_size,
 		(void*)(uintptr_t)DVSE_ocall_socket_connect,
-		(void*)(uintptr_t)DVSE_ocall_socket_send,
-		(void*)(uintptr_t)DVSE_ocall_socket_receive,
 		(void*)(uintptr_t)DVSE_ocall_socket_shutdown,
 		(void*)(uintptr_t)DVSE_ocall_get_the_current_time,
 		(void*)(uintptr_t)DVSE_u_sgxssl_ftime64,

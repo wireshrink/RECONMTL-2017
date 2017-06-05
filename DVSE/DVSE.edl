@@ -37,10 +37,8 @@ enclave {
 
 		size_t ocall_file_size ([user_check] void* file_handle);
 
-		int ocall_socket_connect ([in, string]char *url, unsigned int port  );
-        int ocall_socket_send    ([in, out, size=data_size] void* data,size_t data_size );
-		int ocall_socket_receive ([in, out, size=data_size] void* data,size_t data_size );
-		int ocall_socket_shutdown ();
+		void* ocall_socket_connect ([in, string]char *url, unsigned int port  );
+		void ocall_socket_shutdown ([user_check] void* socket);
 		int ocall_get_the_current_time([in] unsigned char thetime[16]);
     };
 };

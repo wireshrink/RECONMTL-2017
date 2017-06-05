@@ -1,4 +1,5 @@
 #include "SGXNetworkReader.h"
+#include "SGXSslWare.h"
 
 
 SGXNetworkReader::SGXNetworkReader () {

@@ -38,7 +38,7 @@ int ocall_file_write(/*[user_check]*/void *handle, size_t size, /*[in, out]*/uns
 
 SOCKET s = INVALID_SOCKET;
 
-int ocall_socket_connect(/*[in, string]*/char *url, unsigned int port)
+void* ocall_socket_connect(/*[in, string]*/char *url, unsigned int port)
 {
 	struct sockaddr_in server;
 	s = socket(AF_INET, SOCK_STREAM, 0);
@@ -49,19 +49,11 @@ int ocall_socket_connect(/*[in, string]*/char *url, unsigned int port)
 	{
 		return 0;
 	}
-	return 1;
+	return (void*)s;
 }
-int ocall_socket_send(/*[in, out, size = data_size]*/ void* data, size_t data_size)
+void ocall_socket_shutdown(void * socket)
 {
-	return send(s,(const char*)data, data_size, 0);
-}
-int ocall_socket_receive(/*[in, out, size = data_size]*/ void* data, size_t data_size)
-{
-	return recv(s, (char*) data,data_size, 0 );
-}
-int ocall_socket_shutdown()
-{
-	return shutdown(s, SD_BOTH);
+	shutdown((SOCKET)socket, SD_BOTH);
 }
 int ocall_get_the_current_time(unsigned char time_holder[16])
 {
