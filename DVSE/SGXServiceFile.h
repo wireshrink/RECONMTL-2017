@@ -37,56 +37,16 @@ public:
 
   size_t get_data_size() { return current_data_size; }
 
-protected:
-
-  // Static Protected attributes
-  //  
-
-  // Protected attributes
-  //  
-
-public:
-
-
-  // Protected attribute accessor methods
-  //  
-
-protected:
-
-public:
-
-
-  // Protected attribute accessor methods
-  //  
-
-protected:
 
 
 private:
 
-  // Static Private attributes
-  //  
-
-  // Private attributes
-  //  
 
   char full_file_name[1024];
   unsigned char * decrypted_content;
   size_t current_data_size;
-public:
-
-
-  // Private attribute accessor methods
-  //  
-
-private:
 
 public:
-
-
-  // Private attribute accessor methods
-  //  
-
 
   /**
    * Set the value of full_file_name

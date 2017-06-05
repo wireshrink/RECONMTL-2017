@@ -52,12 +52,8 @@ public:
   */
   virtual bool close();
 
-
-protected:
-
-
 private:
-
+	size_t rdptr, file_size;
 
 
 };
