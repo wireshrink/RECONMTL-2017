@@ -338,7 +338,6 @@
     <ClCompile Include="SGXNetworkCryptor.cpp" />
     <ClCompile Include="SGXNetworkReader.cpp" />
     <ClCompile Include="SGXServiceFile.cpp" />
-    <ClCompile Include="SGXVideoPlayerState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DVSE_t.h" />
@@ -353,7 +352,6 @@
     <ClInclude Include="SGXNetworkCryptor.h" />
     <ClInclude Include="SGXNetworkReader.h" />
     <ClInclude Include="SGXServiceFile.h" />
-    <ClInclude Include="SGXVideoPlayerState.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="DVSE.edl">

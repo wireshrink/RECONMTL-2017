@@ -57,9 +57,6 @@
     <ClCompile Include="SGXServiceFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SGXVideoPlayerState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DVSE_t.h">
@@ -96,9 +93,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SGXServiceFile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SGXVideoPlayerState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
