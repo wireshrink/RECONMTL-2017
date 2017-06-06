@@ -5,17 +5,19 @@ import pprint
 import socket
 import struct
 
-def do_something(connstream, data):
-    print "do_something:", data
-    return False
 
 def deal_with_client(connstream):
-    data = connstream.read()
-    while data:
-        if not do_something(connstream, data):
-            break
-        data = connstream.read()
-
+    data = connstream.read(8) #size of a name
+    sz = struct.unpack("<Q", data)
+    filename_packed = connstream.read(sz)
+    filename = str(filename_packed)
+    full_filename = os.path.join(sys.argv[1]+"\\", filename)
+    fsize = os.path.getsize(full_filename)
+    connstream.write(struct.pack("<Q", fsize))
+    f = open(full_filename, "rb")
+    data = f.read()
+    connstream.write(data)
+ 
 
 def Usage():
     print "%s\t: Usage %s data_folder port cert_folder" % (args[0], args[0])
