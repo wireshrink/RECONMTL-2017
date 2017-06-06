@@ -63,6 +63,7 @@ void SetupDialog::finalize()
 		settings.setValue("host", shost);
 		settings.setValue("valid", false);
 	}
+	SGXware::getInstance()->initUser(this->serverIPEdit->text().toLatin1().data(), serverPortEdit->text().toInt(), this->folderEdit->text().toLatin1().data()); // insert getting properties here
 }
 void SetupDialog::testConnSlot(void)
 {

@@ -110,6 +110,7 @@ void MainWindow::on_actionSetup_triggered()
 {
     SetupDialog *pdlg = new SetupDialog;
     pdlg->exec();
+	pdlg->finalize();
     delete pdlg;
 
 }

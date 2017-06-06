@@ -41,7 +41,13 @@ bool SGXServiceFile::read_and_decrypt()
 		decrypted_content = nullptr;
 	}
 
+	if (f == nullptr)
+	{
+		return false;
+	}
 	size_t fsize = -1L;
+
+
 
 	ret = ocall_file_size(&fsize, f);
 	if (ret != SGX_SUCCESS)

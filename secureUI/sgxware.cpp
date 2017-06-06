@@ -19,7 +19,7 @@
 #include "DVSE_u.h"
 
 # define TOKEN_FILENAME   "Enclave.token"
-# define ENCLAVE_FILENAME "DVSE.signed.dll"
+# define ENCLAVE_FILENAME "C:\\Users\\atlas\\Documents\\GitHub\\RECONMTL-2017\\reconmtl2017dvse\\x64\\Debug\\DVSE.signed.dll"
 
 /* Global EID shared by multiple threads */
 sgx_enclave_id_t global_eid = 0;
@@ -357,6 +357,13 @@ bool			SGXware::firstMovie(movie_t *pFirstMovie)
 	// assuming fresh reloaded EPG
 	epg_rdPtr = 0;
 	epg_page_index = 0;	
+	ret = ecall_update_epg(global_eid, &res);
+	if (ret != SGX_SUCCESS)
+	{
+		print_error_message(ret);
+		return false;
+	}
+
 	ret = ecall_get_epg_page(global_eid, &res, epg_page_index ,1024,  current_epg_page);
 
 	if (ret != SGX_SUCCESS)

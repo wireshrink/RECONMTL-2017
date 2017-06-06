@@ -15,7 +15,7 @@ int ecall_init_enclave(/*[in, string]*/ char *storage_folder,
 	/*[in]*/         int port)
 {
 	
-	return inf.init_enclave(storage_folder) && inf.setConnAddr(address, port);
+	return inf.setConnAddr(address, port) && inf.init_enclave(storage_folder) ;
 
 }
 
