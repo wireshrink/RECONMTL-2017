@@ -28,12 +28,13 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	QSettings settings("DVSE", "videogui");
-	while (!settings.value("valid").toBool())
+	
+	do 
 	{
 		SetupDialog dlg;
 		dlg.exec();
 		dlg.finalize();
-	}
+	} while (!settings.value("valid").toBool());
 
 
     MainWindow w;
