@@ -26,14 +26,14 @@ int ocall_file_read(void *handle, size_t offset, size_t size, /*[in, out]*/unsig
 	size_t pos = ftell((FILE*)handle);
 	if (pos != offset)
 	{
-		fseek((FILE*)handle, offset, SEEK_SET);
+		fseek((FILE*)handle, (long)offset, SEEK_SET);
 	}
-	return fread(data, 1, size, (FILE*) handle);
+	return (int)fread(data, 1, size, (FILE*) handle);
 }
 
 int ocall_file_write(/*[user_check]*/void *handle, size_t size, /*[in, out]*/unsigned char *data)
 {
-	return fwrite(data, 1, size, (FILE*)handle);
+	return (int)fwrite(data, 1, size, (FILE*)handle);
 }
 
 SOCKET s = INVALID_SOCKET;
@@ -66,6 +66,6 @@ size_t ocall_file_size(void* handle)
 	size_t pos = ftell((FILE*)handle);
 	fseek((FILE*)handle, 0, SEEK_END);
 	size_t sz = ftell((FILE*)handle);
-	fseek((FILE*)handle, pos, SEEK_SET); // getting back to thne position
+	fseek((FILE*)handle,(long) pos, SEEK_SET); // getting back to thne position
 	return sz;
 }
