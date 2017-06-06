@@ -77,10 +77,10 @@ SGXEcallEnclaveInterface::~SGXEcallEnclaveInterface () { }
 	}
 	
 	res = res && m_epg.download();
-	res = res && m_epg.read_and_decrypt();
+	res = res && m_epg.encrypt_and_save();
 
 	res = res && m_coupons.download();
-	res = res && m_coupons.read_and_decrypt();
+	res = res && m_coupons.encrypt_and_save();
 
 	return res;
 }
