@@ -1,8 +1,8 @@
 #include "SGXSslWare.h"
 #include "DVSE_t.h" 
 
-
-const unsigned char MANUAL_SERVER_SHA1_HASH[] = { 0 };
+// SHA1 Fingerprint=8C:8D:5C:F1:86:9C:9B:16:AA:D5:22:FB:5D:B5:09:31:9E:57:39:94
+const unsigned char MANUAL_SERVER_SHA1_HASH[] = { 0x8C, 0x8D, 0x5C, 0xF1, 0x86, 0x9C, 0x9B, 0x16, 0xAA, 0xD5, 0x22, 0xFB, 0x5D, 0xB5, 0x09, 0x31, 0x9E, 0x57, 0x39, 0x94 };
 // this code is heavily based on the sample from http://fm4dd.com/openssl/sslconnect.htm
 
 SGXSslWare * SGXSslWare::m_pInstance = nullptr;
@@ -114,6 +114,9 @@ bool SGXSslWare::connect(char * address, int port)
 	cert = SSL_get_peer_certificate(ssl);
 	if (cert == NULL)
 		return false;
+	/* ---------------------------------------------------------- *
+	* This is demo buggy app, no revocation handling reqauired    *
+	* ---------------------------------------------------------- */
 
 	if (memcmp(cert->sha1_hash, MANUAL_SERVER_SHA1_HASH, SHA_DIGEST_LENGTH))
 	{

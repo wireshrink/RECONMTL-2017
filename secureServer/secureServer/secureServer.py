@@ -18,10 +18,10 @@ def deal_with_client(connstream):
 
 
 def Usage():
-    print "%s\t: Usage %s data_folder port" % (args[0], args[0])
+    print "%s\t: Usage %s data_folder port cert_folder" % (args[0], args[0])
 
 def main(args):
-    if len(args) < 3:
+    if len(args) < 4:
         Usage(args);
         sys.exit();
     
@@ -35,8 +35,8 @@ def main(args):
         newsocket, fromaddr = bindsocket.accept()
         connstream = ssl.wrap_socket(newsocket,
                                      server_side=True,
-                                     certfile="server.crt",
-                                     keyfile="server.key")
+                                     certfile=os.path.join(argv[3], "domain.crt"),
+                                     keyfile=os.path.join(argv[3], "domain.key"))
         try:
             deal_with_client(connstream)
         finally:
