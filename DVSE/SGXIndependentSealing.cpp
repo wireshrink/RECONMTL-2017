@@ -192,7 +192,7 @@ extern "C" sgx_status_t independent_seal_data_ex(const uint16_t key_policy,
 	independent_key_request_t tmp_key_request;
 	uint8_t payload_iv[SGX_SEAL_IV_SIZE];
 	memset(&payload_iv, 0, sizeof(payload_iv));
-	if (SGXIndependentSealing::generate_random_data(payload_iv, SGX_SEAL_IV_SIZE))
+	if (SGXIndependentSealing::generate_random_data(payload_iv, SGX_SEAL_IV_SIZE) != SGX_SUCCESS)
 	{
 		return SGX_ERROR_UNEXPECTED;
 	}
@@ -438,7 +438,10 @@ bool SGXIndependentSealing::seal_data(unsigned char * in, size_t in_size, unsign
 {
 	*out = (unsigned char*) malloc(calc_sealed_data_size(in_size));
 
-	if ((*out) == nullptr) return false; // no memory available
+	if ((*out) == nullptr)
+	{
+		return false; // no memory available
+	}
 
 	*poutsize = calc_sealed_data_size(in_size);
 

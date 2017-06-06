@@ -44,11 +44,15 @@ void* ocall_socket_connect(/*[in, string]*/char *url, unsigned int port)
 	s = socket(AF_INET, SOCK_STREAM, 0);
 	server.sin_addr.s_addr = inet_addr(url);
 	server.sin_family = AF_INET;
-	server.sin_port = port;
+	server.sin_port = htons(port);
 	if (connect(s,(struct sockaddr*) &server, sizeof(server)) < 0)
 	{
 		return 0;
 	}
+	DWORD timeout = SO_RCVTIMEO * 1000, tlen = 4;
+	getsockopt(s, SOL_SOCKET, SO_RCVTIMEO,(char*) &timeout, (int*)&tlen);
+	timeout *= 10;
+	setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
 	return (void*)s;
 }
 void ocall_socket_shutdown(void * socket)

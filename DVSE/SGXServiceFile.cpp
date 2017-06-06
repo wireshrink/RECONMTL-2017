@@ -35,11 +35,6 @@ bool SGXServiceFile::read_and_decrypt()
 	{
 		return false;
 	}
-	if (decrypted_content != nullptr)
-	{
-		free(decrypted_content);
-		decrypted_content = nullptr;
-	}
 
 	if (f == nullptr)
 	{
@@ -50,9 +45,14 @@ bool SGXServiceFile::read_and_decrypt()
 
 
 	ret = ocall_file_size(&fsize, f);
-	if (ret != SGX_SUCCESS)
+	if (ret != SGX_SUCCESS || fsize == 0 || fsize == -1L)
 	{
 		return false;
+	}
+	if (decrypted_content != nullptr)
+	{
+		free(decrypted_content);
+		decrypted_content = nullptr;
 	}
 	current_data_size = fsize;
 	unsigned char * encrypted_file_content = (unsigned char*)malloc(fsize);
@@ -135,7 +135,8 @@ bool SGXServiceFile::set_decrypted_content(size_t data_length, unsigned char * d
 	{
 		free(decrypted_content);
 	}
-	memcpy(decrypted_content, data, data_length);
+	memcpy(ldec_cont, data, data_length);
+	this->decrypted_content = ldec_cont;
 	current_data_size = data_length;
 	return true;
 }

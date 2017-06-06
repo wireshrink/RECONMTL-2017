@@ -4,19 +4,29 @@ import ssl
 
 import socket
 import struct
+import traceback
+
 
 
 def deal_with_client(connstream):
-    data = connstream.read(8) #size of a name
-    sz = struct.unpack("<Q", data)
-    filename_packed = connstream.read(sz)
-    filename = str(filename_packed)
-    full_filename = os.path.join(sys.argv[1]+"\\", filename)
-    fsize = os.path.getsize(full_filename)
-    connstream.write(struct.pack("<Q", fsize))
-    f = open(full_filename, "rb")
-    data = f.read()
-    connstream.write(data)
+
+    try:
+        data = connstream.read(8) #size of a name
+        print "length:", len(data)
+        sz = struct.unpack("<Q", data)[0]
+        print "Unpacked length", sz
+        filename_packed = connstream.read(sz)
+        filename = str(filename_packed)
+        print "Downloading :", filename
+        full_filename = os.path.join(sys.argv[1]+"\\", filename)
+        fsize = os.path.getsize(full_filename)
+        print " Of size ... ", fsize
+        connstream.write(struct.pack("<Q", fsize))
+        f = open(full_filename, "rb")
+        data = f.read()
+        connstream.write(data)
+    except:
+        traceback.print_exc(file=sys.stdout)
  
 
 def Usage(args):
@@ -36,14 +46,20 @@ def main(args):
     while True:
          try:
             newsocket, fromaddr = bindsocket.accept()
+            newsocket.settimeout(120)
+            
             try:
                 connstream = ssl.wrap_socket(newsocket,
                                      server_side=True,
                                      certfile=os.path.join(args[3], "domain.crt"),
                                      keyfile=os.path.join(args[3], "domain.key"))
+                connstream.settimeout(120)
             except:
+                traceback.print_exc(file=sys.stdout)
                 continue
             deal_with_client(connstream)
+         except:
+            traceback.print_exc(file=sys.stdout)
          finally:
             connstream.shutdown(socket.SHUT_RDWR)
             connstream.close()    

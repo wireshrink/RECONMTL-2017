@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QSettings>
+#include <QSslSocket>
 
 
 SetupDialog::SetupDialog(void):QDialog()
@@ -67,7 +68,7 @@ void SetupDialog::finalize()
 }
 void SetupDialog::testConnSlot(void)
 {
-    QTcpSocket t;
+    QSslSocket t;
     QMessageBox b;
     b.setText(QString("Connection status"));
     b.setStandardButtons(QMessageBox::Ok);

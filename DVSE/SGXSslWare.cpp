@@ -139,7 +139,8 @@ bool SGXSslWare::reconnect()
 
 bool SGXSslWare::send(unsigned char * data, size_t size)
 {
-	return SSL_write(ssl, data, size) == size;
+	bool res = SSL_write(ssl, data, size) == size;
+	return res;
 }
 
 bool SGXSslWare::receive(unsigned char * data, size_t max_size, size_t * real_size)
