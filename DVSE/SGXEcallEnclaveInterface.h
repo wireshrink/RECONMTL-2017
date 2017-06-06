@@ -21,22 +21,13 @@
 
 class SGXEcallEnclaveInterface
 {
+	SGXEcallEnclaveInterface();
+	virtual ~SGXEcallEnclaveInterface();
+
+
 public:
-
-  // Constructors/Destructors
-  //  
-
-
-  /**
-   * Empty Constructor
-   */
-  SGXEcallEnclaveInterface ();
-
-  /**
-   * Empty Destructor
-   */
-  virtual ~SGXEcallEnclaveInterface ();
-
+	static SGXEcallEnclaveInterface * m_pInstance;
+	static SGXEcallEnclaveInterface * getInstance();
   
 
   /**

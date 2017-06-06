@@ -58,6 +58,7 @@ void* ocall_socket_connect(/*[in, string]*/char *url, unsigned int port)
 void ocall_socket_shutdown(void * socket)
 {
 	shutdown((SOCKET)socket, SD_BOTH);
+	s = INVALID_SOCKET;
 }
 int ocall_get_the_current_time(unsigned char time_holder[16])
 {

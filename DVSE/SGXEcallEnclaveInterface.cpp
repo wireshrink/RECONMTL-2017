@@ -11,6 +11,17 @@ SGXEcallEnclaveInterface::SGXEcallEnclaveInterface () {
 
 SGXEcallEnclaveInterface::~SGXEcallEnclaveInterface () { }
 
+SGXEcallEnclaveInterface * SGXEcallEnclaveInterface::m_pInstance = nullptr;
+
+SGXEcallEnclaveInterface * SGXEcallEnclaveInterface::getInstance()
+{
+	if (m_pInstance == nullptr)
+	{
+		m_pInstance = new SGXEcallEnclaveInterface();
+	}
+	return m_pInstance;
+}
+
  bool SGXEcallEnclaveInterface::write_log(unsigned char * data, size_t datasize)
 {
 	void *f = nullptr;

@@ -246,6 +246,7 @@
       <NoEntryPoint>true</NoEntryPoint>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
     </Link>
     <PostBuildEvent>
       <Command>"$(SGXSDKInstallPath)bin\win32\release\sgx_sign.exe" sign -key "$(ProjectDir)DVSE_private.pem" -enclave "$(OutDir)DVSE.dll" -out "$(OutDir)DVSE.signed.dll" -config "$(ProjectDir)DVSE.config.xml"</Command>
@@ -269,6 +270,7 @@
       <NoEntryPoint>true</NoEntryPoint>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
     </Link>
     <PostBuildEvent>
       <Command>"$(SGXSDKInstallPath)bin\win32\release\sgx_sign.exe" sign -key "$(ProjectDir)DVSE_private.pem" -enclave "$(OutDir)DVSE.dll" -out "$(OutDir)DVSE.signed.dll" -config "$(ProjectDir)DVSE.config.xml"</Command>
@@ -293,6 +295,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
     </Link>
     <PostBuildEvent>
       <Command>"$(SGXSDKInstallPath)bin\win32\release\sgx_sign.exe" gendata -enclave "$(OutDir)DVSE.dll" -out "$(OutDir)DVSE.hex" -config "$(ProjectDir)DVSE.config.xml"</Command>
@@ -318,6 +321,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
     </Link>
     <PostBuildEvent>
       <Command>"$(SGXSDKInstallPath)bin\win32\release\sgx_sign.exe" sign -key "$(ProjectDir)DVSE_private.pem" -enclave "$(OutDir)DVSE.dll" -out "$(OutDir)DVSE.signed.dll" -config "$(ProjectDir)DVSE.config.xml"</Command>
