@@ -92,8 +92,8 @@ bool SGXServiceFile::encrypt_and_save()
 		return false;
 	}
 
-	size_t encrypted_size;
-	unsigned char * encrypted_file_content;
+	size_t encrypted_size = 0L;
+	unsigned char * encrypted_file_content = nullptr;
 
 	if (!SGXIndependentSealing::seal_data(this->decrypted_content, this->current_data_size, &encrypted_file_content, &encrypted_size))
 	{
@@ -112,8 +112,8 @@ bool SGXServiceFile::encrypt_and_save()
 	}
 
 
-	free(encrypted_file_content);
 	ret = ocall_file_close(&retval, f);
+	free(encrypted_file_content);
 	return true;
 }
 

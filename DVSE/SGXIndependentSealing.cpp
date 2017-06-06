@@ -192,7 +192,7 @@ extern "C" sgx_status_t independent_seal_data_ex(const uint16_t key_policy,
 	independent_key_request_t tmp_key_request;
 	uint8_t payload_iv[SGX_SEAL_IV_SIZE];
 	memset(&payload_iv, 0, sizeof(payload_iv));
-	if (SGXIndependentSealing::generate_random_data(payload_iv, SGX_SEAL_IV_SIZE) != SGX_SUCCESS)
+	if (!SGXIndependentSealing::generate_random_data(payload_iv, SGX_SEAL_IV_SIZE))
 	{
 		return SGX_ERROR_UNEXPECTED;
 	}
@@ -277,7 +277,7 @@ extern "C" sgx_status_t independent_seal_data_ex(const uint16_t key_policy,
 	if (err == SGX_SUCCESS)
 	{
 		// Copy data from the temporary key request buffer to the sealed data blob
-		memcpy(&(p_sealed_data->key_request), &tmp_key_request, sizeof(sgx_key_request_t));
+		memcpy(&(p_sealed_data->key_request), &tmp_key_request, sizeof(independent_key_request_t));
 	}
 clear_return:
 	// Clear temp state
@@ -436,16 +436,18 @@ size_t SGXIndependentSealing::calc_unsealed_data_size(size_t data_size)
 }
 bool SGXIndependentSealing::seal_data(unsigned char * in, size_t in_size, unsigned char ** out, size_t * poutsize)
 {
-	*out = (unsigned char*) malloc(calc_sealed_data_size(in_size));
+	size_t alloc_size = calc_sealed_data_size(in_size);
+	uint32_t sealed_data_size = 0;
+	*out = (unsigned char*) calloc(1, alloc_size);
 
 	if ((*out) == nullptr)
 	{
 		return false; // no memory available
 	}
 
-	*poutsize = calc_sealed_data_size(in_size);
+	*poutsize = alloc_size;
 
-	if (independent_seal_data(0, nullptr, in_size, in, *poutsize, reinterpret_cast<independent_sealed_data_t*>(*out)) != SGX_SUCCESS)
+	if (independent_seal_data(0, nullptr, in_size, in, alloc_size, reinterpret_cast<independent_sealed_data_t*>(*out)) != SGX_SUCCESS)
 	{
 		free(*out);
 		return false;

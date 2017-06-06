@@ -31,9 +31,9 @@ enclave {
 		
 		int ocall_file_close([user_check]void* handle); //size_t is used foir passing a file pointer
         
-		int ocall_file_read([user_check]void* handle, size_t offset, size_t datasize, [in, size = datasize]unsigned char *data); 
+		int ocall_file_read([user_check]void* handle, size_t offset, size_t datasize, [out, size = datasize]unsigned char *data); 
         
-		int ocall_file_write([user_check]void *handle, size_t datasize, [out, size = datasize]unsigned char *data);
+		int ocall_file_write([user_check]void *handle, size_t datasize, [in, size = datasize]unsigned char *data);
 
 		size_t ocall_file_size ([user_check] void* file_handle);
 

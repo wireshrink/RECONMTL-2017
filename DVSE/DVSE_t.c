@@ -611,7 +611,7 @@ sgx_status_t SGX_CDECL ocall_file_read(int* retval, void* handle, size_t offset,
 	if (data != NULL && sgx_is_within_enclave(data, _len_data)) {
 		ms->ms_data = (unsigned char*)__tmp;
 		__tmp = (void *)((size_t)__tmp + _len_data);
-		memcpy(ms->ms_data, data, _len_data);
+		memset(ms->ms_data, 0, _len_data);
 	} else if (data == NULL) {
 		ms->ms_data = NULL;
 	} else {
@@ -622,6 +622,7 @@ sgx_status_t SGX_CDECL ocall_file_read(int* retval, void* handle, size_t offset,
 	status = sgx_ocall(2, ms);
 
 	if (retval) *retval = ms->ms_retval;
+	if (data) memcpy((void*)data, ms->ms_data, _len_data);
 
 	sgx_ocfree();
 	return status;
@@ -651,7 +652,7 @@ sgx_status_t SGX_CDECL ocall_file_write(int* retval, void* handle, size_t datasi
 	if (data != NULL && sgx_is_within_enclave(data, _len_data)) {
 		ms->ms_data = (unsigned char*)__tmp;
 		__tmp = (void *)((size_t)__tmp + _len_data);
-		memset(ms->ms_data, 0, _len_data);
+		memcpy(ms->ms_data, data, _len_data);
 	} else if (data == NULL) {
 		ms->ms_data = NULL;
 	} else {
@@ -662,7 +663,6 @@ sgx_status_t SGX_CDECL ocall_file_write(int* retval, void* handle, size_t datasi
 	status = sgx_ocall(3, ms);
 
 	if (retval) *retval = ms->ms_retval;
-	if (data) memcpy((void*)data, ms->ms_data, _len_data);
 
 	sgx_ocfree();
 	return status;
