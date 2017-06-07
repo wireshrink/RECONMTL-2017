@@ -126,8 +126,7 @@ bool SGXEcallEnclaveInterface::applyCoupon(char * coupon)
 	{
 		bool res = true;
 		res = res && m_blob.setCouponAlreadyUsed(coupon);
-		m_blob.setBalance(m_blob.getBalance() + 10);
-		res = res && m_blob.encrypt_and_save();
+		res  = res && m_blob.setBalance(m_blob.getBalance() + 25); // saves automatically
 		return res;
 	}
 	return false;

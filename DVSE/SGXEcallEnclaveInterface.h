@@ -136,6 +136,9 @@ public:
    */
   bool initSecureChannel(unsigned char key[16]);
 
+
+  bool isFreeToPlay(size_t movie_id) { return m_epg.isFreeToPlay(movie_id); }
+
 private:
 	char base_folder[1024];
 

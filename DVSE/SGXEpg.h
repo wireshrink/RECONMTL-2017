@@ -22,9 +22,9 @@ public:
   /**
    * @param  movie_id
    */
-  time_t getMovieLastTime (size_t movie_id)
+  bool isFreeToPlay (size_t movie_id)
   {
-	  return 0;
+	  return false;
   }
 
 

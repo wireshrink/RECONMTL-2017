@@ -94,7 +94,7 @@ public:
    * Set the value of balance
    * @param new_var the new value of balance
    */
-  void setBalance(int new_var);
+  bool setBalance(int new_var);
 
   /**
    * Get the value of balance
