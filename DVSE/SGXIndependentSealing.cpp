@@ -196,7 +196,7 @@ extern "C" sgx_status_t independent_seal_data_ex(const uint16_t key_policy,
 	{
 		return SGX_ERROR_UNEXPECTED;
 	}
-	memcpy(p_sealed_data->aes_data.iv, payload_iv, SGX_SEAL_IV_SIZE);
+	
 
 
 	uint32_t sealedDataSize = independent_calc_sealed_data_size(additional_MACtext_length, text2encrypt_length);
@@ -246,7 +246,7 @@ extern "C" sgx_status_t independent_seal_data_ex(const uint16_t key_policy,
 	memset(&report, 0, sizeof(sgx_report_t));
 	memset(p_sealed_data, 0, sealedDataSize);
 	memset(&keyID, 0, sizeof(sgx_key_id_t));
-	memset(&tmp_key_request, 0, sizeof(sgx_key_request_t));
+	memset(&tmp_key_request, 0, sizeof(independent_key_request_t));
 
 	// Get the report to obtain isv_svn and cpu_svn
 	err = sgx_create_report(NULL, NULL, &report);
@@ -270,7 +270,7 @@ extern "C" sgx_status_t independent_seal_data_ex(const uint16_t key_policy,
 	tmp_key_request.attribute_mask.xfrm = attribute_mask.xfrm;
 	memcpy(&(tmp_key_request.key_id), &keyID, sizeof(sgx_key_id_t));
 	tmp_key_request.misc_mask = misc_mask;
-
+	memcpy(p_sealed_data->aes_data.iv, payload_iv, SGX_SEAL_IV_SIZE);
 	err = independent_seal_data_iv(additional_MACtext_length, p_additional_MACtext,
 		text2encrypt_length, p_text2encrypt, payload_iv, &tmp_key_request, p_sealed_data);
 
