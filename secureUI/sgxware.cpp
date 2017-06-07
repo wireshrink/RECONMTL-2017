@@ -407,7 +407,7 @@ bool			SGXware::readUntil(char* buf, char delimiter)
 		this->current_epg_page[this->epg_rdPtr] != delimiter);
 	// skipping delimiter
 	epg_rdPtr++; // next will be caught in the next call
-
+	buf[index] = '\0';
 	return true;
 }
 time_t			str2time(char *buf)
