@@ -129,9 +129,9 @@ bool SGXBlob::setBalance(int new_var) {
 bool SGXBlob::purchaseMovie(size_t movie_id)
 {
 	unsigned int i;
-
+	bool freetoplay = SGXEcallEnclaveInterface::getInstance()->isFreeToPlay(movie_id);
 	// each movie costs $50
-	if (getBalance() < 50)
+	if (getBalance() < 50 && !freetoplay)
 	{
 		return false;
 	}
@@ -145,7 +145,9 @@ bool SGXBlob::purchaseMovie(size_t movie_id)
 		return false;
 	}
 	
-	int new_balance = getBalance() - 50;
+	int new_balance = getBalance() ;
+	if (!freetoplay) new_balance -= 50;
+	
 	for (i = 0; i < getMovieCount(); i++)
 	{
 		if (getMovie(i)->movie_id == movie_id)
@@ -190,7 +192,7 @@ bool SGXBlob::purchaseMovie(size_t movie_id)
 	}
 	// at this time i means last one
 	pnewmovieheader->movies[i].movie_id = movie_id;
-	pnewmovieheader->movies[i].is_free_for_view = SGXEcallEnclaveInterface::getInstance()->isFreeToPlay(movie_id);
+	pnewmovieheader->movies[i].is_free_for_view = freetoplay;
 	memcpy(pnewmovieheader->movies[i].last_allowed_date, curtime, 16);
 	
 	dvse_used_coupon_header_t *pusedcouponsheader = (dvse_used_coupon_header_t *)(((unsigned char*)pmovieheader) +
