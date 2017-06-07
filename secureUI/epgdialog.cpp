@@ -35,7 +35,7 @@ EPGDialog::EPGDialog(QWidget *parent) : QDialog(parent)
             tableWidget->setItem(row, 3, pItem);
             pItem = new QTableWidgetItem(QString(strExpiry(movie.movie_expiration)));
             tableWidget->setItem(row, 4, pItem);
-			row++;
+			
 
         }while (pInstance->nextMovie(&movie));
 
