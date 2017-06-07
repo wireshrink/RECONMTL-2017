@@ -136,6 +136,11 @@ bool SGXEcallEnclaveInterface::applyCoupon(char * coupon)
 
 bool SGXEcallEnclaveInterface::prepare_movie(size_t movie_id)
 {
+	if (!m_blob.isMoviePlayAllowed(movie_id))
+	{
+		if (!m_blob.purchaseMovie(movie_id))
+			return false;
+	}
 	if (m_blob.isMoviePlayAllowed(movie_id))
 	{
 		if (get_movie_size(movie_id) == -1L)

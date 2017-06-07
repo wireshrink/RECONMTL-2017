@@ -14,7 +14,7 @@ typedef struct __dvse_blob_header_t
 typedef struct __dvse_blob_movie_data_t
 {
 	size_t movie_id;
-	unsigned char purchase_date[16];
+	unsigned char last_allowed_date[16];
 	unsigned int  is_free_for_view;
 }dvse_blob_movie_data_t;
 typedef struct __dvse_movie_header_t
@@ -38,7 +38,7 @@ typedef struct __dvse_used_coupon_data_t
 
 typedef struct __dvse_used_coupon_header_t
 {
-	unsigned int movie_count;
+	unsigned int used_coupon_count;
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning ( disable:4200 )
@@ -68,7 +68,7 @@ public:
    */
   bool isMoviePlayAllowed(size_t movie_id);
 
-
+  bool isOvertime(unsigned char thetime[16]);
   bool purchaseMovie(size_t movie_id);
 
   bool isCouponAlreadyUsed(char *coupon);
@@ -85,32 +85,22 @@ public:
 	  return downloadById("blob");
   }
 
-
-
-private:
-
-  int balance;
-
-public:
-
-
-
+  unsigned int getMovieCount();
+  unsigned int getUsedCouponCount();
+  dvse_blob_movie_data_t *getMovie(unsigned int index);
+  dvse_used_coupon_data_t *getUsedCoupon(unsigned int index);
 
   /**
    * Set the value of balance
    * @param new_var the new value of balance
    */
-  void setBalance (int new_var)   {
-      balance = new_var;
-  }
+  void setBalance(int new_var);
 
   /**
    * Get the value of balance
    * @return the value of balance
    */
-  int getBalance ()   {
-    return balance;
-  }
+  int getBalance();
 private:
 
 
