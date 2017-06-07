@@ -5,6 +5,53 @@
 
 
 
+typedef struct __dvse_blob_header_t
+{
+	unsigned char token[8];
+	unsigned int  balance;
+}dvse_blob_header_t;
+
+typedef struct __dvse_blob_movie_data_t
+{
+	size_t movie_id;
+	unsigned char purchase_date[16];
+	unsigned int  is_free_for_view;
+}dvse_blob_movie_data_t;
+typedef struct __dvse_movie_header_t
+{
+	unsigned int movie_count;
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning ( disable:4200 )
+#endif
+
+	dvse_blob_movie_data_t movies[];
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+}dvse_movie_header_t;
+
+typedef struct __dvse_used_coupon_data_t
+{
+	char used_coupon[32];
+}dvse_used_coupon_data_t;
+
+typedef struct __dvse_used_coupon_header_t
+{
+	unsigned int movie_count;
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning ( disable:4200 )
+#endif
+
+	dvse_used_coupon_data_t used_coupons[];
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+}dvse_used_coupon_header_t;
+
+
+
 class SGXBlob : public SGXServiceFile
 {
 public:
@@ -19,25 +66,13 @@ public:
    * @return bool
    * @param  movie_id
    */
-  bool isMoviePlayAllowed (size_t movie_id)
-  {
-	  return false;
-  }
+  bool isMoviePlayAllowed(size_t movie_id);
 
 
-  bool purchaseMovie (size_t movie_id)
-  {
-	  return false;
-  }
+  bool purchaseMovie(size_t movie_id);
 
-  bool isCouponAlreadyUsed (char *coupon)
-  {
-	  return true;
-  }
-  bool setCouponAlreadyUsed(char *coupon)
-  {
-	  return true;
-  }
+  bool isCouponAlreadyUsed(char *coupon);
+  bool setCouponAlreadyUsed(char *coupon);
 
 
   bool create_default_blob()
