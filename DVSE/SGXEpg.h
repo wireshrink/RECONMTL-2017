@@ -22,10 +22,7 @@ public:
   /**
    * @param  movie_id
    */
-  bool isFreeToPlay (size_t movie_id)
-  {
-	  return false;
-  }
+  bool isFreeToPlay(size_t movie_id);
 
 
   /**
@@ -33,16 +30,9 @@ public:
    * @param  data_1024_
    * @param  pageNum
    */
-  bool getEPGPage (unsigned char data[1024], int pageNum)
-  {
-	  memcpy(data, this->getContent() + pageNum * 1024, 1024);
-	  return true;
-  }
+  bool getEPGPage(unsigned char data[1024], int pageNum);
 
-  virtual bool download()
-  {
-	  return downloadById("epg");
-  }
+  virtual bool download();
 
 };
 
