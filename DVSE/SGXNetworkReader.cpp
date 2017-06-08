@@ -12,7 +12,7 @@ SGXNetworkReader::~SGXNetworkReader () { }
 bool SGXNetworkReader::openMovie(char * base_folder, size_t movie_id)
 {
 	char filename[1024];
-	snprintf(filename, 1024, "%zx", movie_id);
+	snprintf(filename, 1024, "%zd", movie_id);
 	return open(filename);
 }
 

@@ -10,17 +10,6 @@ initAttributes();
 
 SGXLargeFile::~SGXLargeFile () { }
 
-//  
-// Methods
-//  
-
-
-// Accessor methods
-//  
-
-
-// Other methods
-//  
 
 bool SGXLargeFile::createMovieFileName(size_t movie_id, char * base_folder, char * buf, size_t buf_size)
 {

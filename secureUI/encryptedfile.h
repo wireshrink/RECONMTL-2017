@@ -61,7 +61,7 @@ protected:
 	{
 		SGXware *pSGX = SGXware::getInstance();
 		qint64 pos = this->pos();
-		qint64 readDataSize = pSGX->readMovieChunk(movie_id, pos, maxSize, (unsigned char*)data);
+		qint64 readDataSize = pSGX->readMovieChunk( pos, maxSize, (unsigned char*)data);
 		pSGX->inplaceDecrypt(readDataSize, data);
 		return readDataSize;
 	}

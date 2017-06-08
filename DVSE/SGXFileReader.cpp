@@ -33,6 +33,7 @@ bool SGXFileReader::open(char filename[1024])
 		return false;
 	setHandle(handle);
 	m_pos = 0;
+	m_binitialized = true;
 	return true;
 }
 #define _MIN(a, b) (a)<(b)? (a):(b);

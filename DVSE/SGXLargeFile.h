@@ -84,7 +84,6 @@ public:
   //  
 
 protected:
-	unsigned char buffer[1024 * 10];
 	void* handle;
 	bool m_binitialized;
 

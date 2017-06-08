@@ -503,7 +503,7 @@ bool			SGXware::initUser(char* address, int port, char* folder)
 	}
 	return retval != 0;
 }*/
-DRM_status_t	SGXware::readMovieChunk(unsigned int movie_id, size_t movie_offset, size_t chunk_size, unsigned char* dest)
+DRM_status_t	SGXware::readMovieChunk( size_t movie_offset, size_t chunk_size, unsigned char* dest)
 {
 	sgx_status_t ret;
 	int retval;
@@ -532,5 +532,5 @@ bool SGXware::getFileSize(size_t movie_id, size_t * fsize)
 		print_error_message(ret);
 		return false;
 	}
-	return ret != 0;
+	return res!= 0;
 }

@@ -150,7 +150,7 @@ bool SGXEcallEnclaveInterface::prepare_movie(size_t movie_id)
 				return false;
 			}
 		}
-		return true;
+		return start_movie_play(movie_id);
 	}
 	return false;
 }
@@ -196,7 +196,12 @@ size_t SGXEcallEnclaveInterface::get_movie_size(size_t movie_id)
 	}
 	snprintf(movie_file_name, 1024, "%s\\movie.%zx", this->base_folder, movie_id);
 	sgx_status_t ret = ocall_file_open(&f, movie_file_name, "rb");
+	
 	if (ret != SGX_SUCCESS)
+	{
+		return -1L;
+	}
+	if (f == nullptr)
 	{
 		return -1L;
 	}
