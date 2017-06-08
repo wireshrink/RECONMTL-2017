@@ -503,7 +503,7 @@ bool			SGXware::initUser(char* address, int port, char* folder)
 	}
 	return retval != 0;
 }*/
-DRM_status_t	SGXware::readMovieChunk( size_t movie_offset, size_t chunk_size, unsigned char* dest)
+quint64	SGXware::readMovieChunk( size_t movie_offset, size_t chunk_size, unsigned char* dest)
 {
 	sgx_status_t ret;
 	int retval;
@@ -512,9 +512,9 @@ DRM_status_t	SGXware::readMovieChunk( size_t movie_offset, size_t chunk_size, un
 	if (ret != SGX_SUCCESS)
 	{
 		print_error_message(ret);
-		return DRM_NEED_MORE_MONEY;
+		return 0;
 	}
-	return retval == 0 ? DRM_NEED_MORE_MONEY: DRM_LAST;
+	return (quint64) retval ;
 
 }
 bool			SGXware::inplaceDecrypt(qint64 size, void* data)
