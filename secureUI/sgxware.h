@@ -57,7 +57,7 @@ public:
     bool         initUser (char* address, int port, char* folder);
     //bool         getUserProps(char address[1024], int *port, char folder[1024] );
     bool         initSecureChannel(void);
-    unsigned int getBalance();
+    bool         getBalance(int *balance);
     bool         tryCoupon(char* coupon);
 
     bool         firstMovie(movie_t *pFirstMovie);

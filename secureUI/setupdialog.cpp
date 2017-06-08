@@ -34,9 +34,14 @@ void SetupDialog::applyCouponSlot(void)
     SGXware *pSGX = SGXware::getInstance();
     QString str = this->couponText->toPlainText();
     QByteArray ba = str.toLatin1();
+	int balance = 0;
     char buf[1024];
     pSGX->tryCoupon(ba.data());
-    sprintf (buf, "Balance: %d", pSGX->getBalance() );
+	if (!pSGX->getBalance(&balance))
+	{
+		// handle error here later
+	}
+    sprintf (buf, "Balance: %d", balance);
     this->labelBalance->setText(buf);
 
 }

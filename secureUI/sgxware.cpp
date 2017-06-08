@@ -321,12 +321,12 @@ bool			SGXware::initSecureChannel(void)
 	}
 	return retval != 0;
 }
-unsigned int	SGXware::getBalance()
+bool SGXware::getBalance(int *balance)
 {
 	
 	int retval;
-	int balance = 0;
-	sgx_status_t ret = ecall_get_balance(global_eid, &retval, &balance);
+
+	sgx_status_t ret = ecall_get_balance(global_eid, &retval, balance);
 	if (ret != SGX_SUCCESS)
 	{
 		print_error_message(ret);
