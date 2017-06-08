@@ -490,25 +490,13 @@ bool			SGXware::initUser(char* address, int port, char* folder)
 	strncpy(this->base_folder, folder, 1024);
 	return retval != 0;
 }
-/*bool			SGXware::getUserProps(char address[1024], int *port, char folder[1024])
-{
-	sgx_status_t ret;
-	int retval;
-
-	ret = ecall_decode_blob(global_eid, &retval, folder, address, port);
-	if (ret != SGX_SUCCESS)
-	{
-		print_error_message(ret);
-		return false;
-	}
-	return retval != 0;
-}*/
 quint64	SGXware::readMovieChunk( size_t movie_offset, size_t chunk_size, unsigned char* dest)
 {
 	sgx_status_t ret;
 	int retval;
 
 	ret = ecall_get_movie_chunk(global_eid, &retval, movie_offset, chunk_size, dest);
+
 	if (ret != SGX_SUCCESS)
 	{
 		print_error_message(ret);
