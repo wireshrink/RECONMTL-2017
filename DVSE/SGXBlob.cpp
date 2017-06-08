@@ -194,7 +194,8 @@ bool SGXBlob::purchaseMovie(size_t movie_id)
 	{
 		pnewusedcouponsheader->used_coupons[i] = pusedcouponsheader->used_coupons[i];
 	}
-
+	if (!set_decrypted_content(new_size, new_data))
+		return false;
 	return encrypt_and_save();
 }
 
@@ -246,6 +247,8 @@ bool SGXBlob::setCouponAlreadyUsed(char * coupon)
 		free(new_data);
 		return false;
 	}
+	if (!set_decrypted_content(new_size, new_data))
+		return false;
 	return encrypt_and_save();
 }
 

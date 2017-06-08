@@ -68,6 +68,10 @@ int ocall_get_the_current_time(unsigned char time_holder[16])
 }
 size_t ocall_file_size(void* handle)
 {
+	if (handle == nullptr)
+	{
+		return -1L;
+	}
 	size_t pos = ftell((FILE*)handle);
 	fseek((FILE*)handle, 0, SEEK_END);
 	size_t sz = ftell((FILE*)handle);
