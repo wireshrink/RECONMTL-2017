@@ -62,7 +62,7 @@ size_t SGXFileReader::read(unsigned char * buffer, size_t buffer_size)
 			return -1L;
 		size_t off_in_chunk = m_pos % SGXIndependentSealing::UNSEALED_DATA_CHUNK_SIZE;
 		size_t size_in_chunk = _MIN(buffer_size, (SGXIndependentSealing::UNSEALED_DATA_CHUNK_SIZE - off_in_chunk));
-		memcpy(buffer, unsealed + off_in_chunk, size_in_chunk);
+		memcpy(buffer + read_data, unsealed + off_in_chunk, size_in_chunk);
 		read_data += size_in_chunk;
 		m_pos += size_in_chunk;
 		enc_pos = SGXIndependentSealing::calc_sealed_data_size(m_pos);
