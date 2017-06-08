@@ -64,7 +64,7 @@ public:
     return full_file_name;
   }
 
-  const unsigned char* getContent() { return decrypted_content; }
+  unsigned char* const getContent() { return decrypted_content; }
 
   bool downloadById(char *id);
  

@@ -51,6 +51,21 @@ typedef struct __dvse_used_coupon_header_t
 }dvse_used_coupon_header_t;
 
 
+// offset functions:
+inline dvse_blob_header_t *const dvse_blob_header(unsigned char* const data)
+{
+	return reinterpret_cast<dvse_blob_header_t *const>(data);
+}
+inline  dvse_movie_header_t * const dvse_movie_header( unsigned char* const data)
+{
+	return reinterpret_cast<dvse_movie_header_t * const>(dvse_blob_header(data) + 1); // just after the header
+}
+inline dvse_used_coupon_header_t * const dvse_coupons_header(unsigned char* const data)
+{
+	dvse_movie_header_t * const movie_header = dvse_movie_header(data);
+	unsigned char * const temp = reinterpret_cast<unsigned char* const>(movie_header + 1);// movies start
+	return reinterpret_cast<dvse_used_coupon_header_t* const>(temp + (sizeof(dvse_blob_movie_data_t) * movie_header->movie_count));
+}
 
 class SGXBlob : public SGXServiceFile
 {
@@ -87,8 +102,8 @@ public:
 
   unsigned int getMovieCount();
   unsigned int getUsedCouponCount();
-  dvse_blob_movie_data_t *getMovie(unsigned int index);
-  dvse_used_coupon_data_t *getUsedCoupon(unsigned int index);
+  dvse_blob_movie_data_t *const  getMovie(unsigned int index);
+  dvse_used_coupon_data_t *const getUsedCoupon(unsigned int index);
 
   /**
    * Set the value of balance

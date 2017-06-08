@@ -23,14 +23,14 @@ bool SGXBlob::isMoviePlayAllowed(size_t movie_id)
 	unsigned int i;
 	for (i = 0; i < getMovieCount(); i++)
 	{
-		dvse_blob_movie_data_t* pm = getMovie(i);
+		dvse_blob_movie_data_t* const pm = getMovie(i);
 		if (pm->movie_id == movie_id)
 		{
 			if (pm->is_free_for_view)
 			{
 				return true; // if it was once free for view it will remain free for view, we are not that evil
 			}
-			if (!isOvertime(pm->last_allowed_date))
+			if (!isOvertime((unsigned char*)pm->last_allowed_date))
 			{
 				return true;
 			}
@@ -71,43 +71,33 @@ unsigned int SGXBlob::getMovieCount()
 {
 	if (this->get_data_size() < sizeof(dvse_blob_header_t))
 		return 0;
-	dvse_blob_header_t * pheader = (dvse_blob_header_t*)getContent();
-	dvse_movie_header_t *pmovieheader = (dvse_movie_header_t*)(getContent() + sizeof(dvse_blob_header_t));
+	dvse_movie_header_t *const pmovieheader = dvse_movie_header(getContent());
 	return pmovieheader->movie_count;
 }
 
 unsigned int SGXBlob::getUsedCouponCount()
 {
 	if (this->get_data_size() < sizeof(dvse_blob_header_t))
-		return false;
-	dvse_blob_header_t * pheader = (dvse_blob_header_t*)getContent();
-	dvse_movie_header_t *pmovieheader = (dvse_movie_header_t*)(getContent() + sizeof(dvse_blob_header_t));
-	dvse_used_coupon_header_t *pusedcouponsheader = (dvse_used_coupon_header_t *)(((unsigned char*)pmovieheader) +
-		sizeof(dvse_movie_header_t) +
-		(pmovieheader->movie_count * sizeof(dvse_blob_movie_data_t)) );
+		return 0;
+	dvse_used_coupon_header_t *const pusedcouponsheader = dvse_coupons_header(getContent());
 	return pusedcouponsheader->used_coupon_count;
 	
 }
 
-dvse_blob_movie_data_t * SGXBlob::getMovie(unsigned int index)
+dvse_blob_movie_data_t * const SGXBlob::getMovie(unsigned int index)
 {
 	if (this->get_data_size() < sizeof(dvse_blob_header_t))
 		return nullptr;
-	dvse_blob_header_t * pheader = (dvse_blob_header_t*)getContent();
-	dvse_movie_header_t *pmovieheader = (dvse_movie_header_t*)(getContent() + sizeof(dvse_blob_header_t));
+	dvse_movie_header_t *const pmovieheader = dvse_movie_header(getContent());
 
 	return &pmovieheader->movies[index];
 }
 
-dvse_used_coupon_data_t * SGXBlob::getUsedCoupon(unsigned int index)
+dvse_used_coupon_data_t * const SGXBlob::getUsedCoupon(unsigned int index)
 {
 	if (this->get_data_size() < sizeof(dvse_blob_header_t))
 		return false;
-	dvse_blob_header_t * pheader = (dvse_blob_header_t*)getContent();
-	dvse_movie_header_t *pmovieheader = (dvse_movie_header_t*)(getContent() + sizeof(dvse_blob_header_t));
-	dvse_used_coupon_header_t *pusedcouponsheader = (dvse_used_coupon_header_t *)(((unsigned char*)pmovieheader) +
-		sizeof(dvse_movie_header_t) +
-		(pmovieheader->movie_count * sizeof(dvse_blob_movie_data_t)));
+	dvse_used_coupon_header_t *const pusedcouponsheader = dvse_coupons_header(getContent());
 	return &pusedcouponsheader->used_coupons[index];
 }
 
@@ -120,7 +110,7 @@ dvse_used_coupon_data_t * SGXBlob::getUsedCoupon(unsigned int index)
 bool SGXBlob::setBalance(int new_var) {
 	if (this->get_data_size() < sizeof(dvse_blob_header_t))
 		return false;
-	dvse_blob_header_t * pheader = (dvse_blob_header_t*)getContent();
+	dvse_blob_header_t * const pheader = dvse_blob_header(getContent());
 
 	pheader->balance = new_var;
 	return encrypt_and_save();
@@ -153,14 +143,14 @@ bool SGXBlob::purchaseMovie(size_t movie_id)
 		if (getMovie(i)->movie_id == movie_id)
 		{
 			// no need to rewrite all the blob, only changing date and balance
-			dvse_blob_header_t * pheader = (dvse_blob_header_t*)getContent();
+			dvse_blob_header_t * const pheader = dvse_blob_header(getContent());
 			pheader->balance = new_balance;
 			//probably incorrectly assuming time is in seconds, adding ...
 			//microsoft says https://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k(TIME%2Ftime);k(time);k(DevLang-C%2B%2B);k(TargetOS-Windows)&rd=true
 			//so it should be correct according to MSDN
 			time_t* pt = (time_t*)curtime;
 			(*pt) += 60 * 60 * 2; // adding 2 hours, we are generous
-			memcpy(getMovie(i)->last_allowed_date, curtime, 16);
+			memcpy((void*)getMovie(i)->last_allowed_date, curtime, 16);
 			return encrypt_and_save();
 		}
 	}
@@ -174,14 +164,14 @@ bool SGXBlob::purchaseMovie(size_t movie_id)
 		return false;
 	}
 
-	dvse_blob_header_t * pheader = (dvse_blob_header_t*)getContent();
-	dvse_blob_header_t * pnewheader = (dvse_blob_header_t*)new_data;
+	dvse_blob_header_t * const pheader = dvse_blob_header(getContent());
+	dvse_blob_header_t * const pnewheader = dvse_blob_header(new_data);
 
 	*pnewheader = *pheader;
 
 
-	dvse_movie_header_t *pmovieheader = (dvse_movie_header_t*)(getContent() + sizeof(dvse_blob_header_t));
-	dvse_movie_header_t *pnewmovieheader = (dvse_movie_header_t*)(new_data + sizeof(dvse_blob_header_t));
+	dvse_movie_header_t *const pmovieheader = dvse_movie_header(getContent());
+	dvse_movie_header_t *const pnewmovieheader = dvse_movie_header(new_data);
 
 	*pnewmovieheader = *pmovieheader;
 	pnewmovieheader->movie_count++;
@@ -195,13 +185,8 @@ bool SGXBlob::purchaseMovie(size_t movie_id)
 	pnewmovieheader->movies[i].is_free_for_view = freetoplay;
 	memcpy(pnewmovieheader->movies[i].last_allowed_date, curtime, 16);
 	
-	dvse_used_coupon_header_t *pusedcouponsheader = (dvse_used_coupon_header_t *)(((unsigned char*)pmovieheader) +
-		sizeof(dvse_movie_header_t) +
-		(pmovieheader->movie_count * sizeof(dvse_blob_movie_data_t)));
-
-	dvse_used_coupon_header_t *pnewusedcouponsheader = (dvse_used_coupon_header_t *)(((unsigned char*)pnewmovieheader) +
-		sizeof(dvse_movie_header_t) +
-		(pnewmovieheader->movie_count * sizeof(dvse_blob_movie_data_t)));
+	dvse_used_coupon_header_t * const pusedcouponsheader = dvse_coupons_header(getContent());
+	dvse_used_coupon_header_t * const pnewusedcouponsheader = dvse_coupons_header(new_data);
 
 	*pnewusedcouponsheader = *pusedcouponsheader;
 
@@ -226,14 +211,14 @@ bool SGXBlob::setCouponAlreadyUsed(char * coupon)
 	
 	if (!new_data) return false;
 
-	dvse_blob_header_t * pheader = (dvse_blob_header_t*)getContent();
-	dvse_blob_header_t * pnewheader = (dvse_blob_header_t*)new_data;
+	dvse_blob_header_t * const pheader = dvse_blob_header(getContent());
+	dvse_blob_header_t * const pnewheader = dvse_blob_header(new_data);
 
 	*pnewheader = *pheader;
 
 
-	dvse_movie_header_t *pmovieheader = (dvse_movie_header_t*)(getContent() + sizeof(dvse_blob_header_t));
-	dvse_movie_header_t *pnewmovieheader = (dvse_movie_header_t*)(new_data + sizeof(dvse_blob_header_t));
+	dvse_movie_header_t *const pmovieheader = dvse_movie_header(getContent());
+	dvse_movie_header_t *const pnewmovieheader = dvse_movie_header(new_data);
 
 	*pnewmovieheader = *pmovieheader;
 
@@ -241,14 +226,9 @@ bool SGXBlob::setCouponAlreadyUsed(char * coupon)
 	{
 		pnewmovieheader->movies[i] = pmovieheader->movies[i];
 	}
-	
-	dvse_used_coupon_header_t *pusedcouponsheader = (dvse_used_coupon_header_t *)(((unsigned char*)pmovieheader) +
-		sizeof(dvse_movie_header_t) +
-		(pmovieheader->movie_count * sizeof(dvse_blob_movie_data_t)));
 
-	dvse_used_coupon_header_t *pnewusedcouponsheader = (dvse_used_coupon_header_t *)(((unsigned char*)pnewmovieheader) +
-		sizeof(dvse_movie_header_t) +
-		(pnewmovieheader->movie_count * sizeof(dvse_blob_movie_data_t)));
+	dvse_used_coupon_header_t * const pusedcouponsheader = dvse_coupons_header(getContent());
+	dvse_used_coupon_header_t * const pnewusedcouponsheader = dvse_coupons_header(new_data);
 
 	*pnewusedcouponsheader = *pusedcouponsheader;
 
@@ -266,9 +246,6 @@ bool SGXBlob::setCouponAlreadyUsed(char * coupon)
 		free(new_data);
 		return false;
 	}
-
-
-
 	return encrypt_and_save();
 }
 
@@ -280,7 +257,7 @@ bool SGXBlob::setCouponAlreadyUsed(char * coupon)
 int SGXBlob::getBalance() {
 	if (this->get_data_size() < sizeof(dvse_blob_header_t))
 		return 0;
-	dvse_blob_header_t * pheader = (dvse_blob_header_t*)getContent();
+	dvse_blob_header_t * const pheader = dvse_blob_header(getContent());
 	return pheader->balance;
 }
 
