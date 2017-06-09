@@ -7,6 +7,8 @@
 
 SGXBlob::SGXBlob () {
 initAttributes();
+static_assert(sizeof(dvse_entry_placeholder_t) == sizeof(dvse_blob_movie_data_t), "NEED mode buffer for time repr");
+static_assert(sizeof(dvse_entry_placeholder_t) == sizeof(dvse_used_coupon_data_t), "NEED mode buffer for time repr");
 }
 
 SGXBlob::~SGXBlob () { }
@@ -69,36 +71,34 @@ bool SGXBlob::isCouponAlreadyUsed(char * coupon)
 
 unsigned int SGXBlob::getMovieCount()
 {
-	if (this->get_data_size() < sizeof(dvse_blob_header_t))
-		return 0;
-	dvse_movie_header_t *const pmovieheader = dvse_movie_header(getContent());
-	return pmovieheader->movie_count;
+	return (unsigned int)blob_as_struct(getContent())->hdr.movie_data_count;
 }
 
 unsigned int SGXBlob::getUsedCouponCount()
 {
-	if (this->get_data_size() < sizeof(dvse_blob_header_t))
-		return 0;
-	dvse_used_coupon_header_t *const pusedcouponsheader = dvse_coupons_header(getContent());
-	return pusedcouponsheader->used_coupon_count;
-	
+	return (unsigned int)blob_as_struct(getContent())->hdr.used_coupon_count;
 }
 
 dvse_blob_movie_data_t * const SGXBlob::getMovie(unsigned int index)
 {
-	if (this->get_data_size() < sizeof(dvse_blob_header_t))
+	dvse_blob_structure_t *const blobdata = blob_as_struct(getContent());
+	if (this->get_data_size() <= sizeof(dvse_blob_header_t))
 		return nullptr;
-	dvse_movie_header_t *const pmovieheader = dvse_movie_header(getContent());
+	if (blobdata->hdr.movie_data_count < index)
+		return nullptr;
 
-	return &pmovieheader->movies[index];
+	return reinterpret_cast<dvse_blob_movie_data_t *const>(&blobdata->entries[index]);
 }
 
 dvse_used_coupon_data_t * const SGXBlob::getUsedCoupon(unsigned int index)
 {
+	dvse_blob_structure_t *const blobdata = blob_as_struct(getContent());
 	if (this->get_data_size() < sizeof(dvse_blob_header_t))
-		return false;
-	dvse_used_coupon_header_t *const pusedcouponsheader = dvse_coupons_header(getContent());
-	return &pusedcouponsheader->used_coupons[index];
+		return nullptr;
+	if (blobdata->hdr.used_coupon_count <= index  )
+		return nullptr;
+
+	return reinterpret_cast<dvse_used_coupon_data_t *const>(&blobdata->entries[blobdata->hdr.movie_data_count + index]);
 }
 
 
@@ -169,33 +169,31 @@ bool SGXBlob::purchaseMovie(size_t movie_id)
 
 	*pnewheader = *pheader;
 
+	dvse_blob_structure_t *const pstruct = blob_as_struct(getContent());
+	dvse_blob_structure_t *const pnewstruct = blob_as_struct(new_data);
 
-	dvse_movie_header_t *const pmovieheader = dvse_movie_header(getContent());
-	dvse_movie_header_t *const pnewmovieheader = dvse_movie_header(new_data);
+	pnewheader->movie_data_count++;
 
-	*pnewmovieheader = *pmovieheader;
-	pnewmovieheader->movie_count++;
-
-	for (i = 0; i < pmovieheader->movie_count; i++)
+	for (i = 0; i < pheader->movie_data_count; i++)
 	{
-		pnewmovieheader->movies[i] = pmovieheader->movies[i];
+		pnewstruct->entries[i] = pstruct->entries[i];
 	}
-	// at this time i means last one
-	pnewmovieheader->movies[i].movie_id = movie_id;
-	pnewmovieheader->movies[i].is_free_for_view = freetoplay;
-	memcpy(pnewmovieheader->movies[i].last_allowed_date, curtime, 16);
-	
-	dvse_used_coupon_header_t * const pusedcouponsheader = dvse_coupons_header(getContent());
-	dvse_used_coupon_header_t * const pnewusedcouponsheader = dvse_coupons_header(new_data);
+	// adding last movie in the middle of the data
+	dvse_blob_movie_data_t *pnewmovie = reinterpret_cast<dvse_blob_movie_data_t *const>(getplaceholder(new_data, (unsigned int)pheader->movie_data_count));
+	pnewmovie->movie_id = movie_id;
+	pnewmovie->is_free_for_view = freetoplay;
+	memcpy(pnewmovie->last_allowed_date, curtime, 16);
 
-	*pnewusedcouponsheader = *pusedcouponsheader;
-
-	for (i = 0; i < pusedcouponsheader->used_coupon_count; i++)
+	for (i = 0; i < pheader->used_coupon_count; i++)
 	{
-		pnewusedcouponsheader->used_coupons[i] = pusedcouponsheader->used_coupons[i];
+		pnewstruct->entries[i+pnewheader->movie_data_count] = pstruct->entries[i+pheader->movie_data_count];
 	}
+
 	if (!set_decrypted_content(new_size, new_data))
+	{	
+		free(new_data);
 		return false;
+	}
 	return encrypt_and_save();
 }
 
@@ -217,38 +215,24 @@ bool SGXBlob::setCouponAlreadyUsed(char * coupon)
 
 	*pnewheader = *pheader;
 
+	dvse_blob_structure_t *const pstruct = blob_as_struct(getContent());
+	dvse_blob_structure_t *const pnewstruct = blob_as_struct(new_data);
 
-	dvse_movie_header_t *const pmovieheader = dvse_movie_header(getContent());
-	dvse_movie_header_t *const pnewmovieheader = dvse_movie_header(new_data);
+	pnewheader->used_coupon_count++;
 
-	*pnewmovieheader = *pmovieheader;
-
-	for (i = 0; i < pmovieheader->movie_count; i++)
+	for (i = 0; i < (pheader->used_coupon_count + pheader->movie_data_count); i++)
 	{
-		pnewmovieheader->movies[i] = pmovieheader->movies[i];
+		pnewstruct->entries[i] = pstruct->entries[i];
 	}
+	//adding the coupon to the end
+	memcpy(getplaceholder(new_data, (unsigned int)(pheader->used_coupon_count + pheader->movie_data_count)), coupon, 32);
 
-	dvse_used_coupon_header_t * const pusedcouponsheader = dvse_coupons_header(getContent());
-	dvse_used_coupon_header_t * const pnewusedcouponsheader = dvse_coupons_header(new_data);
-
-	*pnewusedcouponsheader = *pusedcouponsheader;
-
-	for (i = 0; i < pusedcouponsheader->used_coupon_count; i++)
-	{
-		pnewusedcouponsheader->used_coupons[i] = pusedcouponsheader->used_coupons[i];
-	}
-
-	pnewusedcouponsheader->used_coupon_count++;
-
-	memcpy(pusedcouponsheader->used_coupons[pnewusedcouponsheader->used_coupon_count - 1].used_coupon, coupon, 32);
 
 	if (!set_decrypted_content(new_size, new_data))
 	{
 		free(new_data);
 		return false;
 	}
-	if (!set_decrypted_content(new_size, new_data))
-		return false;
 	return encrypt_and_save();
 }
 
@@ -261,7 +245,7 @@ int SGXBlob::getBalance() {
 	if (this->get_data_size() < sizeof(dvse_blob_header_t))
 		return 0;
 	dvse_blob_header_t * const pheader = dvse_blob_header(getContent());
-	return pheader->balance;
+	return (int)pheader->balance;
 }
 
 void SGXBlob::initAttributes () {

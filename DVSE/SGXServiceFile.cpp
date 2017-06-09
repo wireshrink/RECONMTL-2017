@@ -126,6 +126,10 @@ bool SGXServiceFile::encrypt_and_save()
 bool SGXServiceFile::set_decrypted_content(size_t data_length, unsigned char * data)
 {
 	unsigned char *ldec_cont = nullptr;
+	if (data == decrypted_content)
+	{
+		return false; // setting the same memory twice
+	}
 	ldec_cont = (unsigned char*)malloc(data_length);
 	if (!ldec_cont)
 	{

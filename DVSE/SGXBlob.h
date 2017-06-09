@@ -8,47 +8,46 @@
 typedef struct __dvse_blob_header_t
 {
 	unsigned char token[8];
-	unsigned int  balance;
+	size_t  balance;
+	size_t  movie_data_count;
+	size_t  used_coupon_count;
 }dvse_blob_header_t;
 
-typedef struct __dvse_blob_movie_data_t
-{
-	size_t movie_id;
-	unsigned char last_allowed_date[16];
-	unsigned int  is_free_for_view;
-}dvse_blob_movie_data_t;
-typedef struct __dvse_movie_header_t
-{
-	unsigned int movie_count;
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning ( disable:4200 )
-#endif
 
-	dvse_blob_movie_data_t movies[];
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
-}dvse_movie_header_t;
+typedef struct __dvse_entry_placeholder_t
+{
+	char used_coupon[32];
+}dvse_entry_placeholder_t;
+
 
 typedef struct __dvse_used_coupon_data_t
 {
 	char used_coupon[32];
 }dvse_used_coupon_data_t;
 
-typedef struct __dvse_used_coupon_header_t
+
+typedef struct __dvse_blob_movie_data_t
 {
-	unsigned int used_coupon_count;
+	size_t movie_id;
+	size_t  is_free_for_view;
+	unsigned char last_allowed_date[16];
+}dvse_blob_movie_data_t;
+
+typedef struct __dvse_blob_structure_t
+{
+	dvse_blob_header_t hdr;
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning ( disable:4200 )
 #endif
-
-	dvse_used_coupon_data_t used_coupons[];
+	dvse_entry_placeholder_t entries[];
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
-}dvse_used_coupon_header_t;
+
+}dvse_blob_structure_t;
+
+
 
 
 // offset functions:
@@ -56,15 +55,20 @@ inline dvse_blob_header_t *const dvse_blob_header(unsigned char* const data)
 {
 	return reinterpret_cast<dvse_blob_header_t *const>(data);
 }
-inline  dvse_movie_header_t * const dvse_movie_header( unsigned char* const data)
+
+inline dvse_blob_structure_t * const blob_as_struct(unsigned char* const data)
 {
-	return reinterpret_cast<dvse_movie_header_t * const>(dvse_blob_header(data) + 1); // just after the header
+	return reinterpret_cast<dvse_blob_structure_t *const>(data);
 }
-inline dvse_used_coupon_header_t * const dvse_coupons_header(unsigned char* const data)
+
+inline dvse_entry_placeholder_t *const getplaceholder(unsigned char * const data, int index)
 {
-	dvse_movie_header_t * const movie_header = dvse_movie_header(data);
-	unsigned char * const temp = reinterpret_cast<unsigned char* const>(movie_header + 1);// movies start
-	return reinterpret_cast<dvse_used_coupon_header_t* const>(temp + (sizeof(dvse_blob_movie_data_t) * movie_header->movie_count));
+	dvse_blob_structure_t * const blobdata = blob_as_struct(data);
+	if (index < 0 || index >= (blobdata->hdr.movie_data_count + blobdata->hdr.used_coupon_count))
+	{
+		return nullptr;
+	}
+	return &blobdata->entries[index];
 }
 
 class SGXBlob : public SGXServiceFile
