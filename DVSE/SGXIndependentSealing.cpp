@@ -446,7 +446,7 @@ bool SGXIndependentSealing::seal_data(unsigned char * in, size_t in_size, unsign
 {
 	size_t alloc_size = calc_sealed_data_size(in_size);
 	uint32_t sealed_data_size = 0;
-	*out = (unsigned char*) malloc(alloc_size);
+	*out = (unsigned char*) malloc(SEALED_DATA_CHUNK_SIZE); // always allocating a full chunk
 
 	if ((*out) == nullptr)
 	{
@@ -467,7 +467,7 @@ bool SGXIndependentSealing::seal_data(unsigned char * in, size_t in_size, unsign
 
 bool SGXIndependentSealing::unseal_data(unsigned char * in, size_t in_size, unsigned char ** out, size_t * poutsize)
 {
-	*out = (unsigned char*)malloc(calc_unsealed_data_size(in_size));
+	*out = (unsigned char*)malloc(UNSEALED_DATA_CHUNK_SIZE); // allocating unsealed data chunk always
 	if ((*out) == nullptr)
 	{
 		return false; // no memory available
