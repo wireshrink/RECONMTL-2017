@@ -422,8 +422,12 @@ size_t SGXIndependentSealing::calc_sealed_data_size(size_t data_size)
 {
 
 	size_t ret = (data_size / UNSEALED_DATA_CHUNK_SIZE) * SEALED_DATA_CHUNK_SIZE;
-	if ((data_size %UNSEALED_DATA_CHUNK_SIZE) != 0)
-		ret += SEALING_HEADER_SIZE + data_size % UNSEALED_DATA_CHUNK_SIZE;
+	if ((data_size % UNSEALED_DATA_CHUNK_SIZE) != 0)
+		ret += SEALING_HEADER_SIZE + (data_size % UNSEALED_DATA_CHUNK_SIZE);
+	if (ret == 0)
+	{
+		int iii = 0;
+	}
 	return ret;
 }
 size_t SGXIndependentSealing::calc_unsealed_data_size(size_t data_size)
@@ -431,14 +435,18 @@ size_t SGXIndependentSealing::calc_unsealed_data_size(size_t data_size)
 
 	size_t ret = (data_size / SEALED_DATA_CHUNK_SIZE) * UNSEALED_DATA_CHUNK_SIZE;
 	if ((data_size % SEALED_DATA_CHUNK_SIZE) != 0)
-		ret += data_size % SEALED_DATA_CHUNK_SIZE - SEALING_HEADER_SIZE;
+		ret += (data_size % SEALED_DATA_CHUNK_SIZE) - SEALING_HEADER_SIZE;
+	if (ret == 0)
+	{
+		int iii = 0;
+	}
 	return ret;
 }
 bool SGXIndependentSealing::seal_data(unsigned char * in, size_t in_size, unsigned char ** out, size_t * poutsize)
 {
 	size_t alloc_size = calc_sealed_data_size(in_size);
 	uint32_t sealed_data_size = 0;
-	*out = (unsigned char*) calloc(1, alloc_size);
+	*out = (unsigned char*) malloc(alloc_size);
 
 	if ((*out) == nullptr)
 	{
@@ -456,11 +464,14 @@ bool SGXIndependentSealing::seal_data(unsigned char * in, size_t in_size, unsign
 	return true;
 }
 
+
 bool SGXIndependentSealing::unseal_data(unsigned char * in, size_t in_size, unsigned char ** out, size_t * poutsize)
 {
 	*out = (unsigned char*)malloc(calc_unsealed_data_size(in_size));
-
-	if ((*out) == nullptr) return false; // no memory available
+	if ((*out) == nullptr)
+	{
+		return false; // no memory available
+	}
 
 	*poutsize = calc_unsealed_data_size(in_size);
 	uint32_t tmp_size = (uint32_t)*poutsize;
@@ -476,7 +487,9 @@ bool SGXIndependentSealing::unseal_data(unsigned char * in, size_t in_size, unsi
 
 bool SGXIndependentSealing::destroy_allocated_data(unsigned char * data)
 {
-	if (data) free(data);
-	
+	if (data)
+	{
+		free(data);
+	}
 	return true;
 }

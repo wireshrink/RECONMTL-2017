@@ -71,6 +71,7 @@ size_t SGXNetworkReader::read(unsigned char * buffer, size_t buffer_size)
 		psslw->shutdown();
 		return false;
 	}
+	rdptr += buffer_size;
 	return real_size;
 }
 

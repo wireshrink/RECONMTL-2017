@@ -8,6 +8,8 @@
 
 #ifdef _MSC_VER
 # include <Shlobj.h>
+# include <Pathcch.h>
+
 #else
 # include <unistd.h>
 # include <pwd.h>
@@ -19,13 +21,35 @@
 #include "DVSE_u.h"
 
 # define TOKEN_FILENAME   "Enclave.token"
-# define ENCLAVE_FILENAME "C:\\Users\\atlas\\Documents\\GitHub\\RECONMTL-2017\\reconmtl2017dvse\\x64\\Debug\\DVSE.signed.dll"
+# define ENCLAVE_FILENAME "\\DVSE.signed.dll"
 
 /* Global EID shared by multiple threads */
 sgx_enclave_id_t global_eid = 0;
 
 
 SGXware *SGXware::m_pInstance = nullptr;
+
+#include <Shlwapi.h>
+#pragma comment(lib, "shlwapi.lib")
+
+// stolen from https://stackoverflow.com/a/15595664/2011365
+#include <Shlwapi.h>
+#pragma comment(lib, "shlwapi.lib")
+
+char* GetThisPath(char* dest, size_t destSize)
+{
+	if (!dest) return NULL;
+	DWORD length = GetModuleFileNameA(NULL, dest, destSize);
+	if (MAX_PATH > destSize) return NULL;
+	PathRemoveFileSpecA(dest);
+	return dest;
+}
+char* enclave_full_name(char* placeholder, size_t size) // the enclave should reside at the same folder as an executable
+{
+	GetThisPath(placeholder, size);
+	strncat(placeholder, ENCLAVE_FILENAME, 1024);
+	return placeholder;
+}
 
 const char* strMovieState(movie_state_t s)
 {
@@ -181,6 +205,7 @@ SGXware::SGXware()
 	sgx_launch_token_t token = { 0 };
 	sgx_status_t ret = SGX_ERROR_UNEXPECTED;
 	int updated = 0;
+	std::lock_guard<std::mutex> lock(this->method_lock);
 
 	/* Step 1: try to retrieve the launch token saved by last transaction
 	*         if there is no token, then create a new one.
@@ -242,7 +267,9 @@ SGXware::SGXware()
 #endif
 	/* Step 2: call sgx_create_enclave to initialize an enclave instance */
 	/* Debug Support: set 2nd parameter to 1 */
-	ret = sgx_create_enclave(ENCLAVE_FILENAME, SGX_DEBUG_FLAG, &token, &updated, &global_eid, NULL);
+	char encfullname[1024] = { 0 };
+	
+	ret = sgx_create_enclavea(enclave_full_name(encfullname, 1024), SGX_DEBUG_FLAG, &token, &updated, &global_eid, NULL);
 	if (ret != SGX_SUCCESS) {
 		print_error_message(ret);
 #ifdef _MSC_VER
@@ -297,12 +324,14 @@ SGXware::~SGXware()
 }
 SGXware *		SGXware::getInstance()
 {
-    m_pInstance = new SGXware;
+	// no lock here, there is a lock in constructor
+    if (!m_pInstance )
+		m_pInstance = new SGXware;
     return m_pInstance;
 }
 void			SGXware::destroyInstance()
 {
-
+	// no lock herem, same reason
 	if (m_pInstance != nullptr)
 	{
 		sgx_destroy_enclave(global_eid);
@@ -313,6 +342,8 @@ bool			SGXware::initSecureChannel(void)
 {
 	sgx_status_t ret;
 	int retval;
+	std::lock_guard<std::mutex> lock(this->method_lock);
+
 	ret = ecall_init_secure_channel(global_eid, &retval, secure_channel_key);
 	if (ret != SGX_SUCCESS)
 	{
@@ -325,6 +356,7 @@ bool SGXware::getBalance(int *balance)
 {
 	
 	int retval;
+	std::lock_guard<std::mutex> lock(this->method_lock);
 
 	sgx_status_t ret = ecall_get_balance(global_eid, &retval, balance);
 	if (ret != SGX_SUCCESS)
@@ -337,7 +369,10 @@ bool SGXware::getBalance(int *balance)
 bool			SGXware::tryCoupon(char* coupon)
 {
 	int retval;
+	std::lock_guard<std::mutex> lock(this->method_lock);
+
 	sgx_status_t ret = ecall_try_coupon(global_eid, &retval, coupon);
+
 	if (ret != SGX_SUCCESS)
 	{
 		print_error_message(ret);
@@ -357,6 +392,9 @@ bool			SGXware::firstMovie(movie_t *pFirstMovie)
 	// assuming fresh reloaded EPG
 	epg_rdPtr = 0;
 	epg_page_index = 0;	
+
+	std::lock_guard<std::mutex> lock(this->method_lock);
+
 	ret = ecall_update_epg(global_eid, &res);
 	if (ret != SGX_SUCCESS)
 	{
@@ -377,6 +415,7 @@ bool			SGXware::readUntil(char* buf, char delimiter)
 {
 	sgx_status_t ret;
 	int res;
+
 
 	int index = 0;
 	
@@ -442,6 +481,8 @@ bool			SGXware::prepareMovie(unsigned int movie_id)
 bool			SGXware::refreshEPG(void)
 {
 	int retval;
+	std::lock_guard<std::mutex> lock(this->method_lock);
+	
 	sgx_status_t ret = ecall_update_epg(global_eid, &retval);
 	if (ret != SGX_SUCCESS)
 	{
@@ -454,6 +495,8 @@ bool			SGXware::writeAppLog (unsigned char* data, size_t length)
 {
 	sgx_status_t ret;
 	int retval;
+	std::lock_guard<std::mutex> lock(this->method_lock);
+
 	ret = ecall_write_log(global_eid, &retval, length,(char*) data);
 	if (ret != SGX_SUCCESS)
 	{
@@ -465,7 +508,9 @@ bool			SGXware::writeAppLog (unsigned char* data, size_t length)
 bool			SGXware::getFileName(size_t id, size_t movie_name_size, char *movie_name)
 {
 	int retval;
-	
+
+	std::lock_guard<std::mutex> lock(this->method_lock);
+
 	sgx_status_t ret = ecall_update_epg(global_eid, &retval);
 	if (ret != SGX_SUCCESS)
 	{
@@ -481,7 +526,10 @@ bool			SGXware::initUser(char* address, int port, char* folder)
 {
 	sgx_status_t ret;
 	int retval;
+	std::lock_guard<std::mutex> lock(this->method_lock);
+
 	ret = ecall_init_enclave(global_eid, &retval, folder, address, port);
+
 	if (ret != SGX_SUCCESS)
 	{
 		print_error_message(ret);
@@ -490,10 +538,14 @@ bool			SGXware::initUser(char* address, int port, char* folder)
 	strncpy(this->base_folder, folder, 1024);
 	return retval != 0;
 }
-quint64	SGXware::readMovieChunk( size_t movie_offset, size_t chunk_size, unsigned char* dest)
+
+
+size_t	SGXware::readMovieChunk( size_t movie_offset, size_t chunk_size, unsigned char* dest)
 {
 	sgx_status_t ret;
 	int retval;
+
+	std::lock_guard<std::mutex> lock(this->method_lock);
 
 	ret = ecall_get_movie_chunk(global_eid, &retval, movie_offset, chunk_size, dest);
 
@@ -502,10 +554,19 @@ quint64	SGXware::readMovieChunk( size_t movie_offset, size_t chunk_size, unsigne
 		print_error_message(ret);
 		return 0;
 	}
-	return (quint64) retval ;
+	FILE*f = fopen("C:\\Users\\atlas\\Documents\\GitHub\\RECONMTL-2017\\secureServer\\secureServer\\media\\7", "rb");
+	fseek(f, movie_offset, SEEK_SET);
+	unsigned char * buffer = new unsigned char[chunk_size];
+	int res = fread(buffer, 1, chunk_size, f);
+	if (res != retval || memcmp(buffer, dest, retval) != 0)
+	{
+		int iii = 0;
+	}
+	fclose(f);
+	return (size_t) retval ;
 
 }
-bool			SGXware::inplaceDecrypt(qint64 size, void* data)
+bool			SGXware::inplaceDecrypt(size_t size, void* data)
 {
 
 	return true;
@@ -514,6 +575,7 @@ bool			SGXware::inplaceDecrypt(qint64 size, void* data)
 bool SGXware::getFileSize(size_t movie_id, size_t * fsize)
 {
 	int res;
+	std::lock_guard<std::mutex> lock(this->method_lock);
 	sgx_status_t ret = ecall_get_movie_file_size(global_eid, &res,movie_id,  fsize);
 	if (ret != SGX_SUCCESS)
 	{

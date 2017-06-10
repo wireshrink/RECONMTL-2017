@@ -51,6 +51,8 @@ size_t SGXFileReader::read(unsigned char * buffer, size_t buffer_size)
 	do
 	{
 		//reading the current chunk
+		unsealed_size = 0;
+		memset(sealed_chunk, 0, SGXIndependentSealing::SEALED_DATA_CHUNK_SIZE);
 		sgx_status_t ret = ocall_file_read(&retval, getHandle(), current_chunk_pos, SGXIndependentSealing::SEALED_DATA_CHUNK_SIZE, sealed_chunk);
 		if (ret != SGX_SUCCESS)
 			return -1L;
@@ -60,13 +62,19 @@ size_t SGXFileReader::read(unsigned char * buffer, size_t buffer_size)
 		}
 		if (!SGXIndependentSealing::unseal_data(sealed_chunk, retval, &unsealed, &unsealed_size))
 			return -1L;
-		size_t off_in_chunk = m_pos % SGXIndependentSealing::UNSEALED_DATA_CHUNK_SIZE;
-		size_t size_in_chunk = _MIN(buffer_size, (SGXIndependentSealing::UNSEALED_DATA_CHUNK_SIZE - off_in_chunk));
+		size_t off_in_chunk = (m_pos % SGXIndependentSealing::UNSEALED_DATA_CHUNK_SIZE);
+		size_t size_in_chunk = SGXIndependentSealing::UNSEALED_DATA_CHUNK_SIZE - off_in_chunk;
+		if (size_in_chunk > (buffer_size - read_data))
+		{
+			size_in_chunk = buffer_size - read_data; // avoid ovwewriting the tail of the buffer
+		}
 		memcpy(buffer + read_data, unsealed + off_in_chunk, size_in_chunk);
 		read_data += size_in_chunk;
 		m_pos += size_in_chunk;
+		
 		enc_pos = SGXIndependentSealing::calc_sealed_data_size(m_pos);
 		current_chunk_pos = (enc_pos / SGXIndependentSealing::SEALED_DATA_CHUNK_SIZE) * SGXIndependentSealing::SEALED_DATA_CHUNK_SIZE;
+		memset(unsealed, 0, SGXIndependentSealing::UNSEALED_DATA_CHUNK_SIZE);
 		SGXIndependentSealing::destroy_allocated_data(unsealed);
 	} while (retval != 0 && read_data < buffer_size);
 	return read_data;

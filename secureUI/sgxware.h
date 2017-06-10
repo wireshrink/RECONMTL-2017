@@ -1,8 +1,7 @@
 #ifndef SGXWARE_H
 #define SGXWARE_H
 #include <time.h>
-#include <QWidget>
-
+#include <mutex>
 typedef enum __movie_status
 {
     M_STT_VOID,
@@ -49,6 +48,7 @@ class SGXware
 	char          base_folder[1024];
 	bool createMovie(movie_t *pMovie);
 	bool readUntil(char* buf, char delimiter);
+	std::mutex method_lock;
 
 public:
     static SGXware * getInstance();
@@ -65,10 +65,10 @@ public:
 
     bool         prepareMovie(unsigned int movie_id);
     bool         refreshEPG(void);
-    quint64 readMovieChunk(size_t movie_offset, size_t chunk_size, unsigned char* dest);
+    size_t 		readMovieChunk(size_t movie_offset, size_t chunk_size, unsigned char* dest);
     bool         writeAppLog (unsigned char* data, size_t length);
     bool        getFileName(size_t id, size_t movie_name_size, char *movie_name);
-	bool        inplaceDecrypt(qint64 size, void* data);
+	bool        inplaceDecrypt(size_t size, void* data);
 	bool        getFileSize(size_t movie_id, size_t* fsize);
 
 };

@@ -40,12 +40,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionOpen_triggered()
 {
-	static EncryptedFile * s_encFile = nullptr;
+/*	static EncryptedFile * s_encFile = nullptr;
     QString filename = QFileDialog::getOpenFileName(this,"Open a File","","Video File (*.*)");
     on_actionStop_triggered();
-
-    //player->setMedia(QUrl::fromLocalFile(filename));
-	// for debugging of video infrastructure, will be removed later
 
 	on_actionStop_triggered();
 	if (s_encFile) delete s_encFile;
@@ -56,6 +53,17 @@ void MainWindow::on_actionOpen_triggered()
 	player->setMedia(locUrl  , s_encFile);
 
 	on_actionPlay_triggered();
+*/
+	// from nowe on using open button for simple enclaves tests
+	unsigned char chunk[1024 * 30];
+	SGXware::getInstance()->prepareMovie(7);
+	SGXware::getInstance()->readMovieChunk(0, 1024, chunk);
+	SGXware::getInstance()->readMovieChunk(1024, 1024, chunk);
+	SGXware::getInstance()->readMovieChunk(1024*2, 1024, chunk);
+	SGXware::getInstance()->readMovieChunk(1024*3, 1024, chunk);
+	SGXware::getInstance()->readMovieChunk(1024 * 3 + 1, 1024, chunk);
+	SGXware::getInstance()->readMovieChunk(1, 1027, chunk);
+	SGXware::getInstance()->readMovieChunk(312, 2632, chunk);
 
 }
 
