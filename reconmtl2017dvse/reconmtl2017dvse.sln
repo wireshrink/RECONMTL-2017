@@ -12,6 +12,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "videogui", "..\secureUI\vid
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "secureServer", "..\secureServer\secureServer\secureServer.pyproj", "{66D16A56-7E6A-4308-9AAD-18A8C4D1D97F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EnclaveTest", "EnclaveTest\EnclaveTest.vcxproj", "{B0A10797-E472-474E-94B4-79DCD20C9D6F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{95CFED4A-A6C5-4890-A462-16D489C76704} = {95CFED4A-A6C5-4890-A462-16D489C76704}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +81,28 @@ Global
 		{66D16A56-7E6A-4308-9AAD-18A8C4D1D97F}.Simulation|Any CPU.ActiveCfg = Release|Any CPU
 		{66D16A56-7E6A-4308-9AAD-18A8C4D1D97F}.Simulation|x64.ActiveCfg = Release|Any CPU
 		{66D16A56-7E6A-4308-9AAD-18A8C4D1D97F}.Simulation|x86.ActiveCfg = Release|Any CPU
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Debug|x64.ActiveCfg = Debug|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Debug|x64.Build.0 = Debug|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Debug|x86.ActiveCfg = Debug|Win32
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Debug|x86.Build.0 = Debug|Win32
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Prerelease|Any CPU.ActiveCfg = Prerelease|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Prerelease|Any CPU.Build.0 = Prerelease|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Prerelease|x64.ActiveCfg = Prerelease|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Prerelease|x64.Build.0 = Prerelease|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Prerelease|x86.ActiveCfg = Prerelease|Win32
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Prerelease|x86.Build.0 = Prerelease|Win32
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Release|Any CPU.ActiveCfg = Release|Win32
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Release|x64.ActiveCfg = Release|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Release|x64.Build.0 = Release|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Release|x86.ActiveCfg = Release|Win32
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Release|x86.Build.0 = Release|Win32
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Simulation|Any CPU.ActiveCfg = Simulation|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Simulation|Any CPU.Build.0 = Simulation|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Simulation|x64.ActiveCfg = Simulation|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Simulation|x64.Build.0 = Simulation|x64
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Simulation|x86.ActiveCfg = Simulation|Win32
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F}.Simulation|x86.Build.0 = Simulation|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
