@@ -53,17 +53,28 @@ void MainWindow::on_actionOpen_triggered()
 	player->setMedia(locUrl  , s_encFile);
 
 	on_actionPlay_triggered();
-*/
+
 	// from nowe on using open button for simple enclaves tests
+	
+	// test 0 - unaligned read from the encrypted file
 	unsigned char chunk[1024 * 30];
+	// pass
+	// test 1 - download and read the tail of the movie
+	bool bres = QFile::remove(QString("C:/Users/atlas/Documents/lib_debug/movie.7"));
 	SGXware::getInstance()->prepareMovie(7);
+	size_t real_movie_size = 29904006;
+
 	SGXware::getInstance()->readMovieChunk(0, 1024, chunk);
 	SGXware::getInstance()->readMovieChunk(1024, 1024, chunk);
-	SGXware::getInstance()->readMovieChunk(1024*2, 1024, chunk);
-	SGXware::getInstance()->readMovieChunk(1024*3, 1024, chunk);
+	SGXware::getInstance()->readMovieChunk(1024 * 2, 1024, chunk);
+	SGXware::getInstance()->readMovieChunk(1024 * 3, 1024, chunk);
 	SGXware::getInstance()->readMovieChunk(1024 * 3 + 1, 1024, chunk);
 	SGXware::getInstance()->readMovieChunk(1, 1027, chunk);
 	SGXware::getInstance()->readMovieChunk(312, 2632, chunk);
+	SGXware::getInstance()->readMovieChunk(real_movie_size - 1027, 1024, chunk);
+
+*/
+	on_actionManageEPG_triggered();
 
 }
 
