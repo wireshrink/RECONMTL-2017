@@ -262,6 +262,6 @@ bool SGXEcallEnclaveInterface::downloadMovie(size_t movie_id)
 		}
 
 	} while (read_size != 0);
-
+	m_largeFileWriter.close();
 	return true;
 }
