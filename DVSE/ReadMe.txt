@@ -1,21 +1,18 @@
-==================================================================================================
-                Dynamic Link Library : DVSE Project Overview
-==================================================================================================
+/************************************************************************************************************
+*	This application is a TRAINING TARGET for exercises in HACKING Intel® SGX ENCLAVES.                     *
+*	This application made vulnerable DELIBERATELY - its main purpose is to demonstrate, shame and blame     *
+*   common mistakes usually made with SGX enclave programming.                                              *
+*   ONCE AGAIN, IT CONTAINS MISTAKES.                                                                       *
+*   Please DO NOT USE it's source for any healthy development/production activity.                          *
+*	It is intended to use for training of hacking SGX enclaves ONLY.                                        *
+*	It is written ugly(deliberately), designed badly(intentionally) and running very slow.		        	*
+*	You can freely use this application for training purposes.												*
+*	I'd be glad to hear about your progress.    															*
+*																											*
+*	This application requires QT5.8 (which uses LGPL v3 license), Intel SGX SDK and							*
+*   the Intel® Software Guard Extensions SSL (Intel® SGX SSL) to be compiled.								*
+*	This application is written by Michael Atlas (wireshrink@gmail.com) during 2017.						*
+*	Happy hacking.																							*
+*************************************************************************************************************/
 
-Enclave Project Wizard has created this DVSE project for you as a starting point.
-
-This file contains a summary of what you will find in each of the files that make up your project.
-
-DVSE.vcxproj
-    This is the main project file for projects generated using an Enclave Wizard. 
-    It contains information about the version of the product that generated the file, and 
-    information about the platforms, configurations, and project features selected with the
-    Enclave Wizard.
-
-DVSE.vcxproj.filters
-    This is the filters file for VC++ projects generated using an Enclave Wizard. 
-    It contains information about the association between the files in your project 
-    and the filters. This association is used in the IDE to show grouping of files with
-    similar extensions under a specific node (for e.g. ".cpp" files are associated with the
-    "Source Files" filter).
 
