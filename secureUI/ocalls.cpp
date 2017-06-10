@@ -44,9 +44,10 @@ void* ocall_socket_connect(/*[in, string]*/char *url, unsigned int port)
 	s = socket(AF_INET, SOCK_STREAM, 0);
 	server.sin_addr.s_addr = inet_addr(url);
 	server.sin_family = AF_INET;
-	server.sin_port = htons(port);
+	server.sin_port = htons((unsigned short)port);
 	if (connect(s,(struct sockaddr*) &server, sizeof(server)) < 0)
 	{
+		unsigned int err = GetLastError();
 		return 0;
 	}
 	DWORD timeout = SO_RCVTIMEO * 1000, tlen = 4;
