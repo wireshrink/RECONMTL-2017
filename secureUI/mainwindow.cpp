@@ -1,3 +1,21 @@
+/************************************************************************************************************
+*	This application is a TRAINING TARGET for exercises in HACKING Intel® SGX ENCLAVES.                     *
+*	This application made vulnerable DELIBERATELY - its main purpose is to demonstrate, shame and blame     *
+*   common mistakes usually made with SGX enclave programming.                                              *
+*   ONCE AGAIN, IT CONTAINS MISTAKES.                                                                       *
+*   Please DO NOT USE it's source for any healthy development/production activity.                          *
+*	It is intended to use for training of hacking SGX enclaves ONLY.                                        *
+*	It is written ugly(deliberately), designed badly(intentionally) and running very slow.		        	*
+*	You can freely use this application for training purposes.												*
+*	I'd be glad to hear about your progress.    															*
+*																											*
+*	This application requires QT5.8 (which uses LGPL v3 license), Intel SGX SDK and							*
+*   the Intel® Software Guard Extensions SSL (Intel® SGX SSL) to be compiled.								*
+*	This application is written by Michael Atlas (wireshrink@gmail.com) during 2017.						*
+*	Happy hacking.																							*
+*************************************************************************************************************/
+
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "setupdialog.h"
@@ -40,40 +58,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionOpen_triggered()
 {
-/*	static EncryptedFile * s_encFile = nullptr;
-    QString filename = QFileDialog::getOpenFileName(this,"Open a File","","Video File (*.*)");
-    on_actionStop_triggered();
-
-	on_actionStop_triggered();
-	if (s_encFile) delete s_encFile;
-	s_encFile = new EncryptedFile(0);
-	s_encFile->setFileName(filename.toLatin1().data());
-	s_encFile->open(QFile::ReadOnly);
-	QUrl locUrl = QUrl::fromLocalFile(filename);
-	player->setMedia(locUrl  , s_encFile);
-
-	on_actionPlay_triggered();
-
-	// from nowe on using open button for simple enclaves tests
-	
-	// test 0 - unaligned read from the encrypted file
-	unsigned char chunk[1024 * 30];
-	// pass
-	// test 1 - download and read the tail of the movie
-	bool bres = QFile::remove(QString("C:/Users/atlas/Documents/lib_debug/movie.7"));
-	SGXware::getInstance()->prepareMovie(7);
-	size_t real_movie_size = 29904006;
-
-	SGXware::getInstance()->readMovieChunk(0, 1024, chunk);
-	SGXware::getInstance()->readMovieChunk(1024, 1024, chunk);
-	SGXware::getInstance()->readMovieChunk(1024 * 2, 1024, chunk);
-	SGXware::getInstance()->readMovieChunk(1024 * 3, 1024, chunk);
-	SGXware::getInstance()->readMovieChunk(1024 * 3 + 1, 1024, chunk);
-	SGXware::getInstance()->readMovieChunk(1, 1027, chunk);
-	SGXware::getInstance()->readMovieChunk(312, 2632, chunk);
-	SGXware::getInstance()->readMovieChunk(real_movie_size - 1027, 1024, chunk);
-
-*/
 	on_actionManageEPG_triggered();
 
 }

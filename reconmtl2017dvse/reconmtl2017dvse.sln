@@ -8,6 +8,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "videogui", "..\secureUI\videogui.vcxproj", "{F716CC31-0FD3-3992-A5F6-7DE38C892D8D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{95CFED4A-A6C5-4890-A462-16D489C76704} = {95CFED4A-A6C5-4890-A462-16D489C76704}
+		{B0A10797-E472-474E-94B4-79DCD20C9D6F} = {B0A10797-E472-474E-94B4-79DCD20C9D6F}
 	EndProjectSection
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "secureServer", "..\secureServer\secureServer\secureServer.pyproj", "{66D16A56-7E6A-4308-9AAD-18A8C4D1D97F}"
