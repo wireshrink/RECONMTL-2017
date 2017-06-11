@@ -289,7 +289,7 @@ SGXware::SGXware()
 	
 	//ret = sgx_create_enclavea(enclave_full_name(encfullname, 1024), SGX_DEBUG_FLAG, &token, &updated, &global_eid, NULL);
 	// from now on working with non-debuggable enclaves
-	ret = sgx_create_enclavea(enclave_full_name(encfullname, 1024), 0, &token, &updated, &global_eid, NULL);
+	ret = sgx_create_enclavea(enclave_full_name(encfullname, 1024), SGX_DEBUG_FLAG, &token, &updated, &global_eid, NULL);
 	
 	if (ret != SGX_SUCCESS) {
 		print_error_message(ret);

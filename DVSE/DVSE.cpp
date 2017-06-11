@@ -73,7 +73,9 @@ int ecall_try_coupon(char* coupon)
 int ecall_get_balance( int *balance)
 {
 	*balance = getIf()->getBalance();
-	return 1;
+	if (getIf()->isBlobInitialized())
+		return 1;
+	return 0;
 }
 
 int ecall_init_secure_channel(unsigned char key[16])

@@ -42,7 +42,17 @@ SetupDialog::SetupDialog(void):QDialog()
 	this->serverIPEdit->setText(shost);
 	this->serverPortEdit->setText(sport);
 	this->folderEdit->setText(sfolder);
-	sprintf(buf, "Balance: %d", 0);
+	SGXware *pSGX = SGXware::getInstance();
+	int balance = 0;
+	if (!pSGX->getBalance(&balance))
+	{ 
+		sprintf(buf, "Balance is unknown yet ");
+
+	}
+	else
+	{ 
+		sprintf(buf, "Balance: %d", balance);
+	}
 	this->labelBalance->setText(buf);
 
 }

@@ -280,3 +280,8 @@ bool SGXEcallEnclaveInterface::downloadMovie(size_t movie_id)
 	m_largeFileWriter.close();
 	return true;
 }
+
+bool SGXEcallEnclaveInterface::isBlobInitialized()
+{
+	return m_blob.get_data_size() > 0;
+}

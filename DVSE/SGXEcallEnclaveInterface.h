@@ -154,7 +154,7 @@ public:
 
 
   bool isFreeToPlay(size_t movie_id) { return m_epg.isFreeToPlay(movie_id); }
-
+  bool isBlobInitialized();
 private:
 	char base_folder[1024];
 

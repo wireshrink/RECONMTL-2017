@@ -36,9 +36,9 @@ bool SGXEpg::isFreeToPlay(size_t movie_id)
 	do
 	{
 		unsigned char *name = ptr;
-		unsigned char *chid = (unsigned char*)strchr((const char*)name, ',') + 1; if (chid >= end) return false;
-		unsigned char *tm = (unsigned char*)strchr((const char*)chid, ',') + 1; if (tm >= end) return false;
-		unsigned char *stat = (unsigned char*)strchr((const char*)tm, ',') + 1; if (stat >= end) return false;
+		unsigned char *chid = (unsigned char*)memchr((const char*)name, ',', end - name) + 1; if (chid == (unsigned char *)1 || chid >= end) return false;
+		unsigned char *tm = (unsigned char*)memchr((const char*)chid, ',', end - name) + 1; if (tm == (unsigned char *)1 || tm >= end) return false;
+		unsigned char *stat = (unsigned char*)memchr((const char*)tm, ',', end - name) + 1; if (stat == (unsigned char *)1 || stat >= end) return false;
 
 		if (strncmp((char*)stat, "free view", strlen("free view")) == 0)
 		{

@@ -47,22 +47,24 @@ def main(args):
          try:
             newsocket, fromaddr = bindsocket.accept()
             newsocket.settimeout(120)
-            
+            connstream = None
             try:
                 connstream = ssl.wrap_socket(newsocket,
                                      server_side=True,
                                      certfile=os.path.join(args[3], "domain.crt"),
                                      keyfile=os.path.join(args[3], "domain.key"))
                 connstream.settimeout(120)
+                deal_with_client(connstream)
             except:
                 traceback.print_exc(file=sys.stdout)
                 continue
-            deal_with_client(connstream)
+            
          except:
             traceback.print_exc(file=sys.stdout)
          finally:
-            connstream.shutdown(socket.SHUT_RDWR)
-            connstream.close()    
+            if  not connstream is None :
+                connstream.shutdown(socket.SHUT_RDWR)
+                connstream.close()    
 
 
 if __name__ == "__main__":
