@@ -114,10 +114,13 @@ bool SGXSslWare::connect(char * address, int port)
 	if (server == 0)
 		return false;
 
+#pragma warning(disable:4311)
+#pragma warning(disable:4302)
+
 	/* ---------------------------------------------------------- *
 	* Attach the SSL session to the socket descriptor            *
 	* ---------------------------------------------------------- */
-	SSL_set_fd(ssl, (int)server);
+	SSL_set_fd(ssl, reinterpret_cast<int>(server));
 
 	/* ---------------------------------------------------------- *
 	* Try to SSL-connect here, returns 1 for success             *
@@ -156,13 +159,13 @@ bool SGXSslWare::reconnect()
 
 bool SGXSslWare::send(unsigned char * data, size_t size)
 {
-	bool res = SSL_write(ssl, data, size) == size;
+	bool res = SSL_write(ssl, data, (int)size) == size;
 	return res;
 }
 
 bool SGXSslWare::receive(unsigned char * data, size_t max_size, size_t * real_size)
 {
-	*real_size = SSL_read(ssl, data, max_size);
+	*real_size = SSL_read(ssl, data, (int)max_size);
 	return (*real_size != -1L);
 }
 

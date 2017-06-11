@@ -81,12 +81,13 @@ protected:
 		qint64 pos = this->pos();
 
 		qint64 readDataSize = pSGX->readMovieChunk( pos, maxSize, (unsigned char*)data);
-		pSGX->inplaceDecrypt(readDataSize, data);
 		return readDataSize;
 	}
 
 	virtual qint64 writeData(const char *data, qint64 len)
 	{
+		Q_UNUSED(data);
+		Q_UNUSED(len);
 		//return QIODevice::writeData(data, len); // no write at alll, reading only
 		return 0;
 	}

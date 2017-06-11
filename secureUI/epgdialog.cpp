@@ -64,6 +64,7 @@ EPGDialog::EPGDialog(QWidget *parent) : QDialog(parent)
 void EPGDialog::itemDoubleClicked(int row, int column)
 {
    // download if not yet and start playing
+	Q_UNUSED(column);
     SGXware *pSGX = SGXware::getInstance();
     QString idstr = tableWidget->item(row, 0)->text();
     unsigned int id = idstr.toInt();

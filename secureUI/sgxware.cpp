@@ -57,8 +57,8 @@ SGXware *SGXware::m_pInstance = nullptr;
 char* GetThisPath(char* dest, size_t destSize)
 {
 	if (!dest) return NULL;
-	DWORD length = GetModuleFileNameA(NULL, dest, destSize);
-	if (MAX_PATH > destSize) return NULL;
+	DWORD length = GetModuleFileNameA(NULL, dest, (DWORD)destSize);
+	if (MAX_PATH > destSize || length > destSize) return NULL;
 	PathRemoveFileSpecA(dest);
 	return dest;
 }
@@ -287,7 +287,10 @@ SGXware::SGXware()
 	/* Debug Support: set 2nd parameter to 1 */
 	char encfullname[1024] = { 0 };
 	
-	ret = sgx_create_enclavea(enclave_full_name(encfullname, 1024), SGX_DEBUG_FLAG, &token, &updated, &global_eid, NULL);
+	//ret = sgx_create_enclavea(enclave_full_name(encfullname, 1024), SGX_DEBUG_FLAG, &token, &updated, &global_eid, NULL);
+	// from now on working with non-debuggable enclaves
+	ret = sgx_create_enclavea(enclave_full_name(encfullname, 1024), 0, &token, &updated, &global_eid, NULL);
+	
 	if (ret != SGX_SUCCESS) {
 		print_error_message(ret);
 #ifdef _MSC_VER
@@ -572,6 +575,8 @@ size_t	SGXware::readMovieChunk( size_t movie_offset, size_t chunk_size, unsigned
 		print_error_message(ret);
 		return 0;
 	}
+#if 0
+	// debugging code, checking read correctness
 	FILE*f = fopen("C:\\Users\\atlas\\Documents\\GitHub\\RECONMTL-2017\\secureServer\\secureServer\\media\\7", "rb");
 	fseek(f, movie_offset, SEEK_SET);
 	unsigned char * buffer = new unsigned char[chunk_size];
@@ -581,13 +586,9 @@ size_t	SGXware::readMovieChunk( size_t movie_offset, size_t chunk_size, unsigned
 		int iii = 0;
 	}
 	fclose(f);
+#endif
 	return (size_t) retval ;
 
-}
-bool			SGXware::inplaceDecrypt(size_t size, void* data)
-{
-
-	return true;
 }
 
 bool SGXware::getFileSize(size_t movie_id, size_t * fsize)

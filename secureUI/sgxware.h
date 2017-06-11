@@ -86,7 +86,6 @@ public:
     size_t 		readMovieChunk(size_t movie_offset, size_t chunk_size, unsigned char* dest);
     bool         writeAppLog (unsigned char* data, size_t length);
     bool        getFileName(size_t id, size_t movie_name_size, char *movie_name);
-	bool        inplaceDecrypt(size_t size, void* data);
 	bool        getFileSize(size_t movie_id, size_t* fsize);
 
 };

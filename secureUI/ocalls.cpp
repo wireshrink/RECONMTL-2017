@@ -66,6 +66,7 @@ void* ocall_socket_connect(/*[in, string]*/char *url, unsigned int port)
 	if (connect(s,(struct sockaddr*) &server, sizeof(server)) < 0)
 	{
 		unsigned int err = GetLastError();
+		(void)err; // I just want to see it during debug session, not more
 		return 0;
 	}
 	DWORD timeout = SO_RCVTIMEO * 1000, tlen = 4;
