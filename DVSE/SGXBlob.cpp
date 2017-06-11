@@ -54,6 +54,7 @@ bool SGXBlob::isMoviePlayAllowed(size_t movie_id)
 			{
 				return true;
 			}
+			return false;
 		}
 
 	}
@@ -154,7 +155,10 @@ bool SGXBlob::purchaseMovie(size_t movie_id)
 	}
 	
 	int new_balance = getBalance() ;
-	if (!freetoplay) new_balance -= 50;
+	if (!freetoplay)
+	{
+		new_balance -= 50;
+	}
 	
 	for (i = 0; i < getMovieCount(); i++)
 	{
@@ -184,7 +188,7 @@ bool SGXBlob::purchaseMovie(size_t movie_id)
 
 	dvse_blob_header_t * const pheader = dvse_blob_header(getContent());
 	dvse_blob_header_t * const pnewheader = dvse_blob_header(new_data);
-
+	pheader->balance = new_balance;
 	*pnewheader = *pheader;
 
 	dvse_blob_structure_t *const pstruct = blob_as_struct(getContent());
