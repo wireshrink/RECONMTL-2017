@@ -38,8 +38,8 @@ Use, hack, enjoy.
 
 ## Where to get all these components ?
 
-1. [SGX SDK & PSW] (https://software.intel.com/en-us/sgx-sdk/download)
-2. [QT5] (https://www.qt.io/download/)
+1. [SGX SDK & PSW](https://software.intel.com/en-us/sgx-sdk/download)
+2. [QT5](https://www.qt.io/download/)
 
 ## Something doesn't work or I found a bug in your code !
 
