@@ -28,6 +28,8 @@ const char* const PREFERRED_CIPHERS = "HIGH:!aNULL:!kRSA:!SRP:!PSK:!CAMELLIA:!RC
 SGXSslWare::SGXSslWare()
 {
 	server = nullptr;
+	ssl = nullptr;
+	ctx = nullptr;
 }
 
 
@@ -37,13 +39,8 @@ SGXSslWare::~SGXSslWare()
 
 void init_openssl_library(void)
 {
-	/* https://www.openssl.org/docs/ssl/SSL_library_init.html */
 	(void)SSL_library_init();
-	/* Cannot fail (always returns success) ??? */
-
-	/* https://www.openssl.org/docs/crypto/ERR_load_crypto_strings.html */
 	SSL_load_error_strings();
-	/* Cannot fail ??? */
 }
 
 SGXSslWare * SGXSslWare::getInstance()
@@ -51,7 +48,7 @@ SGXSslWare * SGXSslWare::getInstance()
 	if (m_pInstance == nullptr)
 	{
 		m_pInstance = new SGXSslWare();
-		init_openssl_library();
+		//init_openssl_library();
 	}
 
 	return m_pInstance;
@@ -59,8 +56,8 @@ SGXSslWare * SGXSslWare::getInstance()
 
 void SGXSslWare::destroy()
 {
-	SSL_free(ssl);
-	SSL_CTX_free(ctx);
+	if(ssl) SSL_free(ssl);
+	if(ctx) SSL_CTX_free(ctx);
 	if (m_pInstance) delete m_pInstance;
 }
 
@@ -68,20 +65,24 @@ bool SGXSslWare::connect(char * address, int port)
 {
 	const SSL_METHOD *method;
 	X509                *cert = NULL;
+	static bool openssl_initialized = false;
 	/* ---------------------------------------------------------- *
 	* These function calls initialize openssl for correct work.  *
 	* ---------------------------------------------------------- */
-	OpenSSL_add_all_algorithms();
-	ERR_load_BIO_strings();
-	ERR_load_crypto_strings();
-	SSL_load_error_strings();
+	if (!openssl_initialized)
+	{
+		OpenSSL_add_all_algorithms();
+		ERR_load_BIO_strings();
+		ERR_load_crypto_strings();
+		SSL_load_error_strings();
 
-	/* ---------------------------------------------------------- *
-	* initialize SSL library and register algorithms             *
-	* ---------------------------------------------------------- */
-	if (SSL_library_init() < 0)
-		return false;
-
+		/* ---------------------------------------------------------- *
+		* initialize SSL library and register algorithms             *
+		* ---------------------------------------------------------- */
+		if (SSL_library_init() < 0)
+			return false;
+		openssl_initialized = true;
+	}
 	/* ---------------------------------------------------------- *
 	* Set SSLv2 client hello, also announce SSLv3 and TLSv1      *
 	* ---------------------------------------------------------- */
@@ -102,6 +103,10 @@ bool SGXSslWare::connect(char * address, int port)
 	* Create new SSL connection state object                     *
 	* ---------------------------------------------------------- */
 	ssl = SSL_new(ctx);
+	if (!ssl)
+	{
+		return false;
+	}
 
 	/* ---------------------------------------------------------- *
 	* Make the underlying TCP socket connection                  *
@@ -154,6 +159,10 @@ bool SGXSslWare::connect(char * address, int port)
 
 bool SGXSslWare::reconnect()
 {
+	if (ssl) SSL_free(ssl);
+	if (ctx) SSL_CTX_free(ctx);
+	ctx = nullptr;
+	ssl = nullptr;
 	return connect(m_addr, m_port);
 }
 

@@ -132,6 +132,7 @@ void MainWindow::on_actionManageEPG_triggered()
 			s_encFile->close();
 			delete s_encFile;
 			s_encFile = nullptr;
+			player->setMedia(QUrl::fromLocalFile(""), nullptr);
 		}
 	}
 }

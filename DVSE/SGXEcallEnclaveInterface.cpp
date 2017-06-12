@@ -150,6 +150,14 @@ bool SGXEcallEnclaveInterface::applyCoupon(char * coupon)
 
 bool SGXEcallEnclaveInterface::prepare_movie(size_t movie_id)
 {
+	if (get_movie_size(movie_id) == -1L)
+	{
+		// initiate movie download
+		if (!downloadMovie(movie_id))
+		{
+			return false;
+		}
+	}
 	if (!m_blob.isMoviePlayAllowed(movie_id))
 	{
 		if (!m_blob.purchaseMovie(movie_id))
@@ -157,14 +165,6 @@ bool SGXEcallEnclaveInterface::prepare_movie(size_t movie_id)
 	}
 	if (m_blob.isMoviePlayAllowed(movie_id))
 	{
-		if (get_movie_size(movie_id) == -1L)
-		{
-			// initiate movie download
-			if (!downloadMovie(movie_id))
-			{
-				return false;
-			}
-		}
 		return start_movie_play(movie_id);
 	}
 	return false;
@@ -273,7 +273,8 @@ bool SGXEcallEnclaveInterface::downloadMovie(size_t movie_id)
 		if (read_size > 0)
 		{
 			write_size = m_largeFileWriter.write(buffer, read_size);
-			if (write_size == -1L) return false;
+			if (write_size == -1L) 
+				return false;
 		}
 
 	} while (read_size != 0);
