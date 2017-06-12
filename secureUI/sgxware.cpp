@@ -65,7 +65,7 @@ char* GetThisPath(char* dest, size_t destSize)
 char* enclave_full_name(char* placeholder, size_t size) // the enclave should reside at the same folder as an executable
 {
 	GetThisPath(placeholder, size);
-	strncat(placeholder, ENCLAVE_FILENAME, 1024);
+	strncat_s(placeholder, 1024, ENCLAVE_FILENAME, 1024L);
 	return placeholder;
 }
 
@@ -196,6 +196,7 @@ static sgx_errlist_t sgx_errlist[] = {
 	},
 };
 
+#ifdef _CONSOLE
 /* Check error conditions for loading enclave */
 void print_error_message(sgx_status_t ret)
 {
@@ -214,7 +215,34 @@ void print_error_message(sgx_status_t ret)
 	if (idx == ttl)
 		printf("Error: Unexpected error occurred.\n");
 }
+#else
+#include <QMessageBox>
+void print_error_message(sgx_status_t ret)
+{
+	QMessageBox box;
+	char msg[1024];
+	size_t idx = 0;
+	size_t ttl = sizeof sgx_errlist / sizeof sgx_errlist[0];
 
+	for (idx = 0; idx < ttl; idx++) {
+		if (ret == sgx_errlist[idx].err) {
+
+			snprintf(msg,1024, "Error: %s\n", sgx_errlist[idx].msg);
+			box.setText(msg);
+			box.exec();
+			break;
+		}
+	}
+
+	if (idx == ttl)
+	{
+		QMessageBox box;
+		box.setText("Error: Unexpected error occurred.\n");
+		box.exec();
+	}
+}
+
+#endif
 
 SGXware::SGXware()
 {
@@ -557,7 +585,7 @@ bool			SGXware::initUser(char* address, int port, char* folder)
 		print_error_message(ret);
 		return false;
 	}
-	strncpy(this->base_folder, folder, 1024);
+	strncpy_s(this->base_folder, 1024,folder, 1024);
 	return retval != 0;
 }
 
