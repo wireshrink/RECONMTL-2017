@@ -353,6 +353,7 @@ SGXware *		SGXware::getInstance()
 void			SGXware::destroyInstance()
 {
 	// no lock herem, same reason
+	std::lock_guard<std::mutex> lock(m_pInstance->method_lock);
 	if (m_pInstance != nullptr)
 	{
 		sgx_destroy_enclave(global_eid);
