@@ -15,7 +15,7 @@ It is presented first time @Recon 2017 conference in Montreal, Canada.
 	4. EnclaveTest - Template utility for exploiting the enclave, which contains exploit of data disclosure.    
 	5. SGXOpenSSL - Intels library thath implements usage of OpenSSL inside of enclave. It resides here only for reference to the specific version I worked with because I wasn't able to find it on github.
 
-## What kind of bugs are there there ?
+## What kind of bugs are there ?
 
 Actually almost everything I could think about which is specific to SGX enclaves usage.
 See the presentation for more details.
@@ -36,6 +36,11 @@ See the presentation for more details.
 
 Use, hack, enjoy. 
 
+## Where to get all these components ?
+
+1. [SGX SDK & PSW] (https://software.intel.com/en-us/sgx-sdk/download)
+2. [QT5] (https://www.qt.io/download/)
+
 ## Something doesn't work or I found a bug in your code !
 
 0. Open an issue of something of the below isn't working. That's quite possible.
@@ -43,9 +48,11 @@ Use, hack, enjoy.
 
 ## What are the rules ?
 
-1. The main goal is to write an application which will unseal(decrypt) the movies sealed with the SGX enclave or extract its secrets. 
+1. The main goal is to write an application which will unseal(decrypt) the movies sealed with the SGX enclave or extract its other secrets. 
    There are at least 5 different ways to do that. 
 2. You can use EnclaveTest project as a template for that.
 
- 
+##  Please let me know about your progress.
+You can find my e-mail in the presentation in the docs folder. 
+##  Good luck. 
    
