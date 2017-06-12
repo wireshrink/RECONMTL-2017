@@ -18,6 +18,8 @@
 
 #include "epgdialog.h"
 #include "sgxware.h"
+#include <QMessageBox>
+
 EPGDialog::EPGDialog(QWidget *parent) : QDialog(parent)
 {
 
@@ -68,9 +70,17 @@ void EPGDialog::itemDoubleClicked(int row, int column)
     SGXware *pSGX = SGXware::getInstance();
     QString idstr = tableWidget->item(row, 0)->text();
     unsigned int id = idstr.toInt();
+	selected_movie = -1;
 	if (pSGX->prepareMovie((unsigned int)id))
 	{
 		selected_movie = id;
 		this->accept();
+	}
+	else
+	{
+		QMessageBox box;
+		box.setText("This movie can not be played for now ...");
+		box.exec();
+		this->reject();
 	}
 }

@@ -25,6 +25,7 @@
 #include <QFileDialog>
 #include <QProgressBar>
 #include <QSlider>
+#include "EncryptedFile.h"
 
 
 namespace Ui {
@@ -60,6 +61,8 @@ private:
     QVideoWidget* vw;
     QProgressBar* bar;
     QSlider* slider;
+
+	EncryptedFile * s_encFile;
 
 
 };

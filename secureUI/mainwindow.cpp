@@ -22,6 +22,7 @@
 #include "epgdialog.h"
 #include "sgxware.h"
 #include "encryptedfile.h"
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -49,6 +50,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(player,&QMediaPlayer::durationChanged,bar,&QProgressBar::setMaximum);
     connect(player,&QMediaPlayer::positionChanged,bar,&QProgressBar::setValue);
 
+	/*connect(player, &QMediaPlayer::mediaStatusChanged,
+		this, [&](QMediaPlayer::MediaStatus status) {
+		if (status == QMediaPlayer::LoadedMedia && player->state() == QMediaPlayer::State::PlayingState) on_actionPlay_triggered();
+	}); // https://stackoverflow.com/questions/42474961/qmediaplayer-play-doesnt-work-if-i-call-a-function-with-it
+	*/
+	s_encFile = nullptr;
 }
 
 MainWindow::~MainWindow()
@@ -68,6 +75,7 @@ void MainWindow::on_actionPlay_triggered()
     ui->statusBar->showMessage("Playing");
 }
 
+
 void MainWindow::on_actionPause_triggered()
 {
     player->pause();
@@ -85,7 +93,9 @@ void MainWindow::on_actionManageEPG_triggered()
     EPGDialog *pdlg = new EPGDialog;
 	char movie_file_name[1024];
     unsigned int movie_to_play = (unsigned int) -1;
-	static EncryptedFile * s_encFile = nullptr;
+	
+
+	on_actionStop_triggered();
 
     pdlg->exec();
     movie_to_play = pdlg->selected_movie;
@@ -93,15 +103,37 @@ void MainWindow::on_actionManageEPG_triggered()
     SGXware *pSGX = SGXware::getInstance();
     if (movie_to_play != (unsigned int)(-1) && pSGX->getFileName(movie_to_play, 1024, movie_file_name) )
     {
-        on_actionStop_triggered();
-		if (s_encFile) delete s_encFile;
+ 		if (s_encFile)
+		{
+			s_encFile->close();
+			delete s_encFile;
+			s_encFile = nullptr;
+		}
 		s_encFile = new EncryptedFile(movie_to_play);
-		s_encFile->open(QFile::ReadOnly);
-        player->setMedia(QUrl::fromLocalFile(movie_file_name), s_encFile); 
-
-		on_actionPlay_triggered();
-
+		if (s_encFile && s_encFile->open(QFile::ReadOnly))
+		{
+			
+			player->setMedia(QUrl::fromLocalFile(movie_file_name), s_encFile);
+			player->setPosition(0);
+			quint64 dur = player->duration();
+			on_actionPlay_triggered();
+		}
+		else
+		{
+			QMessageBox box;
+			box.setText("Problems, can not play the movie, rerun the app ...");
+			box.exec();
+		}
     }
+	else
+	{
+		if (s_encFile)
+		{
+			s_encFile->close();
+			delete s_encFile;
+			s_encFile = nullptr;
+		}
+	}
 }
 
 void MainWindow::on_actionClean_the_library_triggered()

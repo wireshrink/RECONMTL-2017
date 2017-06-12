@@ -34,7 +34,12 @@ public:
 	{
 		bool res = SGXware::getInstance()->prepareMovie(this->movie_id);
 		res = res && SGXware::getInstance()->getFileSize(this->movie_id, &this->m_fsize);
-		return res && QIODevice::open(mode);
+		res = res && QIODevice::open(mode);
+		if (!res)
+		{
+			return false;
+		}
+		return res;
 	}
 	virtual void close()
 	{
@@ -44,7 +49,7 @@ public:
 			this->m_testFile = nullptr;
 			m_fsize = -1;
 		}
-		return QIODevice::close();
+		QIODevice::close();
 	}
 	
 	virtual qint64 size() const

@@ -505,9 +505,6 @@ bool SGXIndependentSealing::unseal_data(unsigned char * in, size_t in_size, unsi
 
 bool SGXIndependentSealing::destroy_allocated_data(unsigned char * data)
 {
-	if (data)
-	{
-		free(data);
-	}
+	free(data);
 	return true;
 }
