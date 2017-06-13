@@ -380,11 +380,12 @@ SGXware *		SGXware::getInstance()
 }
 void			SGXware::destroyInstance()
 {
-	// no lock herem, same reason
-	std::lock_guard<std::mutex> lock(m_pInstance->method_lock);
 	if (m_pInstance != nullptr)
 	{
-		sgx_destroy_enclave(global_eid);
+		m_pInstance->method_lock.lock(); // let all the calls get out, 
+		sgx_destroy_enclave(global_eid); // and destroy the enclave
+
+		m_pInstance->method_lock.unlock();
 		delete m_pInstance;
 	}
 }

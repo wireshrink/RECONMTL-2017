@@ -57,6 +57,6 @@ enclave {
 
 		void* ocall_socket_connect ([in, string]char *url, unsigned int port  );
 		void ocall_socket_shutdown ([user_check] void* socket);
-		int ocall_get_the_current_time([in] unsigned char thetime[16]);
+		int ocall_get_the_current_time([out] unsigned char thetime[16]);
     };
 };

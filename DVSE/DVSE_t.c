@@ -780,7 +780,7 @@ sgx_status_t SGX_CDECL ocall_get_the_current_time(int* retval, unsigned char the
 	if (thetime != NULL && sgx_is_within_enclave(thetime, _len_thetime)) {
 		ms->ms_thetime = (unsigned char*)__tmp;
 		__tmp = (void *)((size_t)__tmp + _len_thetime);
-		memcpy(ms->ms_thetime, thetime, _len_thetime);
+		memset(ms->ms_thetime, 0, _len_thetime);
 	} else if (thetime == NULL) {
 		ms->ms_thetime = NULL;
 	} else {
@@ -791,6 +791,7 @@ sgx_status_t SGX_CDECL ocall_get_the_current_time(int* retval, unsigned char the
 	status = sgx_ocall(7, ms);
 
 	if (retval) *retval = ms->ms_retval;
+	if (thetime) memcpy((void*)thetime, ms->ms_thetime, _len_thetime);
 
 	sgx_ocfree();
 	return status;

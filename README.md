@@ -43,7 +43,7 @@ Use, hack, enjoy.
 
 ## Something doesn't work or I found a bug in your code !
 
-0. Open an issue of something of the below isn't working. That's quite possible.
+0. Open an issue if something of the below isn't working. That's quite possible.
 1. Some of the mistakes were inserted intentionally. In this case I'll send you a message and remove the issue.
 
 ## What are the rules ?
