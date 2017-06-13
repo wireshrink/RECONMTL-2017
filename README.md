@@ -17,7 +17,7 @@ It is presented first time [@Recon 2017](https://recon.cx/2017/montreal/talks/da
 	5. SGX SSL - Intels library that implements usage of OpenSSL inside of enclave (originally downloaded from [here](https://software.intel.com/sites/default/files/managed/3b/05/sgxssl.1.7.100.35615.zip)). 
 	   It resides here only for reference to the specific version I worked with because I wasn't able to find it on github.
 	   Please note that this product contains OpenSSL which has [its own copiright requirements](https://www.openssl.org/source/license.html).
-	   Note: This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit (http://www.openssl.org/)
+	   > Note: This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit (http://www.openssl.org/)
 	     
 
 ## What kind of vulnerabilities are there ?
@@ -37,7 +37,7 @@ See the presentation for more details.
 8. Press open button. Doubleclick on the cartoon you want to watch (there is one for free)
 9. If you are able to deduce the value of so called coupon, you can use it, it will increase amount of coins you have (See balance on the setup dialog). If you got this coupon, 
    open the setup dialog (Menu, Library-->connect and setup), paste it into the corresponfing edit box and press apply. Each coupon will add 25 coins, viewing  payed cartoon requires 50.
-   There are 5 coupons, (starting with DVSE_CPN_) and these coupons shouldn't be used twice according to the initial intention.
+   There are 5 coupons, (starting with DVSE_CPN_) and these coupons shouldn't be used twice according to the initial intention (feel free to use these coupons more then once if you can find out how to do it).
 
 Use, hack, enjoy. 
 
@@ -54,17 +54,17 @@ Use, hack, enjoy.
 
 ## Something doesn't work or I found a bug in your code !
 
-0. Open an issue if something of the below isn't working. That's quite possible.
+0. Open an issue if something of the described isn't working. That's quite possible.
 1. Some of the mistakes were inserted intentionally. In this case I'll send you a message and remove the issue.
 
 ## Inportant note on contributing
 
-DVSE has been developed with limited knowledge of QT5 and SSL. Feel free to contribute and enhance this project.
-Feel free to add vulnerabilities if you think that they are really widespread.
+DVSE and its usage examples had been developed with limited knowledge of QT5, SSL and English language :). Feel free to contribute and enhance this project.
+Feel free to add SGX related vulnerabilities if you think that they are really widespread.
 
 ## What about license ?
 
-
+Free for personal use, unless it contradicts to licenses of the used components (in this case these licenses are more important).
 
 ##  Please let me know about your progress.
 You can find my e-mail in the presentation in the docs folder. 
