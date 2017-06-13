@@ -11,10 +11,14 @@ It is presented first time [@Recon 2017](https://recon.cx/2017/montreal/talks/da
 2. Visual Studio 2015 community edition solution ( @reconmtl2017dvse ) with supporting code which includes 4 projects and 1 used library:
 	1. DVSE		- Damn vulnerable SGX enclave itself (which is obviously damn vulnerable, I made a lot of efforts to achieve this)
 	2. SecureServer - simple SSL python server for it. It includes self-signed certificate for and private keys, some (AFAIK) public domain cartoons as media examples and configuration files. 
-	3. videogui	- reference QT5 based UI for viewing the sealed movies
+	3. videogui	- reference QT5 based UI for viewing the sealed movies.
+	   Note: The QT5 package is licensed under GNU lesser general public license v3. 
 	4. EnclaveTest - Template utility for exploiting the enclave, which contains exploit of data disclosure.    
-	5. SGXOpenSSL - Intels library that implements usage of OpenSSL inside of enclave (downloaded from [here](https://software.intel.com/sites/default/files/managed/3b/05/sgxssl.1.7.100.35615.zip)). 
+	5. SGX SSL - Intels library that implements usage of OpenSSL inside of enclave (originally downloaded from [here](https://software.intel.com/sites/default/files/managed/3b/05/sgxssl.1.7.100.35615.zip)). 
 	   It resides here only for reference to the specific version I worked with because I wasn't able to find it on github.
+	   Please note that this product contains OpenSSL which has [its own copiright requirements](https://www.openssl.org/source/license.html).
+	   Note: This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit (http://www.openssl.org/)
+	     
 
 ## What kind of vulnerabilities are there ?
 
