@@ -123,7 +123,7 @@ public:
         actionPlay->setText(QApplication::translate("MainWindow", "Play", Q_NULLPTR));
         actionPause->setText(QApplication::translate("MainWindow", "Pause", Q_NULLPTR));
         actionStop->setText(QApplication::translate("MainWindow", "Stop", Q_NULLPTR));
-        actionManageEPG->setText(QApplication::translate("MainWindow", "Manage subscription", Q_NULLPTR));
+        actionManageEPG->setText(QApplication::translate("MainWindow", "View EPG", Q_NULLPTR));
         actionClean_the_library->setText(QApplication::translate("MainWindow", "Update the library", Q_NULLPTR));
         actionSetup->setText(QApplication::translate("MainWindow", "Connect and setup", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", Q_NULLPTR));

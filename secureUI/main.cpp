@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     w.show();
 
     int res =  a.exec();
-
+	
 	SGXware::destroyInstance();
 	return res;
 }

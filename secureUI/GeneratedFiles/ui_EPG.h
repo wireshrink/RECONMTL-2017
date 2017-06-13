@@ -59,7 +59,7 @@ public:
 
     void retranslateUi(QDialog *EPGDialog)
     {
-        EPGDialog->setWindowTitle(QApplication::translate("EPGDialog", "Dialog", Q_NULLPTR));
+        EPGDialog->setWindowTitle(QApplication::translate("EPGDialog", "Electronic program guide (EPG). Doubleclick the movie to view.", Q_NULLPTR));
     } // retranslateUi
 
 };

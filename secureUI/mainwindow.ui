@@ -104,7 +104,7 @@
   </action>
   <action name="actionManageEPG">
    <property name="text">
-    <string>Manage subscription</string>
+    <string>View EPG</string>
    </property>
   </action>
   <action name="actionClean_the_library">
