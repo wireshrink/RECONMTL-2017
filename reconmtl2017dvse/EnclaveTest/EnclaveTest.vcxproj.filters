@@ -47,7 +47,7 @@
     <ClCompile Include="..\..\secureUI\sgxware.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\secureUI\ocalls.cpp">
+    <ClCompile Include="malicious_ocalls.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
