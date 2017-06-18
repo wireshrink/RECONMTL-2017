@@ -57,7 +57,7 @@ Use, hack, enjoy.
 0. Open an issue if something of the described isn't working. That's quite possible.
 1. Some of the mistakes were inserted intentionally. In this case I'll send you a message and remove the issue.
 
-## Inportant note on contributing
+## Important note on contributing
 
 DVSE and its usage examples had been developed with limited knowledge of QT5, SSL and English language :). Feel free to contribute and enhance this project.
 Feel free to add SGX related vulnerabilities if you think that they are really widespread.
