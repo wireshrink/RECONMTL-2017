@@ -63,11 +63,6 @@ typedef struct ms_ecall_get_balance_t {
 	int* ms_balance;
 } ms_ecall_get_balance_t;
 
-typedef struct ms_ecall_init_secure_channel_t {
-	int ms_retval;
-	unsigned char* ms_key;
-} ms_ecall_init_secure_channel_t;
-
 typedef struct ms_ecall_write_log_t {
 	int ms_retval;
 	size_t ms_logsize;
@@ -405,35 +400,6 @@ err:
 	return status;
 }
 
-static sgx_status_t SGX_CDECL sgx_ecall_init_secure_channel(void* pms)
-{
-	ms_ecall_init_secure_channel_t* ms = SGX_CAST(ms_ecall_init_secure_channel_t*, pms);
-	sgx_status_t status = SGX_SUCCESS;
-	unsigned char* _tmp_key = ms->ms_key;
-	size_t _len_key = 16 * sizeof(*_tmp_key);
-	unsigned char* _in_key = NULL;
-
-	CHECK_REF_POINTER(pms, sizeof(ms_ecall_init_secure_channel_t));
-	CHECK_UNIQUE_POINTER(_tmp_key, _len_key);
-
-	if (_tmp_key != NULL) {
-		if ((_in_key = (unsigned char*)malloc(_len_key)) == NULL) {
-			status = SGX_ERROR_OUT_OF_MEMORY;
-			goto err;
-		}
-
-		memset((void*)_in_key, 0, _len_key);
-	}
-	ms->ms_retval = ecall_init_secure_channel(_in_key);
-err:
-	if (_in_key) {
-		memcpy(_tmp_key, _in_key, _len_key);
-		free(_in_key);
-	}
-
-	return status;
-}
-
 static sgx_status_t SGX_CDECL sgx_ecall_write_log(void* pms)
 {
 	ms_ecall_write_log_t* ms = SGX_CAST(ms_ecall_write_log_t*, pms);
@@ -464,9 +430,9 @@ err:
 
 SGX_EXTERNC const struct {
 	size_t nr_ecall;
-	struct {void* call_addr; uint8_t is_priv;} ecall_table[10];
+	struct {void* call_addr; uint8_t is_priv;} ecall_table[9];
 } g_ecall_table = {
-	10,
+	9,
 	{
 		{(void*)(uintptr_t)sgx_ecall_init_enclave, 0},
 		{(void*)(uintptr_t)sgx_ecall_update_epg, 0},
@@ -476,35 +442,34 @@ SGX_EXTERNC const struct {
 		{(void*)(uintptr_t)sgx_ecall_get_movie_file_size, 0},
 		{(void*)(uintptr_t)sgx_ecall_try_coupon, 0},
 		{(void*)(uintptr_t)sgx_ecall_get_balance, 0},
-		{(void*)(uintptr_t)sgx_ecall_init_secure_channel, 0},
 		{(void*)(uintptr_t)sgx_ecall_write_log, 0},
 	}
 };
 
 SGX_EXTERNC const struct {
 	size_t nr_ocall;
-	uint8_t entry_table[18][10];
+	uint8_t entry_table[18][9];
 } g_dyn_entry_table = {
 	18,
 	{
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, },
 	}
 };
 

@@ -47,11 +47,6 @@ typedef struct ms_ecall_get_balance_t {
 	int* ms_balance;
 } ms_ecall_get_balance_t;
 
-typedef struct ms_ecall_init_secure_channel_t {
-	int ms_retval;
-	unsigned char* ms_key;
-} ms_ecall_init_secure_channel_t;
-
 typedef struct ms_ecall_write_log_t {
 	int ms_retval;
 	size_t ms_logsize;
@@ -425,23 +420,13 @@ sgx_status_t ecall_get_balance(sgx_enclave_id_t eid, int* retval, int* balance)
 	return status;
 }
 
-sgx_status_t ecall_init_secure_channel(sgx_enclave_id_t eid, int* retval, unsigned char key[16])
-{
-	sgx_status_t status;
-	ms_ecall_init_secure_channel_t ms;
-	ms.ms_key = (unsigned char*)key;
-	status = sgx_ecall(eid, 8, &ocall_table_DVSE, &ms);
-	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
-	return status;
-}
-
 sgx_status_t ecall_write_log(sgx_enclave_id_t eid, int* retval, size_t logsize, char* logstr)
 {
 	sgx_status_t status;
 	ms_ecall_write_log_t ms;
 	ms.ms_logsize = logsize;
 	ms.ms_logstr = logstr;
-	status = sgx_ecall(eid, 9, &ocall_table_DVSE, &ms);
+	status = sgx_ecall(eid, 8, &ocall_table_DVSE, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }

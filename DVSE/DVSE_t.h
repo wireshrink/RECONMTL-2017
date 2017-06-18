@@ -23,7 +23,6 @@ int ecall_get_movie_chunk(size_t chunk_offset, size_t chunk_size, void* chunk);
 int ecall_get_movie_file_size(size_t movie_id, size_t* size);
 int ecall_try_coupon(char* coupon);
 int ecall_get_balance(int* balance);
-int ecall_init_secure_channel(unsigned char key[16]);
 int ecall_write_log(size_t logsize, char* logstr);
 
 sgx_status_t SGX_CDECL ocall_file_open(void** retval, char* file_name, char* format);

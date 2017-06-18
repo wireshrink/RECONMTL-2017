@@ -389,20 +389,6 @@ void			SGXware::destroyInstance()
 		delete m_pInstance;
 	}
 }
-bool			SGXware::initSecureChannel(void)
-{
-	sgx_status_t ret;
-	int retval;
-	std::lock_guard<std::mutex> lock(this->method_lock);
-
-	ret = ecall_init_secure_channel(global_eid, &retval, secure_channel_key);
-	if (ret != SGX_SUCCESS)
-	{
-		print_error_message(ret);
-		return false;
-	}
-	return retval != 0;
-}
 bool SGXware::getBalance(int *balance)
 {
 	
