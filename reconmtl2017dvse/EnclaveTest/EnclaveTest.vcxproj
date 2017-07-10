@@ -297,11 +297,14 @@
   <ItemGroup>
     <ClInclude Include="..\..\secureUI\sgxware.h" />
     <ClInclude Include="DVSE_u.h" />
+    <ClInclude Include="exploits.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\secureUI\sgxware.cpp" />
+    <ClCompile Include="blob_reuse.cpp" />
+    <ClCompile Include="crypto_extraction.cpp" />
     <ClCompile Include="DVSE_u.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Prerelease|x64'">
       </PrecompiledHeader>
@@ -321,8 +324,12 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="EnclaveTest.cpp" />
+    <ClCompile Include="exfiltrate_data.cpp" />
+    <ClCompile Include="file_substitution.cpp" />
     <ClCompile Include="malicious_ocalls.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="time_substitution.cpp" />
+    <ClCompile Include="timing_attack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\DVSE\DVSE.edl">

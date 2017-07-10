@@ -30,11 +30,43 @@
 #include <sys/types.h>
 #include <sys/timeb.h>
 
+#include "exploits.h"
+
+// this fuinction is used to configure current time value substitution in the corresponding OCALL
+// if the first parameter is set as true, the corresponding fake value will be 
+// returned from ocall instead of the current one
+bool g_substitute_time = false;
+unsigned char substituted_time[16];
+void substitute_time(bool substitute, unsigned char *fake_time)
+{
+	g_substitute_time = substitute;
+	memcpy(substituted_time, fake_time, 16);
+}
+// this fuinction is used to configure file name value substitution in the corresponding OCALL
+// if the first parameter is set as true, the corresponding fake value will be 
+// used in ocall instead of passed from enclave
+bool g_substitute_file = false;
+char substituted_file_name[1024];
+void substitute_file_name(bool substitute, unsigned char *fake_file_name)
+{
+	g_substitute_file = substitute;
+	if (substitute) strncpy(substituted_file_name, (const char*)fake_file_name, 1024);
+}
+
 void* ocall_file_open(/*[in, out, string] */char* file_name,
 	/*[in, out, string] */char* format)
 {
+	FILE *f = nullptr;
 	printf("\nOpening file %s with miodifiers %s ... ", file_name, format);
-	FILE* f = fopen(file_name, format);
+	if (g_substitute_file)
+	{
+		printf("\nChanging the file name on the fly to %s ", substituted_file_name);
+		f = fopen(substituted_file_name, format);
+	}
+	else
+	{
+		f = fopen(file_name, format);
+	}
 	printf("returns %p\n", f);
 	return (void*)f;
 }
