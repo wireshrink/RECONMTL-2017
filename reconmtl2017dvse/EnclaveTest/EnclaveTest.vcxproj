@@ -296,6 +296,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\secureUI\sgxware.h" />
+    <ClInclude Include="common_enclave_actions.h" />
     <ClInclude Include="DVSE_u.h" />
     <ClInclude Include="exploits.h" />
     <ClInclude Include="stdafx.h" />
@@ -304,6 +305,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\secureUI\sgxware.cpp" />
     <ClCompile Include="blob_reuse.cpp" />
+    <ClCompile Include="common_enclave_actions.cpp" />
     <ClCompile Include="crypto_extraction.cpp" />
     <ClCompile Include="DVSE_u.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Prerelease|x64'">

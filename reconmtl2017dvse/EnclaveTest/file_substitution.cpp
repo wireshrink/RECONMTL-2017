@@ -1,6 +1,8 @@
 
 #include "stdafx.h"
 #include "exploits.h"
+#include "common_enclave_actions.h"
+
 
 void e2_file_substitution(char* server_ip, int iport, char* library_folder)
 {
