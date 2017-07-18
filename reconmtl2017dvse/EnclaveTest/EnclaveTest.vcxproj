@@ -303,7 +303,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\secureUI\sgxware.cpp" />
     <ClCompile Include="blob_reuse.cpp" />
     <ClCompile Include="common_enclave_actions.cpp" />
     <ClCompile Include="crypto_extraction.cpp" />
