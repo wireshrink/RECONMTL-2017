@@ -52,27 +52,78 @@ void substitute_file_name(bool substitute, unsigned char *fake_file_name)
 	g_substitute_file = substitute;
 	if (substitute) strncpy(substituted_file_name, (const char*)fake_file_name, 1024);
 }
+bool g_substitute_format = false;
+char substituted_format[1024];
+void substitute_format(bool substitute, unsigned char *fake_format)
+{
+	g_substitute_format = substitute;
+	if (substitute) strncpy(substituted_format, (const char*)fake_format, 1024);
+}
+
+bool g_print_mode = true;
+void set_print_mode(bool mode)
+{
+	g_print_mode = mode;
+}
+
+bool g_write_to_mem = false;
+FILE * memHandle = nullptr;
+
+void set_write_mode(bool to_mem)
+{
+	if (!to_mem && memHandle)
+	{
+		fclose(memHandle);
+		memHandle = nullptr;
+	}
+	if (to_mem && !memHandle)
+	{
+		memHandle = fopen("C:\\Users\\atlas\\Documents\\memstorage0.dat", "wb");
+	}
+	g_write_to_mem = to_mem;
+}
+
+FILE* last_opened_file = nullptr;
+
+void close_last_opened_file()
+{
+	if (!g_write_to_mem)
+	{
+		if (last_opened_file)
+		{
+			fclose(last_opened_file);
+		}
+		last_opened_file = nullptr;
+	}
+}
+
+#define printf if(g_print_mode)printf
 
 void* ocall_file_open(/*[in, out, string] */char* file_name,
 	/*[in, out, string] */char* format)
 {
 	FILE *f = nullptr;
+	if (g_write_to_mem) 
+		return memHandle;
 	printf("\nOpening file %s with miodifiers %s ... ", file_name, format);
 	if (g_substitute_file)
 	{
 		printf("\nChanging the file name on the fly to %s ", substituted_file_name);
-		f = fopen(substituted_file_name, format);
+		f = fopen(substituted_file_name, g_substitute_format?substituted_format: format);
 	}
 	else
 	{
-		f = fopen(file_name, format);
+		f = fopen(file_name, g_substitute_format ? substituted_format : format);
 	}
 	printf("returns %p\n", f);
+	last_opened_file = f;
 	return (void*)f;
 }
 
 int ocall_file_close(/*[user_check]*/void* handle)
 {
+	if (g_write_to_mem) 
+		return 0;
 	printf("\nClosing handle %p\n", handle);
 	return fclose((FILE*)handle);
 }

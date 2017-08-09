@@ -484,5 +484,5 @@ bool get_epg_info(size_t ** movie_ids, bool ** is_payed, unsigned int * num_of_m
 	} 	while (ptr < end);
 
 
-	return false;
+	return true;
 }

@@ -9,24 +9,29 @@ import traceback
 
 
 def deal_with_client(connstream):
-
+    debug = False
     try:
         data = connstream.read(8) #size of a name
-        print "length:", len(data)
+        if debug:
+            print "length:", len(data)
         sz = struct.unpack("<Q", data)[0]
-        print "Unpacked length", sz
+        if debug:
+            print "Unpacked length", sz
         filename_packed = connstream.read(sz)
         filename = str(filename_packed)
-        print "Downloading :", filename
+        if debug:
+            print "Downloading :", filename
         full_filename = os.path.join(sys.argv[1]+"\\", filename)
         fsize = os.path.getsize(full_filename)
-        print " Of size ... ", fsize
+        if debug:
+            print " Of size ... ", fsize
         connstream.write(struct.pack("<Q", fsize))
         f = open(full_filename, "rb")
         data = f.read()
         connstream.write(data)
     except:
-        traceback.print_exc(file=sys.stdout)
+        if debug:
+            traceback.print_exc(file=sys.stdout)
  
 
 def Usage(args):

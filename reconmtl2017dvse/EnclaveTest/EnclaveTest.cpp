@@ -55,12 +55,26 @@ int main(int argc, char ** argv)
 		return 1;
 	}
 	
+	// exploit key material exaustion, substituted as 
+	// mistake in random number generation type miscast,
+	// encrypted log left by very unfortunate typo, and 
+	// downloading the files before it is determined if 
+	// user already payed for this.
+	// This allows to decrypt any movie
+	e5_crypto_extraction(server_ip, iport, library_folder);
+
+
 	// exploit the bug of missing boundary checks in reading EPG
 	// this allows to get the coupons for viewing cartoons where payment is required
 	e0_exfiltrate_data	(server_ip, iport, library_folder);
+#ifndef _MSC_VER
 	// exploit using strcmp for coupon comparison
 	// this allows to get the coupons for viewing cartoons where payment is required
+	// NOt practical on Windows because of optimized SSE2 based strncmp 
+	// implementation. Linux, however, should work
+	// current implementation is nit tested on Linux yet
 	e1_timing_attack	(server_ip, iport, library_folder);
+#endif
 	// exploit trusting fopen too much
 	// this allows to extract any payed cartoon
 	// when encklave thinks that it works with free one
