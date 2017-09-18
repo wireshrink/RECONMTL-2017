@@ -99,6 +99,28 @@ void close_last_opened_file()
 
 #define printf if(g_print_mode)printf
 
+bool is_service_file(char *fname)
+{
+	char* fnames[] = {
+		"blob.enc", 
+		"coupon.enc", 
+		"epg.enc", 
+		nullptr
+	};
+	int i = 0;
+	size_t length = strlen(fname);
+	while (fnames[i] != nullptr)
+	{
+		size_t base = length - strlen(fnames[i]);
+		if (strncmp(fnames[i], fname + base, 1024) == 0)
+		{
+			return true;
+		}
+		i++;
+	}
+	return false;
+}
+
 void* ocall_file_open(/*[in, out, string] */char* file_name,
 	/*[in, out, string] */char* format)
 {
@@ -106,7 +128,7 @@ void* ocall_file_open(/*[in, out, string] */char* file_name,
 	if (g_write_to_mem) 
 		return memHandle;
 	printf("\nOpening file %s with miodifiers %s ... ", file_name, format);
-	if (g_substitute_file)
+	if (g_substitute_file && !is_service_file(file_name))
 	{
 		printf("\nChanging the file name on the fly to %s ", substituted_file_name);
 		f = fopen(substituted_file_name, g_substitute_format?substituted_format: format);
@@ -116,7 +138,10 @@ void* ocall_file_open(/*[in, out, string] */char* file_name,
 		f = fopen(file_name, g_substitute_format ? substituted_format : format);
 	}
 	printf("returns %p\n", f);
-	last_opened_file = f;
+	if (!is_service_file(file_name))
+	{
+		last_opened_file = f;
+	}
 	return (void*)f;
 }
 

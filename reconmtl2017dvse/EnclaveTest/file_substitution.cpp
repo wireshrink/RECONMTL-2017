@@ -34,6 +34,16 @@ void e2_file_substitution(char* server_ip, int iport, char* library_folder)
 	}
 	// for all payed movies
 	unsigned int i;
+	size_t free_id = -1;
+	for (i = 0; i < num_of_movies; i++)
+	{
+		if (!is_payed[i])
+		{
+			free_id = ids[i];
+			break;
+		}
+	}
+	set_print_mode(false);
 	for (i = 0; i < num_of_movies; i++)
 	{
 		//	create an enclave
@@ -47,19 +57,28 @@ void e2_file_substitution(char* server_ip, int iport, char* library_folder)
 			printf("\nCan not initialize enclave for movie %zd ...", ids[i]);
 			return;
 		}
+		
 		//  try to play payed movie in order to cause its download
+
 		if (!prepare_file(ids[i]))
 		{
-			printf("\nCan not download encrypted movie. Is your server running ?");
-			return;
+			printf("\nExpected fail. However, please check: is your server running ?");
 		}
 		//  configure file name substitution
 		char filename[1024];
 		snprintf(filename, 1024, "%s\\movie.%zd", library_folder, ids[i]);
 		char filename_out[1024];
-		snprintf(filename_out, 1024, "%s\\movie.decrypted.%zd", library_folder, ids[i]);
+		snprintf(filename_out, 1024, "%s\\movie.decrypted.%zd.mp4", library_folder, ids[i]);
 		substitute_file_name(true, (unsigned char*)filename);
-		//  read as free played file and store
+		// now prepare the file as free to play
+		if (!prepare_file(free_id))
+		{
+			printf("\nUNEXPECTED fail, break and exit\n");
+			return;
+		}
+
+		// read as free played file and store
+		// id is used here only for getting the file size
 		extract_semi_allowed_file(ids[i], filename_out);
 		//  close enclave
 		if (!unload_enclave())
@@ -67,6 +86,6 @@ void e2_file_substitution(char* server_ip, int iport, char* library_folder)
 			printf("\nunload enclave. Is your server running ?");
 			return;
 		}
+		substitute_file_name(false, nullptr);
 	}
-	substitute_file_name(false, nullptr);
 }

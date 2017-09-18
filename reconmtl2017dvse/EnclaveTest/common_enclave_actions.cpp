@@ -58,7 +58,7 @@ bool extract_semi_allowed_file(size_t movie_id, char * store_to)
 		fwrite(movie_chunk, 1, real_chink_size, f);
 	}
 	fclose(f);
-	return false;
+	return true;
 }
 
 
@@ -189,7 +189,7 @@ void print_error_message(sgx_status_t ret)
 	}
 
 	if (idx == ttl)
-		printf("Error: Unexpected error occurred.\n");
+		printf("Error: Unexpected error occurred %x .\n", ret);
 }
 #else
 #include <QMessageBox>
@@ -485,4 +485,18 @@ bool get_epg_info(size_t ** movie_ids, bool ** is_payed, unsigned int * num_of_m
 
 
 	return true;
+}
+
+bool reload_service_files(void)
+{
+	int retval;
+
+	sgx_status_t ret = ecall_update_epg(global_eid, &retval);
+	if (ret != SGX_SUCCESS)
+	{
+		print_error_message(ret);
+		return false;
+	}
+	return retval != 0;
+
 }

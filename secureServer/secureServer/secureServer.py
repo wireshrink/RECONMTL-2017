@@ -9,7 +9,7 @@ import traceback
 
 
 def deal_with_client(connstream):
-    debug = False
+    debug = False # avoiding prints to make the server faster
     try:
         data = connstream.read(8) #size of a name
         if debug:
