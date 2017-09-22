@@ -68,7 +68,7 @@ void e2_file_substitution(char* server_ip, int iport, char* library_folder)
 		char filename[1024];
 		snprintf(filename, 1024, "%s\\movie.%zd", library_folder, ids[i]);
 		char filename_out[1024];
-		snprintf(filename_out, 1024, "%s\\movie.decrypted.%zd.mp4", library_folder, ids[i]);
+		snprintf(filename_out, 1024, "%s\\movie.filesubst.decrypted.%zd.mp4", library_folder, ids[i]);
 		substitute_file_name(true, (unsigned char*)filename);
 		// now prepare the file as free to play
 		if (!prepare_file(free_id))

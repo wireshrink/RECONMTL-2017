@@ -199,7 +199,8 @@ int main(int argc, char ** argv)
 	default:
 		break;
 	}
-
+	printf("\nPress any key to continue ...");
+	getchar();
 
     return 0;
 }

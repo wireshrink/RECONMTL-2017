@@ -2,8 +2,9 @@
 #include "stdafx.h"
 #include "exploits.h"
 #include "common_enclave_actions.h"
-
-
+// this attack will not work on windows because the SGX SDK is 
+// heavily optimized and compares the data by 8 bytes whenever possible
+// Unfortunately I couldnt find a way to misuse alignment
 void e1_timing_attack(char* server_ip, int iport, char* library_folder)
 {
 	// create an enclave

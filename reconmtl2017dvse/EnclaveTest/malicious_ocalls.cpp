@@ -201,6 +201,7 @@ void ocall_socket_shutdown(void * socket)
 int ocall_get_the_current_time(unsigned char time_holder[16])
 {
 	printf("\nGetting time_t from the enclave ...\n");
+	memset(time_holder, 0, 16);
 	time((time_t*)time_holder);
 	return 0;
 }
