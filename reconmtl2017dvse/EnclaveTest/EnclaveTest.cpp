@@ -180,7 +180,8 @@ int main(int argc, char ** argv)
 		// exploit trusting OS time too much
 		// this allows to extract any already payed cartoon by any time
 		// by returning the time close to the payment from the OS
-		e4_time_substitution(server_ip, iport, library_folder);		break;
+		e4_time_substitution(server_ip, iport, library_folder);		
+		break;
 	case EA_CRYPTO_PREGENERATE_LOGS:
 		e5_pregenerate_logs(server_ip, iport, library_folder, argv[5], arg2sizet(argv[6]));
 		break;
@@ -199,8 +200,8 @@ int main(int argc, char ** argv)
 	default:
 		break;
 	}
-	printf("\nPress any key to continue ...");
-	getchar();
+	//printf("\nPress any key to continue ...");
+	//getchar();
 
     return 0;
 }

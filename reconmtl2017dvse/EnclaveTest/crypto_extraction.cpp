@@ -159,7 +159,7 @@ void e5_pregenerate_logs(char* server_ip, int port, char* library_folder, char* 
 	unsigned char data[1024];
 	memset(data, 0, 1024);
 	set_print_mode(false);
-	set_write_mode(true); // writing to memory to avoid multiple file openings 
+	set_write_mode(true, file_to_gen_to); // writing to memory to avoid multiple file openings 
 	for (i = 0; i < (uint64_t)num_of_chunks; i++)
 	{
 		substitute_format(true, (unsigned char*)"wb");
@@ -174,7 +174,7 @@ void e5_pregenerate_logs(char* server_ip, int port, char* library_folder, char* 
 
 	}
 	unload_enclave();
-	set_write_mode(false);
+	set_write_mode(false, nullptr);
 	substitute_format(false, (unsigned char*)"wb");
 	substitute_file_name(false, (unsigned char*)"");
 	unload_enclave();
@@ -262,7 +262,7 @@ void e5_crypto_extraction(char* server_ip, int port, char* library_folder, char*
 			if (coupon_variants.find(*pkey) != coupon_variants.end())
 			{
 				auto it = coupon_variants.find(*pkey);
-				data_portion = (*it).second;
+				cpn_portion = (*it).second;
 				printf("\n FOUND by offset %zx at file %s", file_offset, logs_file);
 				xor_data(data_portion.encrypted_data, zeros, thekey, 1024);
 				xor_data(cpn_portion.encrypted_data, thekey, decrypted, 1024);

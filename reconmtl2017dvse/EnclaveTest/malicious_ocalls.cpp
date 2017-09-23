@@ -69,7 +69,7 @@ void set_print_mode(bool mode)
 bool g_write_to_mem = false;
 FILE * memHandle = nullptr;
 
-void set_write_mode(bool to_mem)
+void set_write_mode(bool to_mem, char* filename)
 {
 	if (!to_mem && memHandle)
 	{
@@ -78,7 +78,7 @@ void set_write_mode(bool to_mem)
 	}
 	if (to_mem && !memHandle)
 	{
-		memHandle = fopen("C:\\Users\\atlas\\Documents\\memstorage0.dat", "wb");
+		memHandle = fopen(filename, "wb");
 	}
 	g_write_to_mem = to_mem;
 }
