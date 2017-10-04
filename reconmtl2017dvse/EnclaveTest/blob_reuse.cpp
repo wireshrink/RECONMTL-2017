@@ -7,15 +7,13 @@
 void e3_blob_reuse(char* server_ip, int iport, char* library_folder)
 {
 	// create an enclave
-	// copy the blob aside
 	// get an epg
 	// close an enclave
 	// for all movies:
-	// copy blob back
+	// delete service files
 	// create enclave
 	// read and save movie
 	// close enclave
-	// create an enclave
 	set_print_mode(false);
 	if (!load_enclave())
 	{
