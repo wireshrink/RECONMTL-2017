@@ -240,5 +240,5 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-*.pdf
+
 secureServer/secureServer/certs/pem.pem
