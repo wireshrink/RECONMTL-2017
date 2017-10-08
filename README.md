@@ -68,5 +68,6 @@ Free for personal use, unless it contradicts to licenses of the used components 
 
 ##  Please let me know about your progress.
 You can find my e-mail in the presentation in the docs folder. 
-##  Good luck. 
+##  Windows Exploits published (10.9.2017)
+See the walktrough document ( [docx](https://github.com/wireshrink/RECONMTL-2017/tree/master/docs/DVSE%20Walkthrough.docx), [md](https://github.com/wireshrink/RECONMTL-2017/tree/master/docs/DVSE%20Walkthrough.md) )in documents folder and EnclaveTest folder for more details. 
    
