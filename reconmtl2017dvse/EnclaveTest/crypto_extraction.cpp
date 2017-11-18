@@ -128,7 +128,11 @@ void e5_pregenerate_coupons(char* server_ip, int port, char* library_folder, cha
 		FILE* cpfile = fopen(cpn_file, "rb");
 		if (!cpfile)
 		{
+#ifdef _MSC_VER
 			printf("\n can not open file %s (%zd) GetLastError = %d, exiting ...", cpn_file, i, GetLastError());
+#else
+			printf("\n can not open file %s (%zd) GetLastError = %d, exiting ...", cpn_file, i, errno);
+#endif 
 		}
 		memset(&cpn_portion, 0, sizeof(cpn_portion));
 		size_t read_len = fread(&cpn_portion, 1, sizeof(cpn_portion), cpfile);

@@ -5,8 +5,10 @@
 #include <wchar.h>
 #include <stddef.h>
 #include <string.h>
-#include "sgx_edger8r.h" /* for sgx_status_t etc. */
+#include "sgx_edger8r.h" /* for sgx_satus_t etc. */
 
+
+#include <stdlib.h> /* for size_t */
 
 #define SGX_CAST(type, item) ((type)(item))
 
@@ -22,11 +24,7 @@ size_t SGX_UBRIDGE(SGX_NOCONVENTION, ocall_file_size, (void* file_handle));
 void* SGX_UBRIDGE(SGX_NOCONVENTION, ocall_socket_connect, (char* url, unsigned int port));
 void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_socket_shutdown, (void* socket));
 int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_get_the_current_time, (unsigned char thetime[16]));
-void SGX_UBRIDGE(SGX_NOCONVENTION, u_sgxssl_ftime64, (void* timeptr, uint32_t timeb64Len));
-int SGX_UBRIDGE(SGX_NOCONVENTION, u_sgxssl_closesocket, (void* s, int* wsaError));
-int SGX_UBRIDGE(SGX_NOCONVENTION, u_sgxssl_recv, (void* s, void* buf, int len, int flag, int* wsaError));
-int SGX_UBRIDGE(SGX_NOCONVENTION, u_sgxssl_send, (void* s, const char* buf, int len, int flags, int* wsaError));
-int SGX_UBRIDGE(SGX_NOCONVENTION, u_sgxssl_shutdown, (void* s, int how, int* wsaError));
+void SGX_UBRIDGE(SGX_NOCONVENTION, u_sgxssl_ftime, (void* timeptr, uint32_t timeb_len));
 void SGX_UBRIDGE(SGX_CDECL, sgx_oc_cpuidex, (int cpuinfo[4], int leaf, int subleaf));
 int SGX_UBRIDGE(SGX_CDECL, sgx_thread_wait_untrusted_event_ocall, (const void* self));
 int SGX_UBRIDGE(SGX_CDECL, sgx_thread_set_untrusted_event_ocall, (const void* waiter));

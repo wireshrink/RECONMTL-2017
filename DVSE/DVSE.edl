@@ -23,7 +23,7 @@ enclave inerfaces list:
 
 enclave {
 
-	from "sgx_tssl.edl" import *;
+	from "sgx_tsgxssl.edl" import *;
 
     trusted {
         /* define ECALLs here. */

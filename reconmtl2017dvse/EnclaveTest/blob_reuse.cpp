@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "exploits.h"
 #include "common_enclave_actions.h"
+#include <unistd.h>
 
 
 void e3_blob_reuse(char* server_ip, int iport, char* library_folder)
@@ -83,7 +84,7 @@ void e3_blob_reuse(char* server_ip, int iport, char* library_folder)
 		// such as memory exfiltration or timing.
 		// Practically we can do it only once and restore the blob file 
 		// before enclave initialization. 
-		char *coupons[5] =
+		const char *coupons[5] =
 		{
 			"DVSE_CPN_10000000000000000000000",
 			"DVSE_CPN_20000000000000000000000",
@@ -104,7 +105,11 @@ void e3_blob_reuse(char* server_ip, int iport, char* library_folder)
 		//  prepare the movie
 		if (!prepare_file(ids[i]) )
 		{
+#ifdef _MSC_VER
 			SleepEx(2000, TRUE);
+#else
+			sleep(2);
+#endif
 			if (!prepare_file(ids[i]))
 			{
 				printf("\nUNexpected fail: can not prepare encrypted movie. Is your server running ?");

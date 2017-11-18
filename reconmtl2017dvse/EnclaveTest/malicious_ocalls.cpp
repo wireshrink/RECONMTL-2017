@@ -1,5 +1,5 @@
 /************************************************************************************************************
-*	This application is a TRAINING TARGET for exercises in HACKING Intel® SGX ENCLAVES.                     *
+*	This application is a TRAINING TARGET for exercises in HACKING Intelï¿½ SGX ENCLAVES.                     *
 *	This application made vulnerable DELIBERATELY - its main purpose is to demonstrate, shame and blame     *
 *   common mistakes usually made with SGX enclave programming.                                              *
 *   ONCE AGAIN, IT CONTAINS MISTAKES.                                                                       *
@@ -10,7 +10,7 @@
 *	I'd be glad to hear about your progress.    															*
 *																											*
 *	This application requires QT5.8 (which uses LGPL v3 license), Intel SGX SDK and							*
-*   the Intel® Software Guard Extensions SSL (Intel® SGX SSL) to be compiled.								*
+*   the Intelï¿½ Software Guard Extensions SSL (Intelï¿½ SGX SSL) to be compiled.								*
 *	This application is written by Michael Atlas (wireshrink@gmail.com) during 2017.						*
 *	Happy hacking.																							*
 *************************************************************************************************************/
@@ -21,11 +21,19 @@
 #include "DVSE_u.h"
 #include <stdio.h>
 #include <time.h>
+#include <errno.h>
 
-#pragma comment(lib,"Ws2_32.lib")
-
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#ifdef _MSC_VER
+	#pragma comment(lib,"Ws2_32.lib")
+	#include <winsock2.h>
+	#include <ws2tcpip.h>
+#else
+       #include <sys/types.h>
+       #include <sys/socket.h>
+	   #include <netinet/in.h>
+	   #include <arpa/inet.h>
+	   #include <unistd.h>
+#endif
 
 #include <sys/types.h>
 #include <sys/timeb.h>
@@ -101,7 +109,7 @@ void close_last_opened_file()
 
 bool is_service_file(char *fname)
 {
-	char* fnames[] = {
+	const char* fnames[] = {
 		"blob.enc", 
 		"coupon.enc", 
 		"epg.enc", 
@@ -170,6 +178,11 @@ int ocall_file_write(/*[user_check]*/void *handle, size_t size, /*[in, out]*/uns
 	return (int)fwrite(data, 1, size, (FILE*)handle);
 }
 
+#ifndef _MSC_VER
+typedef int SOCKET;
+#define INVALID_SOCKET -1
+#define SD_BOTH SHUT_RDWR
+#endif
 SOCKET s = INVALID_SOCKET;
 
 void* ocall_socket_connect(/*[in, string]*/char *url, unsigned int port)
@@ -182,20 +195,20 @@ void* ocall_socket_connect(/*[in, string]*/char *url, unsigned int port)
 	server.sin_port = htons((unsigned short)port);
 	if (connect(s, (struct sockaddr*) &server, sizeof(server)) < 0)
 	{
-		unsigned int err = GetLastError();
-		(void)err; // I just want to see it during debug session, not more
 		return 0;
 	}
-	DWORD timeout = SO_RCVTIMEO * 1000, tlen = 4;
-	getsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, (int*)&tlen);
+	uint32_t timeout = SO_RCVTIMEO * 1000;
+	socklen_t tlen = 4;
+	getsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (void*)&timeout, &tlen);
 	timeout *= 10;
 	setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
-	return (void*)s;
+	return (void*)(uintptr_t)s;
 }
 void ocall_socket_shutdown(void * socket)
 {
+
 	printf("\nShutting down socket %p from the enclave\n", socket);
-	shutdown((SOCKET)socket, SD_BOTH);
+	shutdown((uintptr_t )socket, SD_BOTH);
 	s = INVALID_SOCKET;
 }
 int ocall_get_the_current_time(unsigned char time_holder[16])
@@ -224,16 +237,41 @@ size_t ocall_file_size(void* handle)
 #pragma warning(disable:4311)
 #pragma warning(disable:4302)
 
+
+#ifndef _MSC_VER
+// compatibility 
+int WSAGetLastError(void)
+{
+	return errno;
+}
+int closesocket(void* fd)
+{
+	return close((uintptr_t)fd);
+}
+
+void u_sgxssl_ftime( void * timeptr, uint32_t timeb64Len)
+{
+	printf("\nGetting the time by the openssl as __timeb64 ...\n");
+	ftime((timeb*)timeptr);
+}
+
+#else
+
 void u_sgxssl_ftime64( void * timeptr, uint32_t timeb64Len)
 {
 	printf("\nGetting the time by the openssl as __timeb64 ...\n");
+#ifdef _MSC_VER
 	_ftime64((__timeb64*)timeptr);
+#else
+	ftime((timeb*)timeptr);
+#endif
 }
 
+#endif
 
 int u_sgxssl_closesocket( void* s,  int* wsaError)
 {
-	int res = closesocket((int)s);
+	int res = closesocket(s);
 	printf("\nClosing socket %p from OpenSSL\n", s);
 	*wsaError = WSAGetLastError();
 	return res;
@@ -241,20 +279,20 @@ int u_sgxssl_closesocket( void* s,  int* wsaError)
 int u_sgxssl_recv(void* s, void* buf, int len, int flag, int* wsaError)
 {
 	printf("\nrecv from openSSL: handle %p buf %p len %d flags %d \n", s, buf, len, flag);
-	int res = recv((int)s, (char*)buf, len, flag);
+	int res = recv((uintptr_t)s, (char*)buf, len, flag);
 	*wsaError = WSAGetLastError();
 	return res;
 }
 int u_sgxssl_send(void* s, const char* buf, int len, int flags, int* wsaError)
 {
 	printf("\nsend from openSSL: handle %p buf %p len %d flags %d \n", s, buf, len, flags);
-	int res = send((int)s, buf, len, flags);
+	int res = send((uintptr_t)s, buf, len, flags);
 	*wsaError = WSAGetLastError();
 	return res;
 }
 int u_sgxssl_shutdown(void* s, int how, int* wsaError)
 {
-	int res = shutdown((int)s, how);
+	int res = shutdown((uintptr_t)s, how);
 	printf("\nshutting down socket from openssl:handle %p\n", s);
 	*wsaError = WSAGetLastError();
 	return res;

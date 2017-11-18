@@ -99,41 +99,10 @@ typedef struct ms_ocall_get_the_current_time_t {
 	unsigned char* ms_thetime;
 } ms_ocall_get_the_current_time_t;
 
-typedef struct ms_u_sgxssl_ftime64_t {
+typedef struct ms_u_sgxssl_ftime_t {
 	void* ms_timeptr;
-	uint32_t ms_timeb64Len;
-} ms_u_sgxssl_ftime64_t;
-
-typedef struct ms_u_sgxssl_closesocket_t {
-	int ms_retval;
-	void* ms_s;
-	int* ms_wsaError;
-} ms_u_sgxssl_closesocket_t;
-
-typedef struct ms_u_sgxssl_recv_t {
-	int ms_retval;
-	void* ms_s;
-	void* ms_buf;
-	int ms_len;
-	int ms_flag;
-	int* ms_wsaError;
-} ms_u_sgxssl_recv_t;
-
-typedef struct ms_u_sgxssl_send_t {
-	int ms_retval;
-	void* ms_s;
-	char* ms_buf;
-	int ms_len;
-	int ms_flags;
-	int* ms_wsaError;
-} ms_u_sgxssl_send_t;
-
-typedef struct ms_u_sgxssl_shutdown_t {
-	int ms_retval;
-	void* ms_s;
-	int ms_how;
-	int* ms_wsaError;
-} ms_u_sgxssl_shutdown_t;
+	uint32_t ms_timeb_len;
+} ms_u_sgxssl_ftime_t;
 
 typedef struct ms_sgx_oc_cpuidex_t {
 	int* ms_cpuinfo;
@@ -227,42 +196,10 @@ static sgx_status_t SGX_CDECL DVSE_ocall_get_the_current_time(void* pms)
 	return SGX_SUCCESS;
 }
 
-static sgx_status_t SGX_CDECL DVSE_u_sgxssl_ftime64(void* pms)
+static sgx_status_t SGX_CDECL DVSE_u_sgxssl_ftime(void* pms)
 {
-	ms_u_sgxssl_ftime64_t* ms = SGX_CAST(ms_u_sgxssl_ftime64_t*, pms);
-	u_sgxssl_ftime64(ms->ms_timeptr, ms->ms_timeb64Len);
-
-	return SGX_SUCCESS;
-}
-
-static sgx_status_t SGX_CDECL DVSE_u_sgxssl_closesocket(void* pms)
-{
-	ms_u_sgxssl_closesocket_t* ms = SGX_CAST(ms_u_sgxssl_closesocket_t*, pms);
-	ms->ms_retval = u_sgxssl_closesocket(ms->ms_s, ms->ms_wsaError);
-
-	return SGX_SUCCESS;
-}
-
-static sgx_status_t SGX_CDECL DVSE_u_sgxssl_recv(void* pms)
-{
-	ms_u_sgxssl_recv_t* ms = SGX_CAST(ms_u_sgxssl_recv_t*, pms);
-	ms->ms_retval = u_sgxssl_recv(ms->ms_s, ms->ms_buf, ms->ms_len, ms->ms_flag, ms->ms_wsaError);
-
-	return SGX_SUCCESS;
-}
-
-static sgx_status_t SGX_CDECL DVSE_u_sgxssl_send(void* pms)
-{
-	ms_u_sgxssl_send_t* ms = SGX_CAST(ms_u_sgxssl_send_t*, pms);
-	ms->ms_retval = u_sgxssl_send(ms->ms_s, (const char*)ms->ms_buf, ms->ms_len, ms->ms_flags, ms->ms_wsaError);
-
-	return SGX_SUCCESS;
-}
-
-static sgx_status_t SGX_CDECL DVSE_u_sgxssl_shutdown(void* pms)
-{
-	ms_u_sgxssl_shutdown_t* ms = SGX_CAST(ms_u_sgxssl_shutdown_t*, pms);
-	ms->ms_retval = u_sgxssl_shutdown(ms->ms_s, ms->ms_how, ms->ms_wsaError);
+	ms_u_sgxssl_ftime_t* ms = SGX_CAST(ms_u_sgxssl_ftime_t*, pms);
+	u_sgxssl_ftime(ms->ms_timeptr, ms->ms_timeb_len);
 
 	return SGX_SUCCESS;
 }
@@ -309,31 +246,26 @@ static sgx_status_t SGX_CDECL DVSE_sgx_thread_set_multiple_untrusted_events_ocal
 
 static const struct {
 	size_t nr_ocall;
-	void * func_addr[18];
+	void * table[14];
 } ocall_table_DVSE = {
-	18,
+	14,
 	{
-		(void*)(uintptr_t)DVSE_ocall_file_open,
-		(void*)(uintptr_t)DVSE_ocall_file_close,
-		(void*)(uintptr_t)DVSE_ocall_file_read,
-		(void*)(uintptr_t)DVSE_ocall_file_write,
-		(void*)(uintptr_t)DVSE_ocall_file_size,
-		(void*)(uintptr_t)DVSE_ocall_socket_connect,
-		(void*)(uintptr_t)DVSE_ocall_socket_shutdown,
-		(void*)(uintptr_t)DVSE_ocall_get_the_current_time,
-		(void*)(uintptr_t)DVSE_u_sgxssl_ftime64,
-		(void*)(uintptr_t)DVSE_u_sgxssl_closesocket,
-		(void*)(uintptr_t)DVSE_u_sgxssl_recv,
-		(void*)(uintptr_t)DVSE_u_sgxssl_send,
-		(void*)(uintptr_t)DVSE_u_sgxssl_shutdown,
-		(void*)(uintptr_t)DVSE_sgx_oc_cpuidex,
-		(void*)(uintptr_t)DVSE_sgx_thread_wait_untrusted_event_ocall,
-		(void*)(uintptr_t)DVSE_sgx_thread_set_untrusted_event_ocall,
-		(void*)(uintptr_t)DVSE_sgx_thread_setwait_untrusted_events_ocall,
-		(void*)(uintptr_t)DVSE_sgx_thread_set_multiple_untrusted_events_ocall,
+		(void*)DVSE_ocall_file_open,
+		(void*)DVSE_ocall_file_close,
+		(void*)DVSE_ocall_file_read,
+		(void*)DVSE_ocall_file_write,
+		(void*)DVSE_ocall_file_size,
+		(void*)DVSE_ocall_socket_connect,
+		(void*)DVSE_ocall_socket_shutdown,
+		(void*)DVSE_ocall_get_the_current_time,
+		(void*)DVSE_u_sgxssl_ftime,
+		(void*)DVSE_sgx_oc_cpuidex,
+		(void*)DVSE_sgx_thread_wait_untrusted_event_ocall,
+		(void*)DVSE_sgx_thread_set_untrusted_event_ocall,
+		(void*)DVSE_sgx_thread_setwait_untrusted_events_ocall,
+		(void*)DVSE_sgx_thread_set_multiple_untrusted_events_ocall,
 	}
 };
-
 sgx_status_t ecall_init_enclave(sgx_enclave_id_t eid, int* retval, char* storage_folder, char* address, int port)
 {
 	sgx_status_t status;

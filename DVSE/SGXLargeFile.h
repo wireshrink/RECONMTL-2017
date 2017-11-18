@@ -1,5 +1,5 @@
 /************************************************************************************************************
-*	This application is a TRAINING TARGET for exercises in HACKING Intel® SGX ENCLAVES.                     *
+*	This application is a TRAINING TARGET for exercises in HACKING Intelï¿½ SGX ENCLAVES.                     *
 *	This application made vulnerable DELIBERATELY - its main purpose is to demonstrate, shame and blame     *
 *   common mistakes usually made with SGX enclave programming.                                              *
 *   ONCE AGAIN, IT CONTAINS MISTAKES.                                                                       *
@@ -10,7 +10,7 @@
 *	I'd be glad to hear about your progress.    															*
 *																											*
 *	This application requires QT5.8 (which uses LGPL v3 license), Intel SGX SDK and							*
-*   the Intel® Software Guard Extensions SSL (Intel® SGX SSL) to be compiled.								*
+*   the Intelï¿½ Software Guard Extensions SSL (Intelï¿½ SGX SSL) to be compiled.								*
 *	This application is written by Michael Atlas (wireshrink@gmail.com) during 2017.						*
 *	Happy hacking.																							*
 *************************************************************************************************************/
@@ -18,6 +18,7 @@
 #ifndef SGXLARGEFILE_H
 #define SGXLARGEFILE_H
 
+#include <stdlib.h>
 
 class SGXLargeFile
 {

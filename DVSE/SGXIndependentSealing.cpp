@@ -1,5 +1,5 @@
 /************************************************************************************************************
-*	This application is a TRAINING TARGET for exercises in HACKING Intel® SGX ENCLAVES.                     *
+*	This application is a TRAINING TARGET for exercises in HACKING Intelï¿½ SGX ENCLAVES.                     *
 *	This application made vulnerable DELIBERATELY - its main purpose is to demonstrate, shame and blame     *
 *   common mistakes usually made with SGX enclave programming.                                              *
 *   ONCE AGAIN, IT CONTAINS MISTAKES.                                                                       *
@@ -10,7 +10,7 @@
 *	I'd be glad to hear about your progress.    															*
 *																											*
 *	This application requires QT5.8 (which uses LGPL v3 license), Intel SGX SDK and							*
-*   the Intel® Software Guard Extensions SSL (Intel® SGX SSL) to be compiled.								*
+*   the Intelï¿½ Software Guard Extensions SSL (Intelï¿½ SGX SSL) to be compiled.								*
 *	This application is written by Michael Atlas (wireshrink@gmail.com) during 2017.						*
 *	Happy hacking.																							*
 *************************************************************************************************************/
@@ -61,7 +61,7 @@ uint32_t independent_get_encrypt_txt_len(const independent_sealed_data_t* p_seal
 *    SGX_FLAGS_MODE64BIT
 *    SGX_FLAGS_PROVISION_KEY
 *    SGX_FLAGS_LICENSE_KEY */
-#define FLAGS_NON_SECURITY_BITS     (0xFFFFFFFFFFFFC0ULL | SGX_FLAGS_MODE64BIT | SGX_FLAGS_PROVISION_KEY| SGX_FLAGS_LICENSE_KEY)
+#define FLAGS_NON_SECURITY_BITS     (0xFFFFFFFFFFFFC0ULL | SGX_FLAGS_MODE64BIT | SGX_FLAGS_PROVISION_KEY/*| SGX_FLAGS_LICENSE_KEY*/)
 #define TSEAL_DEFAULT_FLAGSMASK     (~FLAGS_NON_SECURITY_BITS)
 
 #define MISC_NON_SECURITY_BITS      0x0FFFFFFF  /* bit[27:0]: have no security implications */
@@ -266,6 +266,13 @@ extern "C" sgx_status_t independent_seal_data_ex(const uint16_t key_policy,
 	memset(&keyID, 0, sizeof(sgx_key_id_t));
 	memset(&tmp_key_request, 0, sizeof(independent_key_request_t));
 
+	bool berr = SGXIndependentSealing::generate_random_data(reinterpret_cast<unsigned char *>(&keyID), sizeof(sgx_key_id_t));
+	if (!berr)
+	{
+		goto clear_return;
+	}
+
+
 	// Get the report to obtain isv_svn and cpu_svn
 	err = sgx_create_report(NULL, NULL, &report);
 	if (err != SGX_SUCCESS)
@@ -274,11 +281,6 @@ extern "C" sgx_status_t independent_seal_data_ex(const uint16_t key_policy,
 	}
 
 	// Get a random number to populate the key_id of the key_request
-	bool berr = SGXIndependentSealing::generate_random_data(reinterpret_cast<unsigned char *>(&keyID), sizeof(sgx_key_id_t));
-	if (!berr)
-	{
-		goto clear_return;
-	}
 
 	memcpy(&(tmp_key_request.cpu_svn), &(report.body.cpu_svn), sizeof(sgx_cpu_svn_t));
 	memcpy(&(tmp_key_request.isv_svn), &(report.body.isv_svn), sizeof(sgx_isv_svn_t));

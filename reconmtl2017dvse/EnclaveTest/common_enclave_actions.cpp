@@ -1,7 +1,6 @@
 #include "common_enclave_actions.h"
 
 
-#include "sgxware.h"
 #include <string>
 #include <string.h>
 
@@ -12,6 +11,8 @@
 #ifdef _MSC_VER
 # include <Shlobj.h>
 # include <Pathcch.h>
+#include <Shlwapi.h>
+#pragma comment(lib, "shlwapi.lib")
 
 #else
 # include <unistd.h>
@@ -30,8 +31,6 @@
 sgx_enclave_id_t global_eid = 0;
 
 
-#include <Shlwapi.h>
-#pragma comment(lib, "shlwapi.lib")
 
 
 
@@ -61,7 +60,7 @@ bool extract_semi_allowed_file(size_t movie_id, char * store_to)
 	return true;
 }
 
-
+#ifdef _MSC_VER
 char* GetThisPath(char* dest, size_t destSize)
 {
 	if (!dest) return NULL;
@@ -76,6 +75,25 @@ char* enclave_full_name(char* placeholder, size_t size) // the enclave should re
 	strncat_s(placeholder, 1024, ENCLAVE_FILENAME, 1024L);
 	return placeholder;
 }
+#else
+char* GetThisPath(char* dest, size_t destSize)
+{
+	if (!dest) return NULL;
+	memset(dest, 0, destSize);
+	size_t length = readlink("/self/proc/exe", dest, destSize);
+	while (length > 0 && dest[length] != '/') length --;
+	dest[length+1] = '\0'; 
+	return dest;
+}
+
+
+char* enclave_full_name(char* placeholder, size_t size) // the enclave should reside at the same folder as an executable
+{
+	GetThisPath(placeholder, size);
+	strncat(placeholder, ENCLAVE_FILENAME, 1024L);
+	return placeholder;
+}
+#endif 
 
 const char* strExpiry(time_t time)
 {
@@ -172,7 +190,7 @@ static sgx_errlist_t sgx_errlist[] = {
 	},
 };
 
-#ifdef _CONSOLE
+#if defined(_CONSOLE) || !defined(_MSC_VER)
 /* Check error conditions for loading enclave */
 void print_error_message(sgx_status_t ret)
 {
@@ -292,7 +310,7 @@ bool load_enclave()
 
 	//ret = sgx_create_enclavea(enclave_full_name(encfullname, 1024), SGX_DEBUG_FLAG, &token, &updated, &global_eid, NULL);
 	// from now on working with non-debuggable enclaves
-	ret = sgx_create_enclavea(enclave_full_name(encfullname, 1024), SGX_DEBUG_FLAG, &token, &updated, &global_eid, NULL);
+	ret = sgx_create_enclave(enclave_full_name(encfullname, 1024), SGX_DEBUG_FLAG, &token, &updated, &global_eid, NULL);
 
 	if (ret != SGX_SUCCESS) {
 		print_error_message(ret);
@@ -326,7 +344,7 @@ bool load_enclave()
 		printf("Warning: Failed to save launch token to \"%s\".\n", token_path);
 	CloseHandle(token_handler);
 #else /* __GNUC__ */
-	if (updated == FALSE || fp == NULL) {
+	if (updated == 0 || fp == NULL) {
 		/* if the token is not updated, or file handler is invalid, do not perform saving */
 		if (fp != NULL) fclose(fp);
 		return 0;
@@ -347,11 +365,11 @@ bool unload_enclave()
 {
 	return sgx_destroy_enclave(global_eid) == SGX_SUCCESS; // and destroy the enclave
 }
-bool	apply_coupon(char* coupon)
+bool	apply_coupon(const char* coupon)
 {
 	int retval;
 
-	sgx_status_t ret = ecall_try_coupon(global_eid, &retval, coupon);
+	sgx_status_t ret = ecall_try_coupon(global_eid, &retval, (char*)coupon);
 
 	if (ret != SGX_SUCCESS)
 	{

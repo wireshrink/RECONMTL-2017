@@ -1,5 +1,5 @@
 /************************************************************************************************************
-*	This application is a TRAINING TARGET for exercises in HACKING Intel® SGX ENCLAVES.                     *
+*	This application is a TRAINING TARGET for exercises in HACKING Intelï¿½ SGX ENCLAVES.                     *
 *	This application made vulnerable DELIBERATELY - its main purpose is to demonstrate, shame and blame     *
 *   common mistakes usually made with SGX enclave programming.                                              *
 *   ONCE AGAIN, IT CONTAINS MISTAKES.                                                                       *
@@ -10,7 +10,7 @@
 *	I'd be glad to hear about your progress.    															*
 *																											*
 *	This application requires QT5.8 (which uses LGPL v3 license), Intel SGX SDK and							*
-*   the Intel® Software Guard Extensions SSL (Intel® SGX SSL) to be compiled.								*
+*   the Intelï¿½ Software Guard Extensions SSL (Intelï¿½ SGX SSL) to be compiled.								*
 *	This application is written by Michael Atlas (wireshrink@gmail.com) during 2017.						*
 *	Happy hacking.																							*
 *************************************************************************************************************/
@@ -41,8 +41,8 @@ typedef enum __enclave_action__
 typedef struct __enclave_action_def__
 {
 	enclave_action_t act;
-	char* clname;
-	char* descr;
+	const char* clname;
+	const char* descr;
 }enclave_action_def_t;
 
 enclave_action_def_t actions[] = {
@@ -136,6 +136,7 @@ int main(int argc, char ** argv)
 		exit(1);
 	}
 
+#ifdef _MSC_VER
 	// initializing sockets 
 	WSADATA wsaData = { 0 };
 	int iResult = 0;
@@ -146,6 +147,7 @@ int main(int argc, char ** argv)
 		wprintf(L"WSAStartup failed: %d\n", iResult);
 		return 1;
 	}
+#endif
 
 	switch (act)
 	{

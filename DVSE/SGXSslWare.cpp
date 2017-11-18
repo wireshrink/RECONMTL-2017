@@ -1,5 +1,5 @@
 /************************************************************************************************************
-*	This application is a TRAINING TARGET for exercises in HACKING Intel® SGX ENCLAVES.                     *
+*	This application is a TRAINING TARGET for exercises in HACKING Intelï¿½ SGX ENCLAVES.                     *
 *	This application made vulnerable DELIBERATELY - its main purpose is to demonstrate, shame and blame     *
 *   common mistakes usually made with SGX enclave programming.                                              *
 *   ONCE AGAIN, IT CONTAINS MISTAKES.                                                                       *
@@ -10,7 +10,7 @@
 *	I'd be glad to hear about your progress.    															*
 *																											*
 *	This application requires QT5.8 (which uses LGPL v3 license), Intel SGX SDK and							*
-*   the Intel® Software Guard Extensions SSL (Intel® SGX SSL) to be compiled.								*
+*   the Intelï¿½ Software Guard Extensions SSL (Intelï¿½ SGX SSL) to be compiled.								*
 *	This application is written by Michael Atlas (wireshrink@gmail.com) during 2017.						*
 *	Happy hacking.																							*
 *************************************************************************************************************/
@@ -27,9 +27,11 @@ const char* const PREFERRED_CIPHERS = "HIGH:!aNULL:!kRSA:!SRP:!PSK:!CAMELLIA:!RC
 
 SGXSslWare::SGXSslWare()
 {
+#ifdef _MSC_VER
 	server = nullptr;
 	ssl = nullptr;
 	ctx = nullptr;
+#endif
 }
 
 
@@ -39,8 +41,11 @@ SGXSslWare::~SGXSslWare()
 
 void init_openssl_library(void)
 {
+#ifdef _MSC_VER
+	
 	(void)SSL_library_init();
 	SSL_load_error_strings();
+#endif
 }
 
 SGXSslWare * SGXSslWare::getInstance()
@@ -56,13 +61,18 @@ SGXSslWare * SGXSslWare::getInstance()
 
 void SGXSslWare::destroy()
 {
+#ifdef _MSC_VER
+
 	if(ssl) SSL_free(ssl);
 	if(ctx) SSL_CTX_free(ctx);
+#endif
 	if (m_pInstance) delete m_pInstance;
 }
 
 bool SGXSslWare::connect(char * address, int port)
 {
+#ifdef _MSC_VER
+
 	const SSL_METHOD *method;
 	X509                *cert = NULL;
 	static bool openssl_initialized = false;
@@ -111,7 +121,10 @@ bool SGXSslWare::connect(char * address, int port)
 	/* ---------------------------------------------------------- *
 	* Make the underlying TCP socket connection                  *
 	* ---------------------------------------------------------- */
+#endif
 	sgx_status_t ret = ocall_socket_connect(&server, address, port);
+#ifdef _MSC_VER
+
 	if (ret != SGX_SUCCESS)
 	{
 		return false;
@@ -149,7 +162,7 @@ bool SGXSslWare::connect(char * address, int port)
 		return false;
 	}
 	if (cert) { X509_free(cert); }
-
+#endif
 	strncpy(m_addr, address, 1024);
 	m_port = port;
 	return true;
@@ -159,23 +172,31 @@ bool SGXSslWare::connect(char * address, int port)
 
 bool SGXSslWare::reconnect()
 {
+#ifdef _MSC_VER
 	if (ssl) SSL_free(ssl);
 	if (ctx) SSL_CTX_free(ctx);
 	ctx = nullptr;
 	ssl = nullptr;
+#endif
 	return connect(m_addr, m_port);
 }
 
 bool SGXSslWare::send(unsigned char * data, size_t size)
 {
+#ifdef _MSC_VER
 	bool res = SSL_write(ssl, data, (int)size) == size;
 	return res;
+#endif
+	return true; // TODO: connect to real send !
 }
 
 bool SGXSslWare::receive(unsigned char * data, size_t max_size, size_t * real_size)
 {
+#ifdef _MSC_VER
 	*real_size = SSL_read(ssl, data, (int)max_size);
 	return (*real_size != -1L);
+#endif// _MSC_VER
+	return true; // TODO: connect to real recv !
 }
 
 bool SGXSslWare::shutdown()

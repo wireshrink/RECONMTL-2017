@@ -1,5 +1,5 @@
 /************************************************************************************************************
-*	This application is a TRAINING TARGET for exercises in HACKING Intel® SGX ENCLAVES.                     *
+*	This application is a TRAINING TARGET for exercises in HACKING Intelï¿½ SGX ENCLAVES.                     *
 *	This application made vulnerable DELIBERATELY - its main purpose is to demonstrate, shame and blame     *
 *   common mistakes usually made with SGX enclave programming.                                              *
 *   ONCE AGAIN, IT CONTAINS MISTAKES.                                                                       *
@@ -10,7 +10,7 @@
 *	I'd be glad to hear about your progress.    															*
 *																											*
 *	This application requires QT5.8 (which uses LGPL v3 license), Intel SGX SDK and							*
-*   the Intel® Software Guard Extensions SSL (Intel® SGX SSL) to be compiled.								*
+*   the Intelï¿½ Software Guard Extensions SSL (Intelï¿½ SGX SSL) to be compiled.								*
 *	This application is written by Michael Atlas (wireshrink@gmail.com) during 2017.						*
 *	Happy hacking.																							*
 *************************************************************************************************************/
@@ -46,7 +46,7 @@ bool SGXServiceFile::read_and_decrypt()
 {
 	void * f = nullptr;
 	int retval;
-	sgx_status_t ret = ocall_file_open(&f, full_file_name, "rb");
+	sgx_status_t ret = ocall_file_open(&f, full_file_name, (char*)"rb");
 	if (ret != SGX_SUCCESS)
 	{
 		return false;
@@ -102,7 +102,7 @@ bool SGXServiceFile::encrypt_and_save()
 {
 	void * f = nullptr;
 	int retval;
-	sgx_status_t ret = ocall_file_open(&f, full_file_name, "wb");
+	sgx_status_t ret = ocall_file_open(&f, full_file_name, (char*)"wb");
 	if (ret != SGX_SUCCESS)
 	{
 		return false;
@@ -163,7 +163,7 @@ bool SGXServiceFile::set_decrypted_content(size_t data_length, unsigned char * d
 
 
 
-bool SGXServiceFile::downloadById(char * id)
+bool SGXServiceFile::downloadById(const char * id)
 {
 	SGXSslWare *psslw = SGXSslWare::getInstance();
 	size_t datalen = strlen(id);
